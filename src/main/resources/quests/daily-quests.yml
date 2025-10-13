@@ -1,0 +1,26 @@
+quests:
+  break-block-1:
+    name: "&e&lBreak Block - 1"
+    description:
+      - "&7Break &e10 &7blocks of stone or cobblestone"
+      - "&7Break &e64 &7blocks of coal ore or deepslate coal ore"
+    group: "daily"
+    tasks:
+      1:
+        task_type: "BREAK"
+        task_description: "&7Break &e%task_progress%&8/&e%task_required% &7blocks of stone or cobblestone"
+        required_amount: 10
+        required_targets:
+          - STONE
+          - COBBLESTONE
+        task_rewards:
+          - "[console] broadcast The player %player% just finished the first task !"
+      2:
+        task_type: "BREAK"
+        task_description: "&7Break &e%task_progress%&8/&e%task_required% &7blocks of coal ore or deepslate coal ore"
+        required_amount: 64
+        required_targets:
+          - COAL_ORE
+          - DEEPSLATE_COAL_ORE
+        task_rewards:
+          - "[console] broadcast The player %player% just finished the second task !"

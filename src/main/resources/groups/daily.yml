@@ -1,0 +1,13 @@
+options:
+  repeatable: false
+  dependant-tasks: false
+  need-starting: false
+  automatically-given: true
+
+automatic-reset: "0 0 * * *"
+
+assignations:
+  default: 5
+  vip: 10
+
+max-rerolls: 3

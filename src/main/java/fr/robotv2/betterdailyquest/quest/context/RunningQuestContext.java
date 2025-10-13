@@ -1,0 +1,57 @@
+package fr.robotv2.betterdailyquest.quest.context;
+
+import fr.robotv2.betterdailyquest.quest.type.QuestType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+public abstract class RunningQuestContext<T, E extends Event> {
+
+    @NotNull
+    private final Player initiator;
+
+    @NotNull
+    private final QuestType<?> type;
+
+    @Nullable
+    private final E triggered;
+
+    @Nullable
+    private final T target;
+
+    @NotNull
+    private final Number amount;
+
+    protected RunningQuestContext(@NotNull Player initiator, @NotNull QuestType<?> type, @Nullable E triggered, @Nullable T target) {
+        this(initiator, type, triggered, target, 1);
+    }
+
+    protected RunningQuestContext(@NotNull Player initiator, @NotNull QuestType<?> type, @Nullable E triggered, @Nullable T target, @NotNull Number amount) {
+        this.initiator = initiator;
+        this.type = type;
+        this.triggered = triggered;
+        this.target = target;
+        this.amount = amount;
+    }
+
+    public @NotNull Player getInitiator() {
+        return initiator;
+    }
+
+    public @NotNull QuestType<?> getType() {
+        return type;
+    }
+
+    public @Nullable E getTriggeredEvent() {
+        return triggered;
+    }
+
+    protected @Nullable T getTarget() {
+        return target;
+    }
+
+    public @NotNull Number getAmount() {
+        return amount;
+    }
+}

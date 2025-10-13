@@ -1,0 +1,4 @@
+name: BetterDailyQuest
+version: '1.0-SNAPSHOT'
+main: fr.robotv2.betterdailyquest.BetterDailyQuest
+api-version: '1.21'
