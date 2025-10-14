@@ -1,6 +1,9 @@
 package fr.robotv2.betterdailyquest.util;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.function.Consumer;
 
 public class FileUtil {
@@ -25,6 +28,28 @@ public class FileUtil {
                 iterateFiles(file, consumer);
             } else {
                 consumer.accept(file);
+            }
+        }
+    }
+
+    public static void hideFolder(File folder) throws IOException {
+        if (folder == null || !folder.isDirectory()) {
+            throw new IllegalArgumentException("A valid directory was not provided.");
+        }
+
+        String osName = System.getProperty("os.name").toLowerCase();
+
+        if (osName.contains("win")) {
+            Path path = folder.toPath();
+            Files.setAttribute(path, "dos:hidden", true);
+        } else {
+            if (folder.getName().startsWith(".")) {
+                return;
+            }
+
+            File hiddenFolder = new File(folder.getParentFile(), "." + folder.getName());
+            if (!folder.renameTo(hiddenFolder)) {
+                throw new IOException("Failed to rename the folder to " + hiddenFolder.getAbsolutePath());
             }
         }
     }
