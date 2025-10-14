@@ -34,11 +34,9 @@ public class QuestResetHandler {
             return null;
         });
 
-        if(!group.getOption().getOptionValue(Optionnable.Option.AUTOMATICALLY_GIVEN)) {
-            return;
+        if(group.getOption().getOptionValue(Optionnable.Option.AUTOMATICALLY_GIVEN)) {
+            plugin.getDatabaseManager().getCachedPlayers().forEach((questPlayer) -> fillPlayer(questPlayer, group, true));
         }
-
-        plugin.getDatabaseManager().getCachedPlayers().forEach((questPlayer) -> fillPlayer(questPlayer, group, true));
     }
 
     private int getRoleLimit(String role, QuestGroup group, int defaultValue) {
