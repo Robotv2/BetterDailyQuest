@@ -16,6 +16,7 @@ import fr.robotv2.betterdailyquest.storage.DatabaseManager;
 import fr.robotv2.betterdailyquest.storage.DatabaseManagerImpl;
 import fr.robotv2.betterdailyquest.storage.model.ActiveQuest;
 import fr.robotv2.betterdailyquest.storage.model.QuestPlayer;
+import fr.robotv2.betterdailyquest.util.FileUtil;
 import fr.robotv2.betterdailyquest.util.Futures;
 import fr.robotv2.betterdailyquest.util.GroupUtil;
 import fr.robotv2.betterdailyquest.util.McVersion;
@@ -32,6 +33,7 @@ import revxrsal.commands.bukkit.BukkitCommandHandler;
 import revxrsal.zapper.ZapperJavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
@@ -53,6 +55,7 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
     private AddonManager addonManager;
 
     private ColorProvider colorProvider;
+    private File libsFolder;
 
     public static BetterDailyQuest instance() {
         return JavaPlugin.getPlugin(BetterDailyQuest.class);
@@ -108,6 +111,13 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
         GroupUtil.initialize(this);
 
         this.addonManager.getAddons().forEach(Addon::onPostEnable);
+
+        try {
+            this.libsFolder = new File(getDataFolder(), ".libs");
+            FileUtil.hideFolder(libsFolder);
+        } catch (IOException exception) {
+            getLogger().log(Level.WARNING, "Failed to hide .libs folder", exception);
+        }
     }
 
     @Override
