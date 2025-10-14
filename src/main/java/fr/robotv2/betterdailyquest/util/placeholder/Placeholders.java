@@ -6,12 +6,20 @@ import fr.robotv2.betterdailyquest.quest.task.Task;
 import fr.robotv2.betterdailyquest.storage.model.ActiveQuest;
 import fr.robotv2.betterdailyquest.storage.model.ActiveTask;
 import fr.robotv2.betterdailyquest.util.placeholder.impl.ValuePlaceholder;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
 public class Placeholders {
+
+    @NotNull
+    public static String safePlaceholderAPI(OfflinePlayer player, String text) {
+        return Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI") ? PlaceholderAPI.setPlaceholders(player, text) : text;
+    }
 
     public static ValuePlaceholder<Quest> QUEST_PLACEHOLDER = (text, value) -> {
         if(text == null || text.isEmpty() || value == null) return text;
