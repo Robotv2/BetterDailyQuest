@@ -1,7 +1,10 @@
 package fr.robotv2.betterdailyquest.conditions;
 
 import fr.robotv2.betterdailyquest.BetterDailyQuest;
-import fr.robotv2.betterdailyquest.conditions.impl.WorldCondition;
+import fr.robotv2.betterdailyquest.conditions.impl.entity.VillagerCondition;
+import fr.robotv2.betterdailyquest.conditions.impl.item.EnchantCondition;
+import fr.robotv2.betterdailyquest.conditions.impl.player.PlaceholderCondition;
+import fr.robotv2.betterdailyquest.conditions.impl.player.WorldCondition;
 import fr.robotv2.betterdailyquest.conditions.impl.entity.SheepColorCondition;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -60,9 +63,13 @@ public class ConditionManager {
 
     public void registerDefaultConditions() {
 
-        registerCondition("required_worlds", WorldCondition.class);
-        registerCondition("sheep_color", SheepColorCondition.class);
+        registerCondition("placeholders", PlaceholderCondition.class);
+        registerCondition("worlds", WorldCondition.class);
 
+        registerCondition("required_enchants", EnchantCondition.class);
+
+        registerCondition("sheep_color", SheepColorCondition.class);
+        registerCondition("required_villager", VillagerCondition.class);
     }
 
     private boolean checkConditionClass(Class<? extends Condition> conditionClazz) {
