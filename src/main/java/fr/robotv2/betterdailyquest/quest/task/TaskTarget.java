@@ -1,5 +1,7 @@
 package fr.robotv2.betterdailyquest.quest.task;
 
+import org.jetbrains.annotations.ApiStatus;
+
 public abstract class TaskTarget<T> {
 
     private final Class<T> tClass;
@@ -12,6 +14,7 @@ public abstract class TaskTarget<T> {
         return tClass;
     }
 
+    @ApiStatus.Internal
     public boolean isTarget(Object value) {
 
         if(!getTargetClass().isInstance(value)) {
