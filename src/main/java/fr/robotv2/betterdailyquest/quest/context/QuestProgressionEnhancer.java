@@ -48,8 +48,16 @@ public abstract class QuestProgressionEnhancer implements Listener {
             return; // quest is no longer in the config.
         }
 
-        if(!areAllConditionsMet(quest.getConditions(), context)) {
-            return;
+        for (Condition condition : quest.getConditions()) {
+            if (!condition.isMet(context)) {
+                final String callback = condition.callback();
+                if(callback != null) {
+                    final String parsed = plugin.getColorProvider().colorize(callback);
+                    context.getInitiator().sendMessage(parsed);
+                }
+
+                return;
+            }
         }
 
         boolean canProceed = true;
