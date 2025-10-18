@@ -12,6 +12,7 @@ import fr.robotv2.betterdailyquest.quest.task.Task;
 import fr.robotv2.betterdailyquest.storage.model.ActiveQuest;
 import fr.robotv2.betterdailyquest.storage.model.ActiveTask;
 import fr.robotv2.betterdailyquest.storage.model.QuestPlayer;
+import fr.robotv2.betterdailyquest.util.placeholder.Placeholders;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
@@ -48,16 +49,16 @@ public abstract class QuestProgressionEnhancer implements Listener {
             return; // quest is no longer in the config.
         }
 
-        for (Condition condition : quest.getConditions()) {
-            if (!condition.isMet(context)) {
-                final String callback = condition.callback();
-                if(callback != null) {
-                    final String parsed = plugin.getColorProvider().colorize(callback);
-                    context.getInitiator().sendMessage(parsed);
-                }
-
-                return;
+        final Condition nonMetCondition = firstNonMetCondition(quest.getConditions(), context);
+        if(nonMetCondition != null) {
+            final String callback = nonMetCondition.callback();
+            if(callback != null) {
+                String temp = callback;
+                temp = Placeholders.ACTIVE_QUEST_PLACEHOLDER.apply(temp, activeQuest);
+                temp = plugin.getColorProvider().colorize(temp);
+                context.getInitiator().sendMessage(temp);
             }
+            return; // a quest condition is not met, stop here.
         }
 
         boolean canProceed = true;
@@ -83,11 +84,21 @@ public abstract class QuestProgressionEnhancer implements Listener {
                 continue;
             }
 
-            if(!areAllConditionsMet(task.getConditions(), context)) {
-                return;
+            final Condition taskCondition = firstNonMetCondition(task.getConditions(), context);
+            if(taskCondition != null) {
+                final String callback = taskCondition.callback();
+                if(callback != null) {
+                    String temp = callback;
+                    temp = Placeholders.ACTIVE_QUEST_PLACEHOLDER.apply(temp, activeQuest);
+                    temp = Placeholders.ACTIVE_TASK_PLACEHOLDER.apply(temp, activeTask);
+                    temp = plugin.getColorProvider().colorize(temp);
+                    context.getInitiator().sendMessage(temp);
+                }
+                continue; // a task condition is not met, skip this task.
             }
 
-            if(context.getTarget() != null && !task.isTarget(context.getTarget())) {
+            if(context.getTarget() != null
+                    && !task.isTarget(context.getTarget())) {
                 continue; // only skip if the target is not null
             }
 
@@ -112,7 +123,13 @@ public abstract class QuestProgressionEnhancer implements Listener {
         }
     }
 
-    private boolean areAllConditionsMet(Collection<Condition> conditions, RunningQuestContext<?, ?> context) {
-        return conditions.stream().allMatch((condition) -> condition.isMet(context));
+    private Condition firstNonMetCondition(Collection<Condition> conditions, RunningQuestContext<?, ?> context) {
+        for (Condition condition : conditions) {
+            if (!condition.isMet(context)) {
+                return condition;
+            }
+        }
+
+        return null;
     }
 }
