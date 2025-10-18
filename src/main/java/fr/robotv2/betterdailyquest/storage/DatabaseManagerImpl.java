@@ -1,12 +1,12 @@
 package fr.robotv2.betterdailyquest.storage;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import fr.robotv2.anchor.api.database.Database;
 import fr.robotv2.anchor.api.database.SupportType;
 import fr.robotv2.anchor.api.repository.MigrationExecutor;
 import fr.robotv2.anchor.api.repository.Operator;
 import fr.robotv2.anchor.api.repository.Repository;
 import fr.robotv2.anchor.api.repository.async.AsyncQueryableRepository;
-import fr.robotv2.anchor.api.repository.async.AsyncRepository;
 import fr.robotv2.anchor.bukkit.AnchorBukkit;
 import fr.robotv2.anchor.sql.repository.SQLRepository;
 import fr.robotv2.betterdailyquest.BetterDailyQuest;
@@ -32,8 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -41,11 +40,14 @@ import java.util.stream.Collectors;
 
 public class DatabaseManagerImpl implements DatabaseManager {
 
+    public static final int THREAD_POOL_SIZE = 4;
+
     private final BetterDailyQuest plugin;
     private final Database database;
-
     private final Map<UUID, QuestPlayer> cache;
     private final Map<UUID, ReentrantLock> locks;
+
+    private final Executor executor;
 
     public DatabaseManagerImpl(BetterDailyQuest plugin) {
         this.plugin = plugin;
@@ -56,6 +58,12 @@ public class DatabaseManagerImpl implements DatabaseManager {
 
         this.cache = new ConcurrentHashMap<>();
         this.locks = new ConcurrentHashMap<>();
+
+        final ThreadFactory factory = new ThreadFactoryBuilder()
+                .setNameFormat("BetterDailyQuest-Database-%d")
+                .setDaemon(true)
+                .build();
+        this.executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE, factory);
 
         Bukkit.getPluginManager().registerEvents(new MonoPlayerLoader(this), plugin);
     }
@@ -99,17 +107,17 @@ public class DatabaseManagerImpl implements DatabaseManager {
 
     @Override
     public @NotNull AsyncQueryableRepository<UUID, QuestPlayerDto> getQuestPlayerRepository() {
-        return (AsyncQueryableRepository<UUID, QuestPlayerDto>) database.getAsyncRepository(QuestPlayerDto.class);
+        return (AsyncQueryableRepository<UUID, QuestPlayerDto>) database.getAsyncRepository(QuestPlayerDto.class, executor);
     }
 
     @Override
     public @NotNull AsyncQueryableRepository<UUID, ActiveQuestDto> getActiveQuestRepository() {
-        return (AsyncQueryableRepository<UUID, ActiveQuestDto>) database.getAsyncRepository(ActiveQuestDto.class);
+        return (AsyncQueryableRepository<UUID, ActiveQuestDto>) database.getAsyncRepository(ActiveQuestDto.class, executor);
     }
 
     @Override
     public @NotNull AsyncQueryableRepository<UUID, ActiveTaskDto> getActiveTaskRepository() {
-        return (AsyncQueryableRepository<UUID, ActiveTaskDto>) database.getAsyncRepository(ActiveTaskDto.class);
+        return (AsyncQueryableRepository<UUID, ActiveTaskDto>) database.getAsyncRepository(ActiveTaskDto.class, executor);
     }
 
     private ReentrantLock getLock(UUID playerId) {
@@ -127,32 +135,60 @@ public class DatabaseManagerImpl implements DatabaseManager {
                 final QuestPlayer questPlayer = cache.get(playerId);
                 if (questPlayer == null) return;
 
-                List<CompletableFuture<Void>> futures = new ArrayList<>();
-                if(questPlayer.isDirty()) {
-                    futures.add(getQuestPlayerRepository().save(new QuestPlayerDto(questPlayer)));
-                }
+                List<ActiveQuestDto> dirtyQuests = new ArrayList<>();
+                List<ActiveTaskDto> dirtyTasks = new ArrayList<>();
 
                 for (ActiveQuest quest : questPlayer.getActiveQuests()) {
-                    if(quest.isDirty()) {
-                        futures.add(getActiveQuestRepository().save(new ActiveQuestDto(quest)));
+                    if (quest.isDirty()) {
+                        dirtyQuests.add(new ActiveQuestDto(quest));
                     }
 
+                    // Still need to check tasks even if parent quest isn't dirty
+                    // (e.g., task progress changed but quest state didn't)
                     for (ActiveTask task : quest.getTasks()) {
-                        if(task.isDirty()) {
-                            futures.add(getActiveTaskRepository().save(new ActiveTaskDto(task)));
+                        if (task.isDirty()) {
+                            dirtyTasks.add(new ActiveTaskDto(task));
                         }
                     }
                 }
 
-                Futures.ofAll(futures).join();
+                List<CompletableFuture<Void>> futures = new ArrayList<>();
+
+                // Save the main player data (still a single save)
+                if (questPlayer.isDirty()) {
+                    futures.add(getQuestPlayerRepository().save(new QuestPlayerDto(questPlayer)));
+                }
+
+                //  Batch save all dirty active quests
+                if (!dirtyQuests.isEmpty()) {
+                    futures.add(getActiveQuestRepository().saveAll(dirtyQuests));
+                }
+
+                // Batch save all dirty active tasks
+                if (!dirtyTasks.isEmpty()) {
+                    futures.add(getActiveTaskRepository().saveAll(dirtyTasks));
+                }
+
+                // Wait for all save operations (player + quest batch + task batch) to complete
+                if (!futures.isEmpty()) {
+                    Futures.ofAll(futures).join();
+                }
 
             } finally {
-                lock.unlock(); // Release lock
+                lock.unlock();
             }
-        }).thenRun(() -> {
-            if (removeFromCache) cache.remove(playerId);
+        }, executor).whenComplete((result, exception) -> {
+            if (exception != null) {
+                plugin.getLogger().log(Level.WARNING, "Failed to save data for player '" + player.getName() + "'.", exception);
+            } else {
+                plugin.getLogger().info("Data of player '" + player.getName() + "' saved successfully.");
+            }
+
+            if (removeFromCache) {
+                cache.remove(playerId);
+            }
+
             locks.remove(playerId);
-            plugin.getLogger().info("Data of player '" + player.getName() + "' saved successfully.");
         });
     }
 
@@ -177,19 +213,24 @@ public class DatabaseManagerImpl implements DatabaseManager {
     public CompletableFuture<QuestPlayer> composePlayer(Player player, boolean shouldCache) {
         final UUID playerId = player.getUniqueId();
         final Lock lock = getLock(playerId);
+
         return CompletableFuture.supplyAsync(() -> {
-            lock.lock(); // Acquire lock
+            lock.lock();
             try {
-                return populateQuestPlayer(player);
+                final QuestPlayer cachedPlayer = cache.get(playerId);
+                if (cachedPlayer != null) {
+                    return cachedPlayer;
+                }
+
+                final QuestPlayer questPlayer = populateQuestPlayer(player).join();
+                if (shouldCache) {
+                    cache.put(player.getUniqueId(), questPlayer);
+                }
+                return questPlayer;
             } finally {
                 lock.unlock();
             }
-        }).thenCompose((future) -> future).thenApply((questPlayer) -> {
-            if (shouldCache) {
-                cache.put(player.getUniqueId(), questPlayer);
-            }
-            return questPlayer;
-        });
+        }, executor);
     }
 
     private CompletableFuture<QuestPlayer> populateQuestPlayer(Player player) {
@@ -217,7 +258,7 @@ public class DatabaseManagerImpl implements DatabaseManager {
 
         final Set<UUID> activeQuestIds = activeQuestDtos.stream().map(ActiveQuestDto::getId).collect(Collectors.toSet());
         final CompletableFuture<List<ActiveTaskDto>> dtos = getActiveTaskRepository().query()
-                .where("active_quest_id", Operator.IN, activeQuestIds)
+                .where("parent_active_quest_id", Operator.IN, activeQuestIds)
                 .all();
         final CompletableFuture<Map<UUID, List<ActiveTaskDto>>> taskMap = dtos.thenApply((tasks) ->
             tasks.stream().collect(Collectors.groupingBy(ActiveTaskDto::getParentActiveQuestId))
@@ -297,9 +338,12 @@ public class DatabaseManagerImpl implements DatabaseManager {
 
     @Override
     public CompletableFuture<Void> removeQuestsAndTasks(ActiveQuest quest) {
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
-        futures.add(getActiveQuestRepository().deleteById(quest.getUID()));
-        futures.addAll(quest.getTasks().stream().map(task -> getActiveTaskRepository().deleteById(task.getId())).toList());
-        return Futures.ofAll(futures);
+        CompletableFuture<Integer> deleteTasksFuture = getActiveTaskRepository().query()
+                .where("parent_active_quest_id", Operator.EQUAL, quest.getUID())
+                .delete();
+
+        CompletableFuture<Void> deleteQuestFuture = getActiveQuestRepository().deleteById(quest.getUID());
+
+        return CompletableFuture.allOf(deleteTasksFuture, deleteQuestFuture);
     }
 }
