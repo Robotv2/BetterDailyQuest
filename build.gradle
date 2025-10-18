@@ -31,6 +31,7 @@ dependencies {
     zap 'fr.robotv2.anchor:Anchor-bukkit:1.0-SNAPSHOT'
     zap 'fr.robotv2.anchor:Anchor-mariadb:1.0-SNAPSHOT'
     zap 'fr.robotv2.anchor:Anchor-sqlite:1.0-SNAPSHOT'
+    zap 'com.github.Robotv2:PlaceholderAnnotationLib:v1.1.0'
 }
 
 tasks {
@@ -75,6 +76,7 @@ zapper {
     relocate('io.github.classgraph', 'classgraph')
     relocate('nonapi.io.github.classgraph', 'classgraph-nonapi')
     relocate('revxrsal.commands', 'lamp')
+    relocate('fr.robotv2.placeholderannotationlib', 'pal')
 }
 
 shadowJar {

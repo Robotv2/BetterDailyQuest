@@ -23,6 +23,7 @@ import fr.robotv2.betterdailyquest.util.McVersion;
 import fr.robotv2.betterdailyquest.util.color.ColorProvider;
 import fr.robotv2.betterdailyquest.util.color.LegacyColorProvider;
 import fr.robotv2.betterdailyquest.util.color.ModernColorProvider;
+import fr.robotv2.placeholderannotationlib.api.PlaceholderAnnotationProcessor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -110,13 +111,22 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
 
         GroupUtil.initialize(this);
 
+        // load addons placeholders
         this.addonManager.getAddons().forEach(Addon::onPostEnable);
 
+        // hide .libs folder
         try {
             this.libsFolder = new File(getDataFolder(), ".libs");
             FileUtil.hideFolder(libsFolder);
         } catch (IOException exception) {
             getLogger().log(Level.WARNING, "Failed to hide .libs folder", exception);
+        }
+
+        // load placeholderapi
+        final PlaceholderAnnotationProcessor processor = PlaceholderAnnotationProcessor.defaultProcessor();
+        final BetterDailyQuestClipPlaceholder expansion = new BetterDailyQuestClipPlaceholder(this, processor);
+        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            expansion.register();
         }
     }
 
@@ -228,7 +238,7 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
     }
 
     private void registerCommands() {
-        this.commandHandler = BukkitCommandHandler.create(this);
+        commandHandler = BukkitCommandHandler.create(this);
 
         commandHandler.registerValueResolver(QuestGroup.class, (context) -> getQuestGroupManager().getGroup(context.pop()));
         commandHandler.getAutoCompleter().registerSuggestion("groups", SuggestionProvider.map(getQuestGroupManager()::getGroups, QuestGroup::getGroupId));
