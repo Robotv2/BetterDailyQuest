@@ -41,3 +41,31 @@ time_format:
   minutes: "m"
   seconds: "s"
   format: "%days%%hours%%minutes%%seconds%"
+
+messages:
+  commands:
+    reload_success: "&aThe plugin has been reloaded successfully."
+    player_not_loaded: "&cThe player is not connected or is not loaded."
+    quest_not_found: "&cThe target does not have this quest."
+    quest_already_has: "&cThe target already has this quest."
+    quest_unavailable: "&cThe quest is not available. (%quest_id%)"
+    quest_already_completed: "&cThe quest is already completed."
+    max_rerolls_reached: "&cYou have reached the maximum rerolls for this quest group."
+    no_quest_available: "&cNo quest available for reroll."
+    specify_player_for_reroll: "&cYou must specify a player for reroll-others."
+
+    # Give command
+    give_success: "&aThe quest '%quest_id%' has successfully been given to the player '%player%'."
+
+    # Clear command
+    clear_success: "&aThe quest '%quest_id%' has successfully been cleared for the player '%player%'."
+
+    # Reset command
+    reset_success: "&aThe quest '%quest_id%' has successfully been reset for the player '%player%'."
+
+    # Reroll commands
+    reroll_success_others: "&aThe quest '%quest_id%' has successfully been rerolled for the player '%player%'."
+    reroll_success_self: "&aYour quest '%quest_id%' has been successfully rerolled."
+
+    # Complete command
+    complete_success: "&aThe quest '%quest_id%' has successfully been completed for the player '%player%'."

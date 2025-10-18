@@ -1,6 +1,7 @@
 package fr.robotv2.betterdailyquest.command;
 
 import fr.robotv2.betterdailyquest.BetterDailyQuest;
+import fr.robotv2.betterdailyquest.configurations.messages.MessageConfiguration;
 import fr.robotv2.betterdailyquest.event.QuestDoneEvent;
 import fr.robotv2.betterdailyquest.event.TaskDoneEvent;
 import fr.robotv2.betterdailyquest.group.QuestGroup;
@@ -37,26 +38,31 @@ public class BetterDailyQuestCommand {
     @CommandPermission("betterdailyquest.command.reload")
     public void onReload(BukkitCommandActor actor) {
         plugin.onReload();
-        actor.getSender().sendMessage(ChatColor.GREEN + "The plugin has been reloaded successfully.");
+        MessageConfiguration.CommandMessages messages = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages();
+        actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getReloadSuccess()));
     }
 
     @Subcommand("give")
     @CommandPermission("betterdailyquest.command.give")
     public void onGive(BukkitCommandActor actor, @Named("group") QuestGroup group, @Named("quest") Quest quest, @Named("target") @Default("me") Player target) {
         final QuestPlayer questPlayer = plugin.getDatabaseManager().getCachedQuestPlayer(target);
+        MessageConfiguration.CommandMessages messages = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages();
 
         if(questPlayer == null) {
-            actor.getSender().sendMessage(ChatColor.RED + "The player is not connected or is not loaded.");
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getPlayerNotLoaded()));
             return;
         }
 
         if(questPlayer.hasQuest(quest)) {
-            actor.getSender().sendMessage(ChatColor.RED + "The target already has this quest.");
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getQuestAlreadyHas()));
             return;
         }
 
         questPlayer.addActiveQuest(new ActiveQuest(target, quest));
-        actor.getSender().sendMessage(ChatColor.GREEN + "The quest '" + quest.getQuestId() + "' has successfully been given to the player '" + target.getName() + "'.");
+        String successMessage = messages.getGiveSuccess()
+                .replace("%quest_id%", quest.getQuestId())
+                .replace("%player%", target.getName());
+        actor.getSender().sendMessage(plugin.getColorProvider().colorize(successMessage));
     }
 
     @Subcommand("clear")
@@ -64,22 +70,26 @@ public class BetterDailyQuestCommand {
     @AutoComplete("@players @target_quests")
     public void onClear(BukkitCommandActor actor, @Named("target") Player player, @Named("questID") String questID) {
         final QuestPlayer questPlayer = plugin.getDatabaseManager().getCachedQuestPlayer(player);
+        MessageConfiguration.CommandMessages messages = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages();
 
         if(questPlayer == null) {
-            actor.getSender().sendMessage(ChatColor.RED + "The player is not connected or is not loaded.");
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getPlayerNotLoaded()));
             return;
         }
 
         final ActiveQuest activeQuest = questPlayer.getActiveQuest(questID);
         if(activeQuest == null) {
-            actor.getSender().sendMessage(ChatColor.RED + "The target does not have this quest.");
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getQuestNotFound()));
             return;
         }
 
         plugin.getDatabaseManager().removeQuestsAndTasks(activeQuest);
         questPlayer.removeActiveQuest(activeQuest);
 
-        actor.getSender().sendMessage(ChatColor.GREEN + "The quest '" + activeQuest.getQuestId() + "' has successfully been cleared for the player '" + player.getName() + "'.");
+        String successMessage = messages.getClearSuccess()
+                .replace("%quest_id%", activeQuest.getQuestId())
+                .replace("%player%", player.getName());
+        actor.getSender().sendMessage(plugin.getColorProvider().colorize(successMessage));
     }
 
     @Subcommand("reset")
@@ -87,20 +97,23 @@ public class BetterDailyQuestCommand {
     @AutoComplete("@players @target_quests")
     public void onReset(BukkitCommandActor actor, @Named("target") Player target, String questID) {
         final QuestPlayer questPlayer = plugin.getDatabaseManager().getCachedQuestPlayer(target);
+        MessageConfiguration.CommandMessages messages = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages();
 
         if(questPlayer == null) {
-            actor.getSender().sendMessage(ChatColor.RED + "The player is not connected or is not loaded.");
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getPlayerNotLoaded()));
             return;
         }
 
         final ActiveQuest activeQuest = questPlayer.getActiveQuest(questID);
         if(activeQuest == null) {
-            actor.getSender().sendMessage(ChatColor.RED + "The target does not have this quest.");
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getQuestNotFound()));
             return;
         }
 
         if(activeQuest.getQuest() == null) {
-            actor.getSender().sendMessage(ChatColor.RED + "The quest is not available. (" + activeQuest.getQuestId() + ")");
+            String unavailableMessage = messages.getQuestUnavailable()
+                    .replace("%quest_id%", activeQuest.getQuestId());
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(unavailableMessage));
             return;
         }
 
@@ -111,11 +124,16 @@ public class BetterDailyQuestCommand {
         if(quest != null) {
             questPlayer.addActiveQuest(new ActiveQuest(target, quest));
         } else {
-            actor.getSender().sendMessage(ChatColor.RED + "The quest is not available. (" + activeQuest.getQuestId() + ")");
+            String unavailableMessage = messages.getQuestUnavailable()
+                    .replace("%quest_id%", activeQuest.getQuestId());
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(unavailableMessage));
             return;
         }
 
-        actor.getSender().sendMessage(ChatColor.GREEN + "The quest '" + quest.getQuestId() + "' has successfully been reset for the player '" + target.getName() + "'.");
+        String successMessage = messages.getResetSuccess()
+                .replace("%quest_id%", quest.getQuestId())
+                .replace("%player%", target.getName());
+        actor.getSender().sendMessage(plugin.getColorProvider().colorize(successMessage));
     }
 
     @Subcommand("reroll")
@@ -130,8 +148,9 @@ public class BetterDailyQuestCommand {
     @CommandPermission("betterdailyquest.command.reroll.others")
     @AutoComplete("@players @target_quests")
     public void onRerollOthers(BukkitCommandActor actor, Player player, String questID) {
+        MessageConfiguration.CommandMessages messages = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages();
         if (player == null) {
-            actor.getSender().sendMessage(ChatColor.RED + "You must specify a player for reroll-others.");
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getSpecifyPlayerForReroll()));
             return;
         }
 
@@ -140,34 +159,37 @@ public class BetterDailyQuestCommand {
 
     private void handleReroll(BukkitCommandActor actor, String questID, Player target, boolean isOthers) {
         final QuestPlayer questPlayer = plugin.getDatabaseManager().getCachedQuestPlayer(target);
+        MessageConfiguration.CommandMessages messages = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages();
 
         if (questPlayer == null) {
-            actor.getSender().sendMessage(ChatColor.RED + "The player is not connected or is not loaded.");
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getPlayerNotLoaded()));
             return;
         }
 
         final ActiveQuest activeQuest = questPlayer.getActiveQuest(questID);
         if (activeQuest == null) {
-            actor.getSender().sendMessage(ChatColor.RED + (isOthers ? "The target doesn't" : "You don't") + " have this quest.");
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getQuestNotFound()));
             return;
         }
 
         int currentRerollCount = activeQuest.getRerollCount();
 
         if (activeQuest.getQuest() == null) {
-            actor.getSender().sendMessage(ChatColor.RED + "The quest is not available. (" + activeQuest.getQuestId() + ")");
+            String unavailableMessage = messages.getQuestUnavailable()
+                    .replace("%quest_id%", activeQuest.getQuestId());
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(unavailableMessage));
             return;
         }
 
         final QuestGroup group = activeQuest.getQuest().getQuestGroup();
         if(group.getMaxRerolls() > 0 && currentRerollCount >= group.getMaxRerolls()) {
-            actor.getSender().sendMessage(ChatColor.RED + "You have reached the maximum rerolls for this quest group.");
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getMaxRerollsReached()));
             return;
         }
 
         final Quest newQuest = plugin.getQuestManager().getRandomQuest(questPlayer, activeQuest.getQuest().getQuestGroup());
         if (newQuest == null) {
-            actor.getSender().sendMessage(ChatColor.RED + "No quest available for reroll.");
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getNoQuestAvailable()));
             return;
         }
 
@@ -178,9 +200,14 @@ public class BetterDailyQuestCommand {
         questPlayer.addActiveQuest(newActiveQuest);
 
         if (isOthers) {
-            actor.getSender().sendMessage(ChatColor.GREEN + "The quest '" + activeQuest.getQuestId() + "' has successfully been rerolled for the player '" + target.getName() + "'.");
+            String successMessage = messages.getRerollSuccessOthers()
+                    .replace("%quest_id%", activeQuest.getQuestId())
+                    .replace("%player%", target.getName());
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(successMessage));
         } else {
-            actor.getSender().sendMessage(ChatColor.GREEN + "Your quest '" + activeQuest.getQuestId() + "' has been successfully rerolled.");
+            String successMessage = messages.getRerollSuccessSelf()
+                    .replace("%quest_id%", activeQuest.getQuestId());
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(successMessage));
         }
     }
 
@@ -189,26 +216,29 @@ public class BetterDailyQuestCommand {
     @AutoComplete("@players @target_quests")
     public void onComplete(BukkitCommandActor actor, @Named("target") Player target, String questID) {
         final QuestPlayer questPlayer = plugin.getDatabaseManager().getCachedQuestPlayer(target);
+        MessageConfiguration.CommandMessages messages = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages();
 
         if(questPlayer == null) {
-            actor.getSender().sendMessage(ChatColor.RED + "The player is not connected or is not loaded.");
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getPlayerNotLoaded()));
             return;
         }
 
         final ActiveQuest activeQuest = questPlayer.getActiveQuest(questID);
         if(activeQuest == null) {
-            actor.getSender().sendMessage(ChatColor.RED + "The target does not have this quest.");
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getQuestNotFound()));
             return;
         }
 
         if(activeQuest.isDone()) {
-            actor.getSender().sendMessage(ChatColor.RED + "The quest is already completed.");
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getQuestAlreadyCompleted()));
             return;
         }
 
         final Quest quest = activeQuest.getQuest();
         if(quest == null) {
-            actor.getSender().sendMessage(ChatColor.RED + "The quest is not available. (" + activeQuest.getQuestId() + ")");
+            String unavailableMessage = messages.getQuestUnavailable()
+                    .replace("%quest_id%", activeQuest.getQuestId());
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(unavailableMessage));
             return;
         }
 
@@ -224,6 +254,10 @@ public class BetterDailyQuestCommand {
                 Bukkit.getPluginManager().callEvent(new QuestDoneEvent(quest, activeQuest, target));
             }
         });
-        actor.getSender().sendMessage(ChatColor.GREEN + "The quest '" + activeQuest.getQuestId() + "' has successfully been completed for the player '" + target.getName() + "'.");
+
+        String successMessage = messages.getCompleteSuccess()
+                .replace("%quest_id%", activeQuest.getQuestId())
+                .replace("%player%", target.getName());
+        actor.getSender().sendMessage(plugin.getColorProvider().colorize(successMessage));
     }
 }
