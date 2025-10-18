@@ -110,6 +110,7 @@ public class ActiveQuest implements java.io.Serializable, DirtyAware {
 
     public void setStarted(boolean started) {
         this.started = started;
+        setDirty(true);
     }
 
     public boolean hasEnded() {
@@ -145,5 +146,6 @@ public class ActiveQuest implements java.io.Serializable, DirtyAware {
 
     public void setRerollCount(int rerollCount) {
         this.rerollCount = rerollCount;
+        setDirty(true);
     }
 }
