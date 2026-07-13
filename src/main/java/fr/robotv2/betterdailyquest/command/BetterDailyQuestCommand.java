@@ -101,6 +101,7 @@ public class BetterDailyQuestCommand {
     @CommandPermission("betterdailyquest.command.reset")
     @AutoComplete("@players @target_quests")
     public void onReset(BukkitCommandActor actor, @Named("target") Player target, String questID) {
+        // Backward-compatible command name: restarts the same quest assignment, not a reroll.
         final QuestPlayer questPlayer = plugin.getDatabaseManager().getCachedQuestPlayer(target);
         MessageConfiguration.CommandMessages messages = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages();
 
@@ -163,6 +164,7 @@ public class BetterDailyQuestCommand {
     }
 
     private void handleReroll(BukkitCommandActor actor, String questID, Player target, boolean isOthers) {
+        // Reroll replaces the active assignment with a different quest from the same group.
         final QuestPlayer questPlayer = plugin.getDatabaseManager().getCachedQuestPlayer(target);
         MessageConfiguration.CommandMessages messages = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages();
 
