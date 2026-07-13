@@ -28,7 +28,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.spigotmc:spigot-api:1.21.8-R0.1-SNAPSHOT")
 
-    zap 'com.github.cryptomorin:XSeries:13.5.1'
+    zap 'com.github.cryptomorin:XSeries:13.7.1'
     zap 'it.sauronsoftware.cron4j:cron4j:2.2.5'
     zap 'io.github.classgraph:classgraph:4.8.157'
     zap 'com.github.Revxrsal.Lamp:common:3.3.6'
