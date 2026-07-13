@@ -17,6 +17,13 @@ import java.util.OptionalInt;
 
 public class QuestGroup implements Cosmeticable {
 
+    private static final String OPTIONS_KEY = "options";
+    private static final String ASSIGNMENT_LIMITS_KEY = "assignment-limits";
+    private static final String GLOBAL_ASSIGNMENT_LIMIT_KEY = "global-assignment-limit";
+    private static final String AUTOMATIC_RESET_KEY = "automatic-reset";
+    private static final String COSMETICS_KEY = "cosmetics";
+    private static final String MAX_REROLLS_KEY = "max-rerolls";
+
     private final String groupId;
 
     private final QuestOption option;
@@ -25,9 +32,9 @@ public class QuestGroup implements Cosmeticable {
 
     private final CronJob cronJob;
 
-    private final int globalAssignation;
+    private final int globalAssignmentLimit;
 
-    private final Map<String, Integer> assignations;
+    private final Map<String, Integer> assignmentLimits;
 
     private final CosmeticMap cosmetics;
 
@@ -40,10 +47,10 @@ public class QuestGroup implements Cosmeticable {
     public QuestGroup(final String groupId, final ConfigurationSection section) {
         this.groupId = groupId;
 
-        this.option = new QuestOption(section.getConfigurationSection("options"));
-        this.globalAssignation = section.getInt("global-assignation");
+        this.option = new QuestOption(section.getConfigurationSection(OPTIONS_KEY));
+        this.globalAssignmentLimit = section.getInt(GLOBAL_ASSIGNMENT_LIMIT_KEY);
 
-        this.cronSyntax = section.getString("automatic-reset");
+        this.cronSyntax = section.getString(AUTOMATIC_RESET_KEY);
         if(this.cronSyntax != null) {
             this.cronJob = new CronJob(this.cronSyntax, () -> BetterDailyQuest.instance().getResetHandler().reset(this));
             this.cronJob.prepare();
@@ -52,16 +59,16 @@ public class QuestGroup implements Cosmeticable {
             this.cronJob = null;
         }
 
-        if(section.isConfigurationSection("assignations")) {
-            this.assignations = new HashMap<>();
-            final ConfigurationSection assignationSection = section.getConfigurationSection("assignations");
-            assignationSection.getKeys(false).forEach((key) -> this.assignations.put(key.toLowerCase(), assignationSection.getInt(key)));
+        final ConfigurationSection assignmentLimitsSection = section.getConfigurationSection(ASSIGNMENT_LIMITS_KEY);
+        if(assignmentLimitsSection != null) {
+            this.assignmentLimits = new HashMap<>();
+            assignmentLimitsSection.getKeys(false).forEach((key) -> this.assignmentLimits.put(key.toLowerCase(), assignmentLimitsSection.getInt(key)));
         } else {
-            this.assignations = Collections.emptyMap();
+            this.assignmentLimits = Collections.emptyMap();
         }
 
-        this.cosmetics = new CosmeticMap(section.getConfigurationSection("cosmetics"));
-        this.maxRerolls = section.getInt("max-rerolls", 0);
+        this.cosmetics = new CosmeticMap(section.getConfigurationSection(COSMETICS_KEY));
+        this.maxRerolls = section.getInt(MAX_REROLLS_KEY, 0);
     }
 
 
@@ -94,15 +101,15 @@ public class QuestGroup implements Cosmeticable {
     }
 
     public int getGlobalAssignation() {
-        return globalAssignation;
+        return globalAssignmentLimit;
     }
 
     public OptionalInt getRoleAssignation(String role) {
-        return assignations.containsKey(role.toLowerCase()) ? OptionalInt.of(assignations.get(role.toLowerCase())) : OptionalInt.empty();
+        return assignmentLimits.containsKey(role.toLowerCase()) ? OptionalInt.of(assignmentLimits.get(role.toLowerCase())) : OptionalInt.empty();
     }
 
     public @UnmodifiableView Map<String, Integer> getRoleAssignations() {
-        return Collections.unmodifiableMap(assignations);
+        return Collections.unmodifiableMap(assignmentLimits);
     }
 
     public int getMaxRerolls() {
