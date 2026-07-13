@@ -21,6 +21,9 @@ public class QuestResetHandler {
         this.plugin = plugin;
     }
 
+    /**
+     * Refreshes the group's quest pool by removing stored assignments and filling new ones when enabled.
+     */
     public void reset(QuestGroup group) {
 
         for (QuestPlayer questPlayer : plugin.getDatabaseManager().getCachedPlayers()) {
@@ -28,7 +31,7 @@ public class QuestResetHandler {
         }
 
         plugin.getDatabaseManager().removeQuests(group).thenRun(() -> {
-            plugin.getLogger().info("All stored quest in group " + group.getGroupId() + " have been successfully removed.");
+            plugin.getLogger().info("All stored quests in group " + group.getGroupId() + " have been removed for pool refresh.");
         }).exceptionally((throwable) -> {
             plugin.getLogger().log(Level.SEVERE, "An error occurred while deleting stored quests from storage.", throwable);
             return null;
@@ -59,7 +62,7 @@ public class QuestResetHandler {
     }
 
     /**
-     * Fill the player quest with all the missing quest in the reset service
+     * Fills missing assignments after a pool refresh or manual fill.
      * @return the number of quest added
      */
     public int fillPlayer(QuestPlayer questPlayer, QuestGroup group, boolean force) {

@@ -41,12 +41,12 @@ public class MessageConfiguration {
             this.questUnavailable = getStringOrDefault(section, "quest_unavailable", "&cThe quest is not available. (%quest_id%)");
             this.questAlreadyCompleted = getStringOrDefault(section, "quest_already_completed", "&cThe quest is already completed.");
             this.maxRerollsReached = getStringOrDefault(section, "max_rerolls_reached", "&cYou have reached the maximum rerolls for this quest group.");
-            this.noQuestAvailable = getStringOrDefault(section, "no_quest_available", "&cNo quest available for reroll.");
+            this.noQuestAvailable = getStringOrDefault(section, "no_quest_available", "&cNo replacement quest is available for reroll.");
             this.specifyPlayerForReroll = getStringOrDefault(section, "specify_player_for_reroll", "&cYou must specify a player for reroll-others.");
 
             this.giveSuccess = getStringOrDefault(section, "give_success", "&aThe quest '%quest_id%' has successfully been given to the player '%player%'.");
             this.clearSuccess = getStringOrDefault(section, "clear_success", "&aThe quest '%quest_id%' has successfully been cleared for the player '%player%'.");
-            this.resetSuccess = getStringOrDefault(section, "reset_success", "&aThe quest '%quest_id%' has successfully been reset for the player '%player%'.");
+            this.resetSuccess = getStringOrDefault(section, "reset_success", "&aThe quest assignment '%quest_id%' has successfully been restarted for the player '%player%'.");
             this.rerollSuccessOthers = getStringOrDefault(section, "reroll_success_others", "&aThe quest '%quest_id%' has successfully been rerolled for the player '%player%'.");
             this.rerollSuccessSelf = getStringOrDefault(section, "reroll_success_self", "&aYour quest '%quest_id%' has been successfully rerolled.");
             this.completeSuccess = getStringOrDefault(section, "complete_success", "&aThe quest '%quest_id%' has successfully been completed for the player '%player%'.");

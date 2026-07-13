@@ -51,7 +51,7 @@ messages:
     quest_unavailable: "&cThe quest is not available. (%quest_id%)"
     quest_already_completed: "&cThe quest is already completed."
     max_rerolls_reached: "&cYou have reached the maximum rerolls for this quest group."
-    no_quest_available: "&cNo quest available for reroll."
+    no_quest_available: "&cNo replacement quest is available for reroll."
     specify_player_for_reroll: "&cYou must specify a player for reroll-others."
 
     # Give command
@@ -60,10 +60,10 @@ messages:
     # Clear command
     clear_success: "&aThe quest '%quest_id%' has successfully been cleared for the player '%player%'."
 
-    # Reset command
-    reset_success: "&aThe quest '%quest_id%' has successfully been reset for the player '%player%'."
+    # Reset command (same-quest assignment restart)
+    reset_success: "&aThe quest assignment '%quest_id%' has successfully been restarted for the player '%player%'."
 
-    # Reroll commands
+    # Reroll commands (different-quest replacement)
     reroll_success_others: "&aThe quest '%quest_id%' has successfully been rerolled for the player '%player%'."
     reroll_success_self: "&aYour quest '%quest_id%' has been successfully rerolled."
 
