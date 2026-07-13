@@ -35,11 +35,16 @@ public abstract class QuestProgressionEnhancer implements Listener {
         }
 
         for (ActiveQuest activeQuest : questPlayer.getActiveQuests()) {
-            updateQuestProgressFor(activeQuest, context);
+            updateQuestProgressFor(questPlayer, activeQuest, context);
         }
     }
 
     public void updateQuestProgressFor(ActiveQuest activeQuest, RunningQuestContext<?, ?> context) {
+        final QuestPlayer questPlayer = plugin.getDatabaseManager().getCachedQuestPlayer(activeQuest.getOwner());
+        updateQuestProgressFor(questPlayer, activeQuest, context);
+    }
+
+    private void updateQuestProgressFor(QuestPlayer questPlayer, ActiveQuest activeQuest, RunningQuestContext<?, ?> context) {
         if(activeQuest.getStatus() != QuestStatus.STARTED) {
             return; // quest is not started or is already done, no need to update progress
         }
@@ -117,6 +122,9 @@ public abstract class QuestProgressionEnhancer implements Listener {
                 Bukkit.getPluginManager().callEvent(new TaskDoneEvent(context.getInitiator(), quest, task, activeTask));
 
                 if(activeQuest.isDone()) {
+                    if(questPlayer != null) {
+                        questPlayer.recordQuestCompletion(activeQuest.getQuestId());
+                    }
                     Bukkit.getPluginManager().callEvent(new QuestDoneEvent(quest, activeQuest, context.getInitiator()));
                 }
             }

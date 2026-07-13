@@ -65,7 +65,7 @@ public class QuestManager {
         final List<Quest> quests = new ArrayList<>(this.getQuests(group));
 
         // remove all quest that the player has already done and are not repeatable
-        quests.removeIf((quest) -> player.getQuestDone().containsKey(quest.getQuestId()) && !quest.getOptionValue(Optionnable.Option.REPEATABLE));
+        quests.removeIf((quest) -> player.hasCompletedQuest(quest.getQuestId()) && !quest.getOptionValue(Optionnable.Option.REPEATABLE));
         // do not check if the player already has this quest
         quests.removeIf(player::hasQuest);
 

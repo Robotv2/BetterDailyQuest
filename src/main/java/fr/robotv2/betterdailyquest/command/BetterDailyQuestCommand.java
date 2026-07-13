@@ -58,6 +58,11 @@ public class BetterDailyQuestCommand {
             return;
         }
 
+        if(!questPlayer.canReceiveQuest(quest)) {
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getQuestAlreadyCompleted()));
+            return;
+        }
+
         questPlayer.addActiveQuest(new ActiveQuest(target, quest));
         String successMessage = messages.getGiveSuccess()
                 .replace("%quest_id%", quest.getQuestId())
@@ -251,6 +256,7 @@ public class BetterDailyQuestCommand {
             Bukkit.getPluginManager().callEvent(new TaskDoneEvent(target, quest, quest.getTask(task.getTaskId()), task));
 
             if(activeQuest.isDone()) {
+                questPlayer.recordQuestCompletion(activeQuest.getQuestId());
                 Bukkit.getPluginManager().callEvent(new QuestDoneEvent(quest, activeQuest, target));
             }
         });
