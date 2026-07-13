@@ -45,7 +45,7 @@ public class QuestResetHandler {
 
     public int getPlayerLimit(QuestPlayer questPlayer, QuestGroup group) {
         final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(questPlayer.getId());
-        return getRoleLimit(GroupUtil.getPlayerPrimaryGroup(offlinePlayer), group, 0);
+        return getRoleLimit(GroupUtil.getPlayerPrimaryGroup(offlinePlayer), group, group.getGlobalAssignation());
     }
 
     public int fillPlayer(QuestPlayer questPlayer, boolean force) {

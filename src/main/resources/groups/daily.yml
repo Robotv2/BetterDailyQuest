@@ -1,12 +1,12 @@
 options:
   repeatable: false
-  dependant-tasks: false
+  sequential-tasks: false
   need-starting: false
   automatically-given: true
 
 automatic-reset: "0 0 * * *"
 
-assignations:
+assignment-limits:
   default: 5
   vip: 10
 
