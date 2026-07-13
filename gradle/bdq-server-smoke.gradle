@@ -1,0 +1,258 @@
+import groovy.json.JsonSlurper
+
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import java.security.MessageDigest
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
+
+def paperProjectUrl = 'https://fill.papermc.io/v3/projects/paper'
+def smokeUserAgent = 'BDQ-server-smoke/1.0 (https://github.com/Robotv2/BetterDailyQuest)'
+def startupTimeoutSeconds = providers.gradleProperty('bdqServerStartupTimeoutSeconds').getOrElse('300').toInteger()
+def javaToolchains = extensions.getByType(JavaToolchainService)
+def localAnchorBuild = gradle.includedBuilds.find { it.name == 'Anchor' }
+def localAnchorPublications = localAnchorBuild == null ? [] : [
+        localAnchorBuild.task(':Anchor-api:publishToMavenLocal'),
+        localAnchorBuild.task(':Anchor-sql:publishToMavenLocal'),
+        localAnchorBuild.task(':Anchor-json:publishToMavenLocal'),
+        localAnchorBuild.task(':Anchor-bukkit:publishToMavenLocal'),
+        localAnchorBuild.task(':Anchor-mariadb:publishToMavenLocal'),
+        localAnchorBuild.task(':Anchor-sqlite:publishToMavenLocal')
+]
+
+def readJson = { String url ->
+    def connection = new URI(url).toURL().openConnection()
+    connection.setRequestProperty('User-Agent', smokeUserAgent)
+    connection.connectTimeout = 30_000
+    connection.readTimeout = 30_000
+    connection.inputStream.withCloseable { stream ->
+        new JsonSlurper().parse(stream)
+    }
+}
+
+def stablePaperBuild = { String minecraftVersion ->
+    def builds = readJson("${paperProjectUrl}/versions/${minecraftVersion}/builds")
+    def stable = builds.find { it.channel == 'STABLE' }
+    if (stable == null) {
+        throw new GradleException("Paper has no stable server build for Minecraft ${minecraftVersion}.")
+    }
+    [version: minecraftVersion, build: stable]
+}
+
+def latestStablePaperBuild = {
+    def projectMetadata = readJson(paperProjectUrl)
+    def versions = projectMetadata.versions.values().flatten()
+    for (def minecraftVersion : versions) {
+        def builds = readJson("${paperProjectUrl}/versions/${minecraftVersion}/builds")
+        def stable = builds.find { it.channel == 'STABLE' }
+        if (stable != null) {
+            return [version: minecraftVersion, build: stable]
+        }
+    }
+    throw new GradleException('Paper has no stable server build available.')
+}
+
+def sha256 = { File file ->
+    def digest = MessageDigest.getInstance('SHA-256')
+    file.withInputStream { stream ->
+        byte[] buffer = new byte[8192]
+        int read
+        while ((read = stream.read(buffer)) != -1) {
+            digest.update(buffer, 0, read)
+        }
+    }
+    digest.digest().encodeHex().toString()
+}
+
+def downloadServer = { Map target ->
+    def download = target.build.downloads['server:default']
+    if (download == null) {
+        throw new GradleException("Paper build ${target.build.id} for ${target.version} has no server download.")
+    }
+
+    def cacheDirectory = layout.buildDirectory.dir('bdq-server-smoke/cache').get().asFile
+    cacheDirectory.mkdirs()
+    def serverJar = new File(cacheDirectory, download.name as String)
+    def expectedSha256 = download.checksums.sha256 as String
+
+    if (!serverJar.isFile() || sha256(serverJar) != expectedSha256) {
+        logger.lifecycle("Downloading Paper ${target.version} build ${target.build.id}...")
+        def connection = new URI(download.url as String).toURL().openConnection()
+        connection.setRequestProperty('User-Agent', smokeUserAgent)
+        connection.connectTimeout = 30_000
+        connection.readTimeout = 120_000
+        connection.inputStream.withCloseable { stream ->
+            Files.copy(stream, serverJar.toPath(), StandardCopyOption.REPLACE_EXISTING)
+        }
+        if (sha256(serverJar) != expectedSha256) {
+            serverJar.delete()
+            throw new GradleException("Checksum verification failed for ${download.name}.")
+        }
+    }
+    serverJar
+}
+
+def requiredJavaVersion = { String minecraftVersion ->
+    if (minecraftVersion.startsWith('26.')) {
+        return 25
+    }
+    if (minecraftVersion.startsWith('1.20') || minecraftVersion.startsWith('1.21')) {
+        return 21
+    }
+    17
+}
+
+def runServerSmokeTest = { Map target, String label ->
+    def minecraftVersion = target.version as String
+    def javaVersion = requiredJavaVersion(minecraftVersion)
+    def javaExecutable = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(javaVersion)
+    }.get().executablePath.asFile
+    def serverJar = downloadServer(target)
+    def pluginJar = tasks.named('shadowJar').get().archiveFile.get().asFile
+    def runDirectory = layout.buildDirectory.dir("bdq-server-smoke/run/${label}").get().asFile
+
+    delete(runDirectory)
+    def pluginsDirectory = new File(runDirectory, 'plugins')
+    pluginsDirectory.mkdirs()
+    Files.copy(pluginJar.toPath(), new File(pluginsDirectory, pluginJar.name).toPath(), StandardCopyOption.REPLACE_EXISTING)
+    new File(runDirectory, 'eula.txt').setText('eula=true\n', StandardCharsets.UTF_8.name())
+    new File(runDirectory, 'server.properties').setText(
+            'online-mode=false\nserver-port=0\ngenerate-structures=false\nlevel-type=FLAT\n',
+            StandardCharsets.UTF_8.name()
+    )
+
+    def command = [
+            javaExecutable.absolutePath,
+            '-DPaper.IgnoreJavaVersion=true',
+            '-Xms512M',
+            '-Xmx1G',
+            '-jar',
+            serverJar.absolutePath
+    ]
+    if (minecraftVersion == '1.8.8') {
+        command.addAll(1, [
+                '--add-opens=java.base/java.lang=ALL-UNNAMED',
+                '--add-opens=java.base/java.util=ALL-UNNAMED',
+                '--add-opens=java.base/java.io=ALL-UNNAMED'
+        ])
+        command.add('--nojline')
+    } else {
+        command.add('--nogui')
+    }
+
+    logger.lifecycle("Starting Paper ${minecraftVersion} with Java ${javaVersion}...")
+    def process = new ProcessBuilder(command)
+            .directory(runDirectory)
+            .redirectErrorStream(true)
+            .start()
+    def enabled = new AtomicBoolean(false)
+    def ready = new AtomicBoolean(false)
+    def failures = new CopyOnWriteArrayList<String>()
+    def output = new StringBuilder()
+    def readerThread = Thread.start("bdq-smoke-${label}") {
+        process.inputStream.withReader(StandardCharsets.UTF_8.name()) { reader ->
+            reader.eachLine { line ->
+                logger.lifecycle("[${minecraftVersion}] ${line}")
+                synchronized (output) {
+                    output.append(line).append(System.lineSeparator())
+                }
+                if (line =~ /\[BetterDailyQuest\] Enabling BetterDailyQuest/) {
+                    enabled.set(true)
+                }
+                if (line =~ /Done \(.*\)! For help, type/) {
+                    ready.set(true)
+                }
+                if (line =~ /(?i)(Error occurred while enabling BetterDailyQuest|Could not load.*BetterDailyQuest|InvalidPluginException|UnsupportedClassVersionError)/) {
+                    failures.add(line)
+                }
+            }
+        }
+    }
+
+    def deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(startupTimeoutSeconds)
+    while (process.isAlive() && System.nanoTime() < deadline && !ready.get() && failures.isEmpty()) {
+        Thread.sleep(250)
+    }
+
+    if (process.isAlive()) {
+        if (ready.get() && enabled.get() && failures.isEmpty()) {
+            process.outputStream.withWriter(StandardCharsets.UTF_8.name()) { writer ->
+                writer.write('stop\n')
+                writer.flush()
+            }
+            process.waitFor(30, TimeUnit.SECONDS)
+        } else {
+            process.destroy()
+            process.waitFor(10, TimeUnit.SECONDS)
+        }
+    }
+    if (process.isAlive()) {
+        process.destroyForcibly()
+    }
+    readerThread.join(10_000)
+
+    def reportDirectory = layout.buildDirectory.dir('reports/bdq-server-smoke').get().asFile
+    reportDirectory.mkdirs()
+    def logFile = new File(reportDirectory, "${label}.log")
+    synchronized (output) {
+        logFile.setText(output.toString(), StandardCharsets.UTF_8.name())
+    }
+
+    if (!enabled.get() || !ready.get() || !failures.isEmpty()) {
+        throw new GradleException(
+                "BDQ failed its Paper ${minecraftVersion} smoke test. " +
+                        "enabled=${enabled.get()}, ready=${ready.get()}, failures=${failures.size()}. " +
+                        "See ${logFile}."
+        )
+    }
+    logger.lifecycle("BDQ enabled without detected errors on Paper ${minecraftVersion}. Log: ${logFile}")
+}
+
+def smokeTest18 = tasks.register('smokeTestBdqOnMinecraft18') {
+    group = 'verification'
+    description = 'Starts Paper 1.8.8 and verifies that BDQ enables without errors.'
+    dependsOn tasks.named('shadowJar')
+    dependsOn localAnchorPublications
+    doLast {
+        runServerSmokeTest(stablePaperBuild('1.8.8'), '1.8.8')
+    }
+}
+
+def smokeTestLatest = tasks.register('smokeTestBdqOnLatestMinecraft') {
+    group = 'verification'
+    description = 'Starts the newest stable Paper server and verifies that BDQ enables without errors.'
+    dependsOn tasks.named('shadowJar')
+    dependsOn localAnchorPublications
+    mustRunAfter smokeTest18
+    doLast {
+        runServerSmokeTest(latestStablePaperBuild(), 'latest')
+    }
+}
+
+tasks.register('smokeTestBdqServers') {
+    group = 'verification'
+    description = 'Verifies that BDQ enables without errors on Paper 1.8.8 and the newest stable Paper server.'
+    dependsOn tasks.named('shadowJar')
+    dependsOn localAnchorPublications
+    doLast {
+        def failures = []
+        def targets = [
+                [target: stablePaperBuild('1.8.8'), label: '1.8.8'],
+                [target: latestStablePaperBuild(), label: 'latest']
+        ]
+        targets.each { entry ->
+            try {
+                runServerSmokeTest(entry.target as Map, entry.label as String)
+            } catch (GradleException failure) {
+                failures.add(failure.message)
+                logger.error(failure.message)
+            }
+        }
+        if (!failures.isEmpty()) {
+            throw new GradleException("BDQ failed ${failures.size()} server smoke test(s):\n- ${failures.join('\n- ')}")
+        }
+    }
+}

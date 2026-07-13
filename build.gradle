@@ -99,3 +99,5 @@ publishing {
         }
     }
 }
+
+apply from: "$rootDir/gradle/bdq-server-smoke.gradle"
