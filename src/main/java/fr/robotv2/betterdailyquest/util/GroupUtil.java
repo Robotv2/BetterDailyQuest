@@ -15,6 +15,10 @@ public class GroupUtil {
             return true;
         }
 
+        if(!plugin.getServer().getPluginManager().isPluginEnabled("Vault")) {
+            return false;
+        }
+
         final RegisteredServiceProvider<Permission> rsp = plugin.getServer().getServicesManager().getRegistration(Permission.class);
 
         if(rsp == null) {

@@ -123,9 +123,9 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
         }
 
         // load placeholderapi
-        final PlaceholderAnnotationProcessor processor = PlaceholderAnnotationProcessor.defaultProcessor();
-        final BetterDailyQuestClipPlaceholder expansion = new BetterDailyQuestClipPlaceholder(this, processor);
         if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            final PlaceholderAnnotationProcessor processor = PlaceholderAnnotationProcessor.defaultProcessor();
+            final BetterDailyQuestClipPlaceholder expansion = new BetterDailyQuestClipPlaceholder(this, processor);
             expansion.register();
         }
     }
