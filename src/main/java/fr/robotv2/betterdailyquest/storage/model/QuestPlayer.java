@@ -2,6 +2,7 @@ package fr.robotv2.betterdailyquest.storage.model;
 
 import fr.robotv2.betterdailyquest.group.QuestGroup;
 import fr.robotv2.betterdailyquest.quest.Quest;
+import fr.robotv2.betterdailyquest.quest.options.Optionnable;
 import fr.robotv2.betterdailyquest.storage.DirtyAware;
 import fr.robotv2.betterdailyquest.storage.dto.QuestPlayerDto;
 import org.bukkit.Bukkit;
@@ -123,8 +124,23 @@ public class QuestPlayer implements java.io.Serializable, DirtyAware {
                         && Objects.equals(quest.getQuestGroup().getGroupId(), other.getGroupId()));
     }
 
+    @UnmodifiableView
     public Map<String, Integer> getQuestDone() {
-        return questDone;
+        return Collections.unmodifiableMap(questDone);
+    }
+
+    public boolean hasCompletedQuest(String questId) {
+        return questDone.containsKey(questId);
+    }
+
+    public boolean canReceiveQuest(Quest quest) {
+        return !hasQuest(quest)
+                && (quest.getOptionValue(Optionnable.Option.REPEATABLE) || !hasCompletedQuest(quest.getQuestId()));
+    }
+
+    public void recordQuestCompletion(String questId) {
+        questDone.merge(questId, 1, Integer::sum);
+        setDirty(true);
     }
 
     @Override
