@@ -23,11 +23,13 @@ public class QuestManager {
     private final BetterDailyQuest plugin;
     private final File questFolder;
     private final Table<String, String, Quest> quests;
+    private final Map<String, String> questGroupsByQuestId;
 
     public QuestManager(BetterDailyQuest plugin, File questFolder) {
         this.plugin = plugin;
         this.questFolder = questFolder;
         this.quests = HashBasedTable.create();
+        this.questGroupsByQuestId = new HashMap<>();
     }
 
     public Quest fromId(@NotNull String id, @NotNull String groupId) {
@@ -36,6 +38,7 @@ public class QuestManager {
 
     public void clearQuests() {
         quests.clear();
+        questGroupsByQuestId.clear();
     }
 
     @UnmodifiableView
@@ -123,6 +126,17 @@ public class QuestManager {
     private void loadQuest(String questId, @NotNull ConfigurationSection section) {
         try {
             final Quest quest = new Quest(plugin, questId, section);
+            final String groupId = quest.getQuestGroup().getGroupId();
+            final String existingGroup = registerQuestId(quest.getQuestId(), groupId);
+            if(existingGroup != null) {
+                plugin.getLogger().warning(" ");
+                plugin.getLogger().warning(" WARNING - " + questId);
+                plugin.getLogger().warning("Duplicate quest id '" + quest.getQuestId() + "' found in group '" + groupId + "'.");
+                plugin.getLogger().warning("Quest ids must be globally unique. This quest id is already registered in group '" + existingGroup + "'.");
+                plugin.getLogger().warning("This duplicate quest will not be loaded.");
+                plugin.getLogger().warning(" ");
+                return;
+            }
             quests.put(quest.getQuestId(), quest.getQuestGroup().getGroupId(), quest);
             this.plugin.getLogger().info(questId + " has been loaded successfully.");
         } catch (Exception exception) {
@@ -139,5 +153,10 @@ public class QuestManager {
 
     private void setupDefaultQuests() {
         plugin.saveResource("quests" + File.separator + "daily-quests.yml", false);
+    }
+
+    @Nullable
+    String registerQuestId(String questId, String groupId) {
+        return questGroupsByQuestId.putIfAbsent(questId.toLowerCase(Locale.ROOT), groupId);
     }
 }
