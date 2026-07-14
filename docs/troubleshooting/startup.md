@@ -2,7 +2,7 @@
 
 ## 1. Confirm the JAR
 
-- Use the JAR attached to a tagged [GitHub Release](https://github.com/Robotv2/BetterDailyQuest/releases/latest).
+- Use the JAR attached to [BetterDailyQuest 0.0.1 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1).
 - Keep exactly one BetterDailyQuest JAR in `plugins/`.
 - Do not rename unrelated JARs to look like BetterDailyQuest.
 

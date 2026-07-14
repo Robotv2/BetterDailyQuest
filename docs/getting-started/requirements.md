@@ -9,7 +9,7 @@ Know whether your server and optional integrations are ready before installing B
 - A Bukkit-compatible server distribution capable of loading the release JAR.
 - The Java version required by that server distribution.
 - File access to the server's `plugins` directory.
-- A tagged BetterDailyQuest JAR from [GitHub Releases](https://github.com/Robotv2/BetterDailyQuest/releases/latest).
+- The tagged JAR from [BetterDailyQuest 0.0.1 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1).
 
 BetterDailyQuest shades its required runtime libraries into the release JAR. Do not install Anchor separately unless a release note explicitly instructs you to.
 
