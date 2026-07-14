@@ -1,5 +1,5 @@
 name: BetterDailyQuest
-version: '1.0-SNAPSHOT'
+version: '${version}'
 main: fr.robotv2.betterdailyquest.BetterDailyQuest
 api-version: "1.13"
 softdepend:

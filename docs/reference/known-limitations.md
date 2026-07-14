@@ -1,5 +1,9 @@
 # Known limitations
 
+## 0.0.1 is a beta release
+
+Version 0.0.1 is the first public beta. Startup and canonical configuration loading are automated, but the complete player gameplay path, optional integrations, and MariaDB deployment have not all been release-verified. Back up production data and test the release on a private server first.
+
 ## No built-in quest browser
 
 Core BetterDailyQuest has no player menu or command that lists assignments. Use progress cosmetics and a separately verified presentation layer. [Learn more](../integrations/presentation.md).

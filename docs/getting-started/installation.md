@@ -7,7 +7,7 @@
 ## Install
 
 1. Stop the server cleanly.
-2. Download the JAR attached to the [latest GitHub Release](https://github.com/Robotv2/BetterDailyQuest/releases/latest).
+2. Download the JAR attached to [BetterDailyQuest 0.0.1 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1).
 3. Place the JAR directly inside the server's `plugins` directory.
 4. Start the server.
 5. Wait until the console reports that the server is ready.

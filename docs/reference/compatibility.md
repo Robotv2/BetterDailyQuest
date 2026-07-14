@@ -2,12 +2,12 @@
 
 Compatibility claims distinguish startup from gameplay verification.
 
-## Current development evidence
+## 0.0.1 Beta evidence
 
 | Server | Java used by smoke check | Evidence date | Startup | Golden-path gameplay |
 | --- | --- | --- | --- | --- |
-| Paper 1.8.8 | Java 17 | 2026-07-13 | Verified: plugin enabled and server reached ready state | Not yet verified on a tagged release |
-| Paper 26.1.2 build 74 | Java 25 | 2026-07-13 | Verified: plugin enabled and server reached ready state | Not yet verified on a tagged release |
+| Paper 1.8.8 | Java 17 | 2026-07-14 | Verified: plugin enabled, Stonebreaker loaded, and server reached ready state | Not yet verified with a player |
+| Paper 26.1.2 build 74 | Java 25 | 2026-07-14 | Verified: plugin enabled, Stonebreaker loaded, and server reached ready state | Not yet verified with a player |
 
 The plugin bytecode targets Java 17. The server may require a newer Java runtime, as current Paper does.
 

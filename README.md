@@ -2,6 +2,8 @@
 
 BetterDailyQuest is a Minecraft server plugin for defining reusable quest groups, assigning quests to players, tracking task progress, and issuing configurable rewards.
 
+The current public version is [0.0.1 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1).
+
 ## Administrator guide
 
 The public guide is published at **<https://robotv2.github.io/BetterDailyQuest/>** and follows the latest tagged GitHub release.
@@ -10,7 +12,7 @@ The public guide is published at **<https://robotv2.github.io/BetterDailyQuest/>
 - [Create a first quest](https://robotv2.github.io/BetterDailyQuest/getting-started/first-quest/)
 - [Browse the configuration reference](https://robotv2.github.io/BetterDailyQuest/reference/)
 - [Troubleshoot a server](https://robotv2.github.io/BetterDailyQuest/troubleshooting/)
-- [Download a release](https://github.com/Robotv2/BetterDailyQuest/releases/latest)
+- [Download 0.0.1 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1)
 
 The repository may contain documentation for the next release before it is public. GitHub Pages is deployed only from a published release tag so the live guide and downloadable JAR remain aligned.
 
