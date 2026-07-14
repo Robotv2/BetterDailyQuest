@@ -1,0 +1,9 @@
+options:
+  repeatable: false
+  sequential-tasks: false
+  need-starting: false
+  automatically-given: false
+
+automatic-reset: "0 0 * * *"
+global-assignment-limit: 1
+max-rerolls: 0
