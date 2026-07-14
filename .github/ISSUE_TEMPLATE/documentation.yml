@@ -1,0 +1,31 @@
+name: Documentation problem
+description: Report an unclear, missing, or incorrect administrator-guide page.
+title: "[Docs]: "
+labels:
+  - documentation
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Guide page
+      description: Paste the page URL where you found the problem.
+      placeholder: https://robotv2.github.io/BetterDailyQuest/...
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong or unclear?
+      description: Explain what you tried, what the guide said, and what happened.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement
+      description: Optional wording, example, or missing step that would have helped.
+  - type: input
+    id: version
+    attributes:
+      label: BetterDailyQuest version
+      placeholder: Release tag or JAR version

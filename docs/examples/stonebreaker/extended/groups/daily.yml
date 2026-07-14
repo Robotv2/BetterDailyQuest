@@ -1,0 +1,24 @@
+options:
+  repeatable: false
+  sequential-tasks: true
+  need-starting: false
+  automatically-given: true
+
+automatic-reset: "0 0 * * *"
+global-assignment-limit: 1
+assignment-limits:
+  default: 1
+  vip: 2
+max-rerolls: 2
+
+cosmetics:
+  task_done:
+    titles:
+      enabled: true
+      title: "&aTask complete"
+      subtitle: "&e%quest_name%"
+  quest_done:
+    titles:
+      enabled: true
+      title: "&6Quest complete"
+      subtitle: "&e%quest_name%"

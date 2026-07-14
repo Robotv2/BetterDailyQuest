@@ -1,0 +1,15 @@
+quests:
+  stonebreaker:
+    name: "&e&lStonebreaker"
+    group: "daily"
+    rewards:
+      - "[message] &6Stonebreaker complete!"
+    tasks:
+      1:
+        task_type: "BREAK"
+        required_amount: 10
+        required_targets:
+          - STONE
+          - COBBLESTONE
+        task_rewards:
+          - "[message] &aTask complete: 10 blocks broken."
