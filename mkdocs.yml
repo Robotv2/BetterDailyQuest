@@ -1,0 +1,149 @@
+site_name: BetterDailyQuest Administrator Guide
+site_description: Plain-language installation, quest creation, and operations guide for BetterDailyQuest server administrators.
+site_url: https://robotv2.github.io/BetterDailyQuest/
+site_dir: build/docs-site
+repo_url: https://github.com/Robotv2/BetterDailyQuest
+repo_name: Robotv2/BetterDailyQuest
+edit_uri: edit/master/docs/
+copyright: BetterDailyQuest documentation
+
+theme:
+  name: material
+  language: en
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - content.action.edit
+    - content.code.copy
+    - content.code.select
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.path
+    - navigation.sections
+    - navigation.tabs
+    - navigation.top
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+
+plugins:
+  - search
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path:
+        - .
+        - docs
+      check_paths: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/feedback.js
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Robotv2/BetterDailyQuest
+      name: BetterDailyQuest on GitHub
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - getting-started/index.md
+      - Requirements and compatibility: getting-started/requirements.md
+      - Install and verify startup: getting-started/installation.md
+      - First quest in 15 minutes:
+          - getting-started/first-quest/index.md
+          - Create the quest group: getting-started/first-quest/create-pool.md
+          - Create Stonebreaker: getting-started/first-quest/create-quest.md
+          - Assign and verify: getting-started/first-quest/verify.md
+      - Plugin files: getting-started/plugin-files.md
+      - Update safely: getting-started/updating.md
+  - Core Concepts:
+      - concepts/index.md
+      - Quest groups, quests, and tasks: concepts/content-model.md
+      - Assignment lifecycle: concepts/assignment-lifecycle.md
+      - Refresh, restart, and reroll: concepts/replacement-actions.md
+      - Assignment limits and history: concepts/assignment-limits.md
+      - Options and inheritance: concepts/options-inheritance.md
+  - Creating Quests:
+      - creating-quests/index.md
+      - Organize files: creating-quests/file-organization.md
+      - Tasks and targets: creating-quests/tasks-targets.md
+      - Sequential tasks: creating-quests/sequential-tasks.md
+      - Progress conditions: creating-quests/progress-conditions.md
+      - Rewards and actions: creating-quests/rewards-actions.md
+      - Messages and cosmetics: creating-quests/messages-cosmetics.md
+      - Test changes safely: creating-quests/testing-changes.md
+  - Integrations:
+      - integrations/index.md
+      - PlaceholderAPI: integrations/placeholderapi.md
+      - Present quests to players: integrations/presentation.md
+      - Vault player roles: integrations/vault.md
+      - Addons: integrations/addons.md
+  - Administration:
+      - administration/index.md
+      - Storage and backups: administration/storage-backups.md
+      - Commands and permissions: administration/commands-permissions.md
+      - Scheduled quest group refreshes: administration/schedules.md
+      - Rerolls and assignment limits: administration/rerolls-limits.md
+      - Reloads and restarts: administration/reloads-restarts.md
+      - Debug logs: administration/debugging.md
+  - Reference:
+      - reference/index.md
+      - Verification matrix: reference/verification-matrix.md
+      - config.yml: reference/config.md
+      - Quest group schema: reference/pool-schema.md
+      - Quest and task schema: reference/quest-schema.md
+      - Task types and targets: reference/task-types.md
+      - Progress conditions: reference/conditions.md
+      - Reward actions: reference/actions.md
+      - Placeholders: reference/placeholders.md
+      - Commands and permissions: reference/commands-permissions.md
+      - Compatibility: reference/compatibility.md
+      - Known limitations: reference/known-limitations.md
+  - Troubleshooting:
+      - troubleshooting/index.md
+      - Startup failures: troubleshooting/startup.md
+      - Quest group or quest will not load: troubleshooting/content-loading.md
+      - Assignment problems: troubleshooting/assignments.md
+      - Progress does not count: troubleshooting/progress.md
+      - Rewards do not run: troubleshooting/rewards.md
+      - Refresh and reroll problems: troubleshooting/refresh-reroll.md
+      - Storage and integration problems: troubleshooting/storage-integrations.md
+      - Ask for help: troubleshooting/support-report.md

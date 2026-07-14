@@ -118,6 +118,21 @@ def runServerSmokeTest = { Map target, String label ->
     def pluginsDirectory = new File(runDirectory, 'plugins')
     pluginsDirectory.mkdirs()
     Files.copy(pluginJar.toPath(), new File(pluginsDirectory, pluginJar.name).toPath(), StandardCopyOption.REPLACE_EXISTING)
+    def pluginDataDirectory = new File(pluginsDirectory, 'BetterDailyQuest')
+    def groupDirectory = new File(pluginDataDirectory, 'groups')
+    def questDirectory = new File(pluginDataDirectory, 'quests')
+    groupDirectory.mkdirs()
+    questDirectory.mkdirs()
+    Files.copy(
+            file('docs/examples/stonebreaker/groups/daily.yml').toPath(),
+            new File(groupDirectory, 'daily.yml').toPath(),
+            StandardCopyOption.REPLACE_EXISTING
+    )
+    Files.copy(
+            file('docs/examples/stonebreaker/quests/stonebreaker.yml').toPath(),
+            new File(questDirectory, 'stonebreaker.yml').toPath(),
+            StandardCopyOption.REPLACE_EXISTING
+    )
     new File(runDirectory, 'eula.txt').setText('eula=true\n', StandardCharsets.UTF_8.name())
     new File(runDirectory, 'server.properties').setText(
             'online-mode=false\nserver-port=0\ngenerate-structures=false\nlevel-type=FLAT\n',
@@ -149,6 +164,7 @@ def runServerSmokeTest = { Map target, String label ->
             .redirectErrorStream(true)
             .start()
     def enabled = new AtomicBoolean(false)
+    def canonicalQuestLoaded = new AtomicBoolean(false)
     def ready = new AtomicBoolean(false)
     def failures = new CopyOnWriteArrayList<String>()
     def output = new StringBuilder()
@@ -161,6 +177,9 @@ def runServerSmokeTest = { Map target, String label ->
                 }
                 if (line =~ /\[BetterDailyQuest\] Enabling BetterDailyQuest/) {
                     enabled.set(true)
+                }
+                if (line =~ /\[BetterDailyQuest\] stonebreaker has been loaded successfully\./) {
+                    canonicalQuestLoaded.set(true)
                 }
                 if (line =~ /Done \(.*\)! For help, type/) {
                     ready.set(true)
@@ -201,14 +220,15 @@ def runServerSmokeTest = { Map target, String label ->
         logFile.setText(output.toString(), StandardCharsets.UTF_8.name())
     }
 
-    if (!enabled.get() || !ready.get() || !failures.isEmpty()) {
+    if (!enabled.get() || !canonicalQuestLoaded.get() || !ready.get() || !failures.isEmpty()) {
         throw new GradleException(
                 "BDQ failed its Paper ${minecraftVersion} smoke test. " +
-                        "enabled=${enabled.get()}, ready=${ready.get()}, failures=${failures.size()}. " +
+                        "enabled=${enabled.get()}, canonicalQuestLoaded=${canonicalQuestLoaded.get()}, " +
+                        "ready=${ready.get()}, failures=${failures.size()}. " +
                         "See ${logFile}."
         )
     }
-    logger.lifecycle("BDQ enabled without detected errors on Paper ${minecraftVersion}. Log: ${logFile}")
+    logger.lifecycle("BDQ enabled and loaded Stonebreaker without detected errors on Paper ${minecraftVersion}. Log: ${logFile}")
 }
 
 def smokeTest18 = tasks.register('smokeTestBdqOnMinecraft18') {
