@@ -10,7 +10,7 @@ import fr.robotv2.placeholderannotationlib.api.PlaceholderAnnotationProcessor;
 @Expansion(
         identifier = "betterdailyquest",
         author = "Robotv2",
-        version = "1.0.0",
+        version = "0.0.1",
         persist = true
 )
 public class BetterDailyQuestClipPlaceholder extends BasePlaceholderExpansion {

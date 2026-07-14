@@ -9,12 +9,14 @@ description: Install BetterDailyQuest, create reliable quest content, and operat
 BetterDailyQuest defines quest groups, assigns quests to players, tracks task progress, and runs rewards. This guide is for server owners and administrators. It explains outcomes first and configuration only when you need it.
 
 [Create your first quest](getting-started/first-quest/index.md){ .md-button .md-button--primary }
-[Download the latest release](https://github.com/Robotv2/BetterDailyQuest/releases/latest){ .md-button }
+[Download 0.0.1 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1){ .md-button }
 
 </div>
 
 !!! warning "Release-matched documentation"
     The public site is deployed from the same tag as the latest GitHub Release. Repository previews may describe the next release before its JAR is available.
+
+**Current release:** [BetterDailyQuest 0.0.1 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1)
 
 <div class="grid cards" markdown>
 
@@ -67,4 +69,4 @@ BetterDailyQuest does **not** include a player quest menu. The core plugin track
 
 ## Current verification status
 
-The current development build has passed startup smoke checks on Paper 1.8.8 and Paper 26.1.2. These checks prove that the server reaches its ready state with BetterDailyQuest enabled; they do not yet prove every quest workflow on those versions. See the [compatibility reference](reference/compatibility.md).
+BetterDailyQuest 0.0.1 Beta has passed startup smoke checks on Paper 1.8.8 and Paper 26.1.2. These checks prove that the server reaches its ready state with BetterDailyQuest enabled and the canonical Stonebreaker configuration loaded; they do not yet prove every quest workflow on those versions. See the [compatibility reference](reference/compatibility.md).
