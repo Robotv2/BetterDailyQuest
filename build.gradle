@@ -33,9 +33,11 @@ dependencies {
     zap 'io.github.classgraph:classgraph:4.8.157'
     zap 'com.github.Revxrsal.Lamp:common:3.3.6'
     zap 'com.github.Revxrsal.Lamp:bukkit:3.3.6'
-    zap 'fr.robotv2.anchor:Anchor-bukkit:1.0-SNAPSHOT'
-    zap 'fr.robotv2.anchor:Anchor-mariadb:1.0-SNAPSHOT'
-    zap 'fr.robotv2.anchor:Anchor-sqlite:1.0-SNAPSHOT'
+    // Anchor is not published to a public Maven repository yet. Bundle it so
+    // production servers never depend on the build machine's local repository.
+    implementation 'fr.robotv2.anchor:Anchor-bukkit:1.0-SNAPSHOT'
+    implementation 'fr.robotv2.anchor:Anchor-mariadb:1.0-SNAPSHOT'
+    implementation 'fr.robotv2.anchor:Anchor-sqlite:1.0-SNAPSHOT'
     zap 'com.github.Robotv2:PlaceholderAnnotationLib:v1.1.0'
 }
 
@@ -79,7 +81,13 @@ processResources {
 zapper {
     libsFolder = '.libs'
     relocationPrefix = 'fr.robotv2.betterdailyquest.libs'
-    repositories { includeProjectRepositories() }
+    repositories {
+        maven('https://repo.maven.apache.org/maven2/')
+        maven('https://repo.alessiodp.com/releases/')
+        maven('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')
+        maven('https://jitpack.io')
+        maven('https://repo.extendedclip.com/releases/')
+    }
     relocate('com.cryptomorin.xseries', 'xseries')
     relocate('it.sauronsoftware.cron4j', 'cron4j')
     relocate('io.github.classgraph', 'classgraph')
