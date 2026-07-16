@@ -1,15 +1,23 @@
+---
+description: Learn the main steps for creating and testing BetterDailyQuest content.
+---
+
 # Creating quests
 
-This section extends the Stonebreaker example from a single task into maintainable production content.
+Use this section after you complete the first quest tutorial. It explains the choices that matter when you build real quest content.
 
-## Recommended route
+## Recommended order
 
-1. [Organize files](file-organization.md).
-2. Choose [task types and targets](tasks-targets.md).
-3. Decide whether tasks are [sequential](sequential-tasks.md).
-4. Add [progress conditions](progress-conditions.md) only when needed.
-5. Configure [rewards and actions](rewards-actions.md).
-6. Add [messages and cosmetics](messages-cosmetics.md).
-7. [Test changes safely](testing-changes.md).
+1. [Understand how quests work](how-it-works.md).
+2. [Configure quest groups](quest-groups.md).
+3. [Create quests and tasks](quests-tasks.md).
+4. [Control quest assignment](assignments.md).
+5. [Add progress conditions](conditions.md).
+6. [Add rewards and progress messages](rewards-display.md).
+7. [Test quest changes](testing.md).
 
-Keep tutorials outcome-oriented. Use the [Reference](../reference/index.md) when you need every accepted key or value.
+For complete examples, open the [Quest recipe book](recipes.md). For exact accepted keys, use the [Reference](../reference/index.md).
+
+## Safe working rule
+
+Change and test one idea at a time. A private test server makes YAML errors, reward mistakes, and assignment changes much safer to find.

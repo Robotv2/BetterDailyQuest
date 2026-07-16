@@ -1,23 +1,25 @@
+---
+description: Look up BetterDailyQuest configuration keys, task types, conditions, actions, placeholders, and commands.
+---
+
 # Reference
 
-Reference pages answer exact configuration and command questions. For guided setup, start with [Getting started](../getting-started/index.md) or [Creating quests](../creating-quests/index.md).
+Use these pages when you need an exact key, value, default, or command. For guided setup, start with [Getting started](../getting-started/index.md) or [Creating quests](../creating-quests/index.md).
 
 ## Configuration
 
-- [Global `config.yml`](config.md)
-- [Quest group schema](pool-schema.md)
-- [Quest and task schema](quest-schema.md)
+- [`config.yml` reference](config.md)
+- [Quest group reference](quest-groups.md)
+- [Quest and task reference](quests-tasks.md)
 
-## Behavior catalogs
+## Behavior
 
-- [Task types and targets](task-types.md)
-- [Progress conditions](conditions.md)
-- [Reward actions](actions.md)
-- [Placeholder scopes](placeholders.md)
-- [Commands and permissions](commands-permissions.md)
+- [Task type overview](task-types.md)
+- [Progress condition reference](conditions.md)
+- [Reward action reference](actions.md)
+- [Placeholder and cosmetic reference](placeholders-cosmetics.md)
 
-## Truth and support boundaries
+## Server use
 
-- [Verification matrix](verification-matrix.md)
-- [Compatibility](compatibility.md)
-- [Known limitations](known-limitations.md)
+- [Command and permission reference](commands-permissions.md)
+- [Compatibility reference](compatibility.md)

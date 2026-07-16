@@ -1,16 +1,34 @@
 # Contributing to BetterDailyQuest
 
-## Administrator-visible changes
+## Update the administrator guide
 
-Update the administrator guide in the same pull request whenever a change affects:
+Update the guide when a change affects:
 
-- configuration keys, accepted values, defaults, or inheritance;
+- configuration keys, values, defaults, or inheritance;
 - commands, arguments, permissions, or messages;
-- task types, targets, progress conditions, rewards, or placeholders;
-- integrations, storage, compatibility, or operational behavior;
-- setup, update, backup, reload, refresh, reroll, or troubleshooting procedures.
+- task types, targets, conditions, rewards, or placeholders;
+- storage, integrations, updates, assignments, or resets;
+- the setup or test process.
 
-Update guided content and the corresponding reference page. Add or update a tested example when behavior is configuration-driven. Do not document intended behavior as available behavior.
+Update both the practical guide and the exact reference when both are affected. Add or update a real YAML example for configuration-driven behavior.
+
+Do not describe planned behavior as available behavior.
+
+## Writing style
+
+- Use clear B1–B2 English.
+- Keep sentences and paragraphs short.
+- Use sentence case for titles.
+- Make the navigation label match the page H1.
+- Put warnings and common fixes on the related page.
+- Prefer one complete example over several incomplete snippets.
+- Use the same terms as the configuration and commands.
+
+## Page structure
+
+A practical guide should explain the result, requirements, steps, complete example, check, common problems, and next useful page.
+
+A reference page should explain its scope, list exact values, show examples, and include important warnings.
 
 ## Local documentation checks
 
@@ -21,4 +39,4 @@ $env:NO_MKDOCS_2_WARNING = "true"
 python -m mkdocs build --strict
 ```
 
-The public site deploys from a published GitHub release tag only after the release contains at least one JAR asset.
+The public site is built from a published release tag. The release must contain at least one JAR file before the site is deployed.

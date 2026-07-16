@@ -1,32 +1,36 @@
-# Requirements and compatibility
+---
+description: Check the server, Java, release, and optional plugin requirements for BetterDailyQuest.
+---
 
-## Outcome
+# Check the requirements
 
-Know whether your server and optional integrations are ready before installing BetterDailyQuest.
+Check these points before you install BetterDailyQuest.
 
 ## Required
 
-- A Bukkit-compatible server distribution capable of loading the release JAR.
-- The Java version required by that server distribution.
-- File access to the server's `plugins` directory.
-- The tagged JAR from [BetterDailyQuest 0.0.1 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1).
+- A Bukkit-compatible Minecraft server.
+- A Java runtime supported by that server.
+- Access to the server console and `plugins` folder.
+- The JAR from [BetterDailyQuest 0.0.1 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1).
 
-BetterDailyQuest shades its required runtime libraries into the release JAR. Do not install Anchor separately unless a release note explicitly instructs you to.
+BetterDailyQuest targets Java 17 bytecode. A recent server can require a newer Java version. Use the Java version required by your server software.
 
-## Optional integrations
+BetterDailyQuest includes its required runtime libraries in the release JAR. Do not install Anchor as a separate server plugin.
 
-| Integration | Needed for | Core fallback |
+## Optional plugins
+
+| Plugin or component | Use | Behavior when missing |
 | --- | --- | --- |
-| PlaceholderAPI | Quest-group-refresh placeholder and placeholder-based progress conditions | Placeholder strings remain unchanged; other core features continue |
-| Vault plus a permissions provider | Role-specific assignment limits | The `default` role is used |
-| BetterDailyQuest addon | Addon-specific commands, conditions, presentation, or content behavior | Only core behavior is available |
+| PlaceholderAPI | Show a quest-group reset timer or use placeholder conditions | Core quests continue to work |
+| Vault and a permissions provider | Use role-based assignment limits | BDQ uses the `default` role and then the global limit |
+| BetterDailyQuest addon | Add presentation or addon-specific features | Only core features are available |
 
-## Compatibility claims
+## Verified servers
 
-Only combinations exercised by repeatable checks are listed as verified. A startup check means the plugin enabled and the server reached ready state; it is not the same as full gameplay verification.
+The current release has passed startup tests on Paper 1.8.8 and Paper 26.1.2. Other versions are not automatically incompatible, but they are not part of the current public test evidence.
 
-[View the compatibility matrix](../reference/compatibility.md)
+See [Compatibility reference](../reference/compatibility.md) for exact Java and test details.
 
 ## Next step
 
-[Install and verify startup](installation.md).
+[Install BetterDailyQuest](installation.md).

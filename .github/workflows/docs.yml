@@ -18,6 +18,9 @@ on:
       - "scripts/validate_docs.py"
       - "mkdocs.yml"
       - "requirements-docs.txt"
+      - "README.md"
+      - "CONTRIBUTING.md"
+      - ".github/workflows/docs.yml"
   release:
     types:
       - published

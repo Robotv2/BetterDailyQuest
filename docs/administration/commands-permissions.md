@@ -1,25 +1,43 @@
-# Commands and permissions
+---
+description: Use BetterDailyQuest commands safely and give each role the correct permissions.
+---
 
-The root command is `betterdailyquest`; `bdq` is its alias. Arguments in angle brackets are required and brackets are not typed.
+# Use commands and permissions
 
-| Command | Permission | Effect |
+The root command is `betterdailyquest`. The short alias is `bdq`.
+
+## Command overview
+
+| Command | Permission | Main use |
 | --- | --- | --- |
-| `bdq` | None | Show the running BetterDailyQuest version |
-| `bdq reload` | `betterdailyquest.command.reload` | Reload global config, groups, quests, and addon reload hooks |
-| `bdq give <group> <quest> [player]` | `betterdailyquest.command.give` | Create an assignment; target defaults to the executing player |
-| `bdq clear <player> <questID>` | `betterdailyquest.command.clear` | Delete one assignment and its task progress |
-| `bdq reset <player> <questID>` | `betterdailyquest.command.reset` | Restart the same quest assignment with fresh progress |
-| `bdq reroll <questID>` | `betterdailyquest.command.reroll` | Replace the sender's assignment with a different eligible quest |
-| `bdq reroll-others <player> <questID>` | `betterdailyquest.command.reroll.others` | Reroll another online player's assignment |
-| `bdq complete <player> <questID>` | `betterdailyquest.command.complete` | Complete unfinished tasks and run completion behavior |
+| `bdq` | None | Show the running version |
+| `bdq reload` | `betterdailyquest.command.reload` | Reload configuration and content |
+| `bdq give <group> <quest> [player]` | `betterdailyquest.command.give` | Give one quest |
+| `bdq clear <player> <questID>` | `betterdailyquest.command.clear` | Delete one assignment and its progress |
+| `bdq reset <player> <questID>` | `betterdailyquest.command.reset` | Restart the same quest |
+| `bdq reroll <questID>` | `betterdailyquest.command.reroll` | Replace your quest with another one |
+| `bdq reroll-others <player> <questID>` | `betterdailyquest.command.reroll.others` | Replace another player's quest |
+| `bdq complete <player> <questID>` | `betterdailyquest.command.complete` | Complete all unfinished tasks |
 
-## Permission design
+## Safe permission design
 
-- Reserve `reload`, `give`, `clear`, `reset`, `reroll-others`, and `complete` for trusted staff.
-- Grant player self-reroll only when the group's `max-rerolls` and reward design make abuse acceptable.
-- Console and command-block access is already privileged; still use explicit permissions for staff accounts.
-- Do not grant broad wildcard permissions without reviewing future command additions.
+- Give `reload`, `give`, `clear`, `reset`, `reroll-others`, and `complete` only to trusted staff.
+- Give self-reroll to players only when group limits and rewards cannot be abused.
+- Avoid broad wildcard permissions because future versions can add commands.
 
-Commands act on loaded online players. A `player_not_loaded` response means the target is offline or their data did not finish loading.
+## Online player rule
 
-See the [command reference](../reference/commands-permissions.md) for argument and failure details.
+Commands that change a player's assignment use loaded online player data. If BDQ reports that the player is not loaded, check storage errors and ask the player to reconnect.
+
+## Important command differences
+
+- `clear` deletes an assignment without recording completion.
+- `reset` deletes current progress and creates the same quest again.
+- `reroll` selects a different eligible quest from the same group.
+- `complete` runs task and quest completion behavior, including rewards.
+
+## Check permissions
+
+Test each staff role with the exact command it needs. Also test that an ordinary player cannot use staff commands.
+
+For exact arguments and failure cases, see [Command and permission reference](../reference/commands-permissions.md).

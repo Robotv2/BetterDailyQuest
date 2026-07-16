@@ -1,60 +1,66 @@
+---
+description: Reference every supported BetterDailyQuest config.yml section and value.
+---
+
 # `config.yml` reference
+
+`config.yml` controls global storage, cosmetics, reset-time formatting, command messages, and debug output.
 
 ## Top-level sections
 
-| Path | Type | Default/requirement | Effect |
+| Path | Type | Bundled value | Use |
 | --- | --- | --- | --- |
-| `debug` | Boolean | `false` when absent | Enables additional BetterDailyQuest diagnostic messages |
-| `database` | Section | Required | Selects SQLite or MariaDB storage |
-| `cosmetics` | Section | Required by bundled config | Global progress/completion presentation fallback |
-| `time_format` | Section | Required | Formats reset countdown placeholders |
-| `messages.commands` | Section | Command strings have built-in fallbacks | Customizes core command responses |
+| `debug` | Boolean | `true` | Add BDQ diagnostic messages |
+| `database` | Section | SQLite setup | Choose and configure storage |
+| `cosmetics` | Section | Enabled task and quest messages | Global display fallback |
+| `time_format` | Section | Short English units | Format reset time |
+| `messages.commands` | Section | English messages | Change command replies |
+
+If `debug` is missing, Bukkit reads it as `false`. The bundled file currently sets it to `true`.
 
 ## Database
 
-| Path | Type | Default/requirement | Notes |
-| --- | --- | --- | --- |
-| `database.type` | Text | Bundled default `SQLITE` | Supported guide values: `SQLITE`, `MARIADB` |
-| `database.mariadb.host` | Text | Required for MariaDB | Database host or IP |
-| `database.mariadb.port` | Integer | Bundled default `3306` | MariaDB TCP port |
-| `database.mariadb.database` | Text | Required for MariaDB | Existing database/schema name |
-| `database.mariadb.username` | Text | Required for MariaDB | Least-privilege account |
-| `database.mariadb.password` | Text | Required for MariaDB | Keep secret |
+| Path | Type | Requirement |
+| --- | --- | --- |
+| `database.type` | Text | `SQLITE` or `MARIADB` |
+| `database.mariadb.host` | Text | MariaDB host |
+| `database.mariadb.port` | Integer | Bundled value `3306` |
+| `database.mariadb.database` | Text | Existing database name |
+| `database.mariadb.username` | Text | Database user |
+| `database.mariadb.password` | Text | Database password |
 
-See [Storage and backups](../administration/storage-backups.md) before changing storage type.
+Changing the type does not move player data. See [Configure storage and backups](../administration/storage-backups.md).
 
 ## Cosmetics
 
-Event paths are `cosmetics.task_increment`, `cosmetics.task_done`, and `cosmetics.quest_done`.
+Event sections are `task_increment`, `task_done`, and `quest_done`.
 
-| Child path | Type | Default | Effect |
-| --- | --- | --- | --- |
-| `action_bar.enabled` | Boolean | `false` | Send action bar for this event |
-| `action_bar.message` | Text | No text | Action-bar content |
-| `titles.enabled` | Boolean | `false` | Send title and subtitle |
-| `titles.title` | Text | No text | Main title |
-| `titles.subtitle` | Text | No text | Subtitle |
-| `titles.fade-in` | Integer ticks | `10` | Fade-in duration |
-| `titles.stay` | Integer ticks | `20` | Visible duration |
-| `titles.fade-out` | Integer ticks | `10` | Fade-out duration |
+| Child path | Type | Default when missing |
+| --- | --- | --- |
+| `action_bar.enabled` | Boolean | `false` |
+| `action_bar.message` | Text | No text |
+| `titles.enabled` | Boolean | `false` |
+| `titles.title` | Text | No text |
+| `titles.subtitle` | Text | No text |
+| `titles.fade-in` | Integer ticks | `10` |
+| `titles.stay` | Integer ticks | `20` |
+| `titles.fade-out` | Integer ticks | `10` |
 
-A configured but disabled section prevents fallback to a lower-precedence level. Remove the event section to inherit. See [Messages and cosmetics](../creating-quests/messages-cosmetics.md).
+## Reset-time format
 
-## Time format
-
-| Path | Type | Bundled value | Effect |
-| --- | --- | --- | --- |
-| `time_format.days` | Text | `d` | Suffix for non-zero days |
-| `time_format.hours` | Text | `h` | Suffix for non-zero hours |
-| `time_format.minutes` | Text | `m` | Suffix for non-zero minutes |
-| `time_format.seconds` | Text | `s` | Suffix for seconds |
-| `time_format.format` | Text | `%days%%hours%%minutes%%seconds%` | Output template |
+| Path | Bundled value |
+| --- | --- |
+| `time_format.days` | `d` |
+| `time_format.hours` | `h` |
+| `time_format.minutes` | `m` |
+| `time_format.seconds` | `s` |
+| `time_format.format` | `%days%%hours%%minutes%%seconds%` |
 
 Supported tokens are `%days%`, `%hours%`, `%minutes%`, and `%seconds%`.
 
 ## Command messages
 
-All paths begin with `messages.commands.` and accept color codes plus the placeholders shown below.
+All keys start with `messages.commands.`.
 
 | Key | Placeholders |
 | --- | --- |
@@ -74,4 +80,4 @@ All paths begin with `messages.commands.` and accept color codes plus the placeh
 | `reroll_success_self` | `%quest_id%` |
 | `complete_success` | `%quest_id%`, `%player%` |
 
-Keep the `messages` section present. Individual command keys may be omitted to use built-in English defaults.
+Keep the `messages` section present. Missing command keys use built-in English fallback messages.

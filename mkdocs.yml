@@ -1,5 +1,5 @@
 site_name: BetterDailyQuest Administrator Guide
-site_description: Plain-language installation, quest creation, and operations guide for BetterDailyQuest server administrators.
+site_description: Clear installation, quest creation, and server management guide for BetterDailyQuest administrators.
 site_url: https://robotv2.github.io/BetterDailyQuest/
 site_dir: build/docs-site
 repo_url: https://github.com/Robotv2/BetterDailyQuest
@@ -82,68 +82,41 @@ extra:
       name: BetterDailyQuest on GitHub
 
 nav:
-  - Home: index.md
-  - Getting Started:
-      - getting-started/index.md
-      - Requirements and compatibility: getting-started/requirements.md
-      - Install and verify startup: getting-started/installation.md
-      - First quest in 15 minutes:
-          - getting-started/first-quest/index.md
-          - Create the quest group: getting-started/first-quest/create-pool.md
-          - Create Stonebreaker: getting-started/first-quest/create-quest.md
-          - Assign and verify: getting-started/first-quest/verify.md
-      - Plugin files: getting-started/plugin-files.md
-      - Update safely: getting-started/updating.md
-  - Core Concepts:
-      - concepts/index.md
-      - Quest groups, quests, and tasks: concepts/content-model.md
-      - Assignment lifecycle: concepts/assignment-lifecycle.md
-      - Refresh, restart, and reroll: concepts/replacement-actions.md
-      - Assignment limits and history: concepts/assignment-limits.md
-      - Options and inheritance: concepts/options-inheritance.md
-  - Creating Quests:
-      - creating-quests/index.md
-      - Organize files: creating-quests/file-organization.md
-      - Tasks and targets: creating-quests/tasks-targets.md
-      - Sequential tasks: creating-quests/sequential-tasks.md
-      - Progress conditions: creating-quests/progress-conditions.md
-      - Rewards and actions: creating-quests/rewards-actions.md
-      - Messages and cosmetics: creating-quests/messages-cosmetics.md
-      - Test changes safely: creating-quests/testing-changes.md
-  - Integrations:
-      - integrations/index.md
-      - PlaceholderAPI: integrations/placeholderapi.md
-      - Present quests to players: integrations/presentation.md
-      - Vault player roles: integrations/vault.md
-      - Addons: integrations/addons.md
-  - Administration:
-      - administration/index.md
-      - Storage and backups: administration/storage-backups.md
-      - Commands and permissions: administration/commands-permissions.md
-      - Scheduled quest group refreshes: administration/schedules.md
-      - Rerolls and assignment limits: administration/rerolls-limits.md
-      - Reloads and restarts: administration/reloads-restarts.md
-      - Debug logs: administration/debugging.md
+  - BetterDailyQuest administrator guide: index.md
+  - Getting started:
+      - Getting started: getting-started/index.md
+      - Check the requirements: getting-started/requirements.md
+      - Install BetterDailyQuest: getting-started/installation.md
+      - Create your first quest: getting-started/first-quest.md
+  - Creating quests:
+      - Creating quests: creating-quests/index.md
+      - Understand how quests work: creating-quests/how-it-works.md
+      - Configure quest groups: creating-quests/quest-groups.md
+      - Create quests and tasks: creating-quests/quests-tasks.md
+      - Control quest assignment: creating-quests/assignments.md
+      - Add progress conditions: creating-quests/conditions.md
+      - Add rewards and progress messages: creating-quests/rewards-display.md
+      - Test quest changes: creating-quests/testing.md
+      - Quest recipe book: creating-quests/recipes.md
+  - Server management:
+      - Server management: administration/index.md
+      - Use commands and permissions: administration/commands-permissions.md
+      - Manage assignments and resets: administration/assignments-resets.md
+      - Configure storage and backups: administration/storage-backups.md
+      - Use integrations: administration/integrations.md
+      - Reload, update, and collect support data: administration/updates-support.md
   - Reference:
-      - reference/index.md
-      - Verification matrix: reference/verification-matrix.md
-      - config.yml: reference/config.md
-      - Quest group schema: reference/pool-schema.md
-      - Quest and task schema: reference/quest-schema.md
-      - Task types and targets: reference/task-types.md
-      - Progress conditions: reference/conditions.md
-      - Reward actions: reference/actions.md
-      - Placeholders: reference/placeholders.md
-      - Commands and permissions: reference/commands-permissions.md
-      - Compatibility: reference/compatibility.md
-      - Known limitations: reference/known-limitations.md
-  - Troubleshooting:
-      - troubleshooting/index.md
-      - Startup failures: troubleshooting/startup.md
-      - Quest group or quest will not load: troubleshooting/content-loading.md
-      - Assignment problems: troubleshooting/assignments.md
-      - Progress does not count: troubleshooting/progress.md
-      - Rewards do not run: troubleshooting/rewards.md
-      - Refresh and reroll problems: troubleshooting/refresh-reroll.md
-      - Storage and integration problems: troubleshooting/storage-integrations.md
-      - Ask for help: troubleshooting/support-report.md
+      - Reference: reference/index.md
+      - config.yml reference: reference/config.md
+      - Quest group reference: reference/quest-groups.md
+      - Quest and task reference: reference/quests-tasks.md
+      - Task type overview: reference/task-types.md
+      - Block task reference: reference/task-types-block.md
+      - Entity task reference: reference/task-types-entity.md
+      - Item task reference: reference/task-types-item.md
+      - Player task reference: reference/task-types-player.md
+      - Progress condition reference: reference/conditions.md
+      - Reward action reference: reference/actions.md
+      - Placeholder and cosmetic reference: reference/placeholders-cosmetics.md
+      - Command and permission reference: reference/commands-permissions.md
+      - Compatibility reference: reference/compatibility.md

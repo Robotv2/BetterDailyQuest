@@ -1,13 +1,19 @@
+---
+description: Follow the shortest path from a release JAR to a working BetterDailyQuest quest.
+---
+
 # Getting started
 
-Use this section to move from a downloaded JAR to one verified quest assignment.
+This section takes you from an empty installation to one completed quest.
 
-## Recommended route
+## Recommended order
 
-1. Check [requirements and compatibility](requirements.md).
-2. [Install the plugin and verify startup](installation.md).
-3. Complete the [first quest in 15 minutes](first-quest/index.md).
-4. Learn where [plugin files](plugin-files.md) live.
-5. Read the [safe update procedure](updating.md) before replacing a production JAR.
+1. [Check the requirements](requirements.md).
+2. [Install BetterDailyQuest](installation.md).
+3. [Create your first quest](first-quest.md).
 
-The first-quest path uses SQLite and does not require Vault, PlaceholderAPI, an addon, or a menu plugin.
+The first quest uses SQLite and core features only. You do not need Vault, PlaceholderAPI, an addon, or a menu plugin.
+
+## Before using a production server
+
+Build and test quests on a private server first. Keep a backup of the plugin folder and player database before you reload content or update the plugin.

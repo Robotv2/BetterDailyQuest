@@ -1,12 +1,17 @@
-# Administration
+---
+description: Manage BetterDailyQuest commands, assignments, storage, integrations, and updates.
+---
 
-Use this section for production ownership after quest content works.
+# Server management
 
-- [Storage and backups](storage-backups.md)
-- [Commands and permissions](commands-permissions.md)
-- [Scheduled quest group refreshes](schedules.md)
-- [Rerolls and assignment limits](rerolls-limits.md)
-- [Reloads and restarts](reloads-restarts.md)
-- [Debug logs](debugging.md)
+Use this section after quest content works on a test server.
 
-Test operational changes on a copy of production data. Quest assignment and completion history are player data, not disposable cache.
+## Main tasks
+
+- [Use commands and permissions](commands-permissions.md).
+- [Manage assignments and resets](assignments-resets.md).
+- [Configure storage and backups](storage-backups.md).
+- [Use integrations](integrations.md).
+- [Reload, update, and collect support data](updates-support.md).
+
+Player assignments and completion history are saved data. Back them up before changing storage, schedules, Quest IDs, or release versions.

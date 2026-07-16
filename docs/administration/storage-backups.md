@@ -1,17 +1,21 @@
-# Storage and backups
+---
+description: Configure BetterDailyQuest SQLite or MariaDB storage and create safe backups.
+---
 
-BetterDailyQuest supports SQLite and MariaDB storage. It stores players, quest assignments, task progress, reroll counts, and completion history.
+# Configure storage and backups
+
+BDQ stores players, assignments, task progress, reroll counts, and completion history.
 
 ## SQLite
 
-SQLite is the default and needs no external database server:
+SQLite is the default and needs no external database server.
 
 ```yaml
 database:
   type: SQLITE
 ```
 
-The default database file is `plugins/BetterDailyQuest/data.database`. It is suitable for one server and the simplest first installation.
+The database file is `plugins/BetterDailyQuest/data.database`. SQLite is the simplest choice for one server.
 
 ## MariaDB
 
@@ -26,19 +30,31 @@ database:
     password: "replace-with-a-secret"
 ```
 
-Create the database and a least-privilege database user before starting the plugin. Do not commit real credentials or paste them into public support logs.
+Create the database and a user before starting BDQ. Give the user only the database access it needs. Never commit real passwords or post them in public logs.
 
 ## Backup procedure
 
 1. Stop the server cleanly so online player data is saved.
-2. Back up `config.yml`, `groups/`, `quests/`, and addon data.
+2. Back up `config.yml`, `groups`, `quests`, and addon data.
 3. For SQLite, copy `data.database` while the server is stopped.
-4. For MariaDB, use a consistent database dump from the database server.
-5. Record the BetterDailyQuest release tag and server version with the backup.
-6. Periodically restore the backup to a private server and verify one player assignment.
+4. For MariaDB, create a consistent database dump.
+5. Record the BDQ release and server version with the backup.
+6. Test a restore on a private server.
+
+## Restore procedure
+
+1. Stop the server.
+2. Keep a copy of the current failed state for investigation.
+3. Restore the plugin files and database from the same backup time.
+4. Start the private test server first.
+5. Check one player's assignments and completion history.
 
 ## Changing storage type
 
-Changing `database.type` does not document or guarantee data transfer between engines. Treat a storage move as a migration project: preserve both stores, test the exact release, and do not delete the old database until player history and assignments are verified.
+Changing `database.type` does not copy data between SQLite and MariaDB. Treat this as a data migration. Keep both databases until the new system has been checked.
 
-Related: [Storage troubleshooting](../troubleshooting/storage-integrations.md)
+## Storage problems
+
+For SQLite, check folder permissions, free disk space, and filesystem errors. For MariaDB, check the host, port, database, user access, firewall, connection limits, and MariaDB logs.
+
+Do not switch storage types only to hide a connection error. Production data remains in the old database.

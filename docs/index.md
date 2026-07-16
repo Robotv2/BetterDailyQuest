@@ -1,72 +1,63 @@
 ---
-description: Install BetterDailyQuest, create reliable quest content, and operate it safely on a Minecraft server.
+description: Install BetterDailyQuest, create quests, and manage player progress on a Minecraft server.
 ---
 
-# BetterDailyQuest Administrator Guide
+# BetterDailyQuest administrator guide
 
-<div class="bdq-hero" markdown>
+BetterDailyQuest lets server owners create repeatable quest content with YAML files. It assigns quests to players, tracks their progress, saves their data, and runs rewards when they finish.
 
-BetterDailyQuest defines quest groups, assigns quests to players, tracks task progress, and runs rewards. This guide is for server owners and administrators. It explains outcomes first and configuration only when you need it.
-
-[Create your first quest](getting-started/first-quest/index.md){ .md-button .md-button--primary }
+[Create your first quest](getting-started/first-quest.md){ .md-button .md-button--primary }
 [Download 0.0.1 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1){ .md-button }
 
-</div>
+!!! warning "Use the guide for your release"
+    The public site is built from a release tag. Pages in the repository can describe work that is not released yet.
 
-!!! warning "Release-matched documentation"
-    The public site is deployed from the same tag as the latest GitHub Release. Repository previews may describe the next release before its JAR is available.
-
-**Current release:** [BetterDailyQuest 0.0.1 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1)
+## Start here
 
 <div class="grid cards" markdown>
 
--   :material-rocket-launch: **Create your first quest**
+-   :material-download: **Install BetterDailyQuest**
 
-    ---
+    Check the requirements, install the plugin, and confirm that it starts.
 
-    Install the plugin, create the Stonebreaker quest, assign it, and prove that progress and rewards work.
+    [Open the installation guide](getting-started/installation.md)
 
-    [Start the 15-minute path](getting-started/first-quest/index.md)
+-   :material-pickaxe: **Create a quest**
 
--   :material-book-open-page-variant: **Design quest content**
+    Build Stonebreaker, give it to a player, and test its reward.
 
-    ---
+    [Create your first quest](getting-started/first-quest.md)
 
-    Combine task types, targets, conditions, rewards, and presentation without losing track of inheritance.
+-   :material-cog: **Manage a server**
 
-    [Design quests](creating-quests/index.md)
+    Configure commands, assignments, storage, updates, and integrations.
 
--   :material-server: **Operate the plugin**
+    [Manage BetterDailyQuest](administration/index.md)
 
-    ---
+-   :material-book-open-page-variant: **Look up a value**
 
-    Configure storage, permissions, schedules, backups, rerolls, reloads, and support diagnostics.
+    Find every supported key, task type, condition, action, and command.
 
-    [Operate BetterDailyQuest](administration/index.md)
-
--   :material-lifebuoy: **Solve a problem**
-
-    ---
-
-    Follow symptom-based checks for startup, content loading, assignment, progress, reward, and database failures.
-
-    [Troubleshoot](troubleshooting/index.md)
+    [Open the reference](reference/index.md)
 
 </div>
 
 ## What the core plugin includes
 
-- YAML-defined quest groups, quests, and tasks.
-- Player-specific assignments, completion history, rerolls, and scheduled quest group refreshes.
+- Quest groups with shared rules and reset schedules.
+- Quests with one or more tasks.
+- Automatic or manual quest assignment.
 - SQLite and MariaDB storage.
-- Action-bar, title, message, command, sound, and inventory-close actions.
-- Optional Vault role limits and one PlaceholderAPI group-refresh placeholder.
-- An addon loader for separately supplied BetterDailyQuest addons.
+- Task and quest rewards.
+- Action bars and titles for progress and completion.
+- Optional Vault, PlaceholderAPI, and addon support.
 
-## Important presentation boundary
+## What the core plugin does not include
 
-BetterDailyQuest does **not** include a player quest menu. The core plugin tracks quests and provides progress cosmetics and rewards. A menu, scoreboard, or richer quest browser must come from another plugin or a compatible addon. See [Present quests to players](integrations/presentation.md).
+BetterDailyQuest does not include a player quest menu or a command that lists every active quest. Use progress messages or a compatible presentation addon if players need a menu, scoreboard, or browser.
 
-## Current verification status
+## Current compatibility evidence
 
-BetterDailyQuest 0.0.1 Beta has passed startup smoke checks on Paper 1.8.8 and Paper 26.1.2. These checks prove that the server reaches its ready state with BetterDailyQuest enabled and the canonical Stonebreaker configuration loaded; they do not yet prove every quest workflow on those versions. See the [compatibility reference](reference/compatibility.md).
+Version 0.0.1 Beta has passed startup checks on Paper 1.8.8 and Paper 26.1.2. A startup check proves that the plugin enables and loads its example content. It does not prove every task type or integration.
+
+[Read the compatibility reference](reference/compatibility.md)

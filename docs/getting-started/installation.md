@@ -1,46 +1,61 @@
-# Install and verify startup
+---
+description: Install BetterDailyQuest and confirm that the plugin starts without errors.
+---
 
-**Outcome:** BetterDailyQuest enables without a plugin-loading error.<br>
-**Estimated time:** 5 minutes.<br>
-**You need:** Server file access, console access, and a release JAR.
+# Install BetterDailyQuest
 
-## Install
+**Result:** BetterDailyQuest starts and creates its default files.<br>
+**Time:** About 5 minutes.<br>
+**You need:** Server files, console access, and the release JAR.
 
-1. Stop the server cleanly.
+## Install the plugin
+
+1. Stop the server.
 2. Download the JAR attached to [BetterDailyQuest 0.0.1 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1).
-3. Place the JAR directly inside the server's `plugins` directory.
-4. Start the server.
-5. Wait until the console reports that the server is ready.
+3. Put the JAR directly in the server `plugins` folder.
+4. Make sure there is only one BetterDailyQuest JAR in that folder.
+5. Start the server.
+6. Wait until the server reports that startup is complete.
 
-## Verify
+## Check the installation
 
-Run this command from the server console:
+Run this command in the console:
 
 ```text
 bdq
 ```
 
-The response should identify BetterDailyQuest and its version. The first startup also creates:
+The command should show the running BetterDailyQuest version.
+
+The first startup creates files similar to these:
 
 ```text
 plugins/BetterDailyQuest/
 ├── config.yml
+├── data.database
 ├── groups/
 │   └── daily.yml
-├── quests/
-│   └── daily-quests.yml
-└── addons/                 # Created when addons are installed
+└── quests/
+    └── daily-quests.yml
 ```
 
-<div class="bdq-checkpoint" markdown>
+`data.database` is created when SQLite starts. An `addons` folder can appear after you install an addon.
 
-**Checkpoint:** The console contains `Enabling BetterDailyQuest`, reaches the server-ready message, and does not contain `Error occurred while enabling BetterDailyQuest`.
+!!! success "Installation checkpoint"
+    The console shows that BetterDailyQuest was enabled, the server reaches its ready state, and no enable error appears.
 
-</div>
+## If the plugin does not start
 
-!!! danger "Do not continue past an enable failure"
-    Quest files cannot be tested while the plugin is disabled. Follow [Startup failures](../troubleshooting/startup.md) first.
+Check the first error that mentions BetterDailyQuest. Common causes are:
+
+- the server is using the wrong Java version;
+- the JAR is damaged or not from a release;
+- two BetterDailyQuest JARs are installed;
+- `config.yml` contains an invalid database setup;
+- the server cannot write to the plugin folder.
+
+Run `java -version` in the same environment that starts the server. If needed, test the same JAR with fresh default files on a private server. Do not delete the production database while testing.
 
 ## Next step
 
-[Create the Stonebreaker quest](first-quest/index.md).
+[Create your first quest](first-quest.md).

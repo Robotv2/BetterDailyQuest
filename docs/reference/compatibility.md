@@ -1,32 +1,40 @@
-# Compatibility
+---
+description: Review release-specific BetterDailyQuest server, Java, startup, and gameplay test evidence.
+---
 
-Compatibility claims distinguish startup from gameplay verification.
+# Compatibility reference
 
-## 0.0.1 Beta evidence
+Compatibility claims are based on repeatable tests. A startup test and a gameplay test do not prove the same thing.
 
-| Server | Java used by smoke check | Evidence date | Startup | Golden-path gameplay |
+## Version 0.0.1 Beta evidence
+
+| Server | Java used | Date | Startup | Player gameplay |
 | --- | --- | --- | --- | --- |
-| Paper 1.8.8 | Java 17 | 2026-07-14 | Verified: plugin enabled, Stonebreaker loaded, and server reached ready state | Not yet verified with a player |
-| Paper 26.1.2 build 74 | Java 25 | 2026-07-14 | Verified: plugin enabled, Stonebreaker loaded, and server reached ready state | Not yet verified with a player |
+| Paper 1.8.8 | Java 17 | 2026-07-14 | Plugin enabled, example loaded, server ready | Not release-verified |
+| Paper 26.1.2 build 74 | Java 25 | 2026-07-14 | Plugin enabled, example loaded, server ready | Not release-verified |
 
-The plugin bytecode targets Java 17. The server may require a newer Java runtime, as current Paper does.
+The plugin bytecode targets Java 17. A server can require a newer Java runtime.
 
-## What startup verification proves
+## What a startup test proves
 
-- The server accepted the plugin JAR.
+- The server accepted the release JAR.
 - BetterDailyQuest enabled.
-- Bundled defaults loaded far enough for the server to reach ready state.
+- Default storage and content loaded far enough for the server to become ready.
 
-It does not prove every task event, material/entity identifier, optional integration, MariaDB environment, addon, update path, or stored-data migration.
+It does not prove every task event, target name, optional integration, MariaDB environment, addon, or data change.
 
-## Release publication rule
+## Version-specific task types
 
-Before this page becomes a public compatibility promise for a tag:
+- `PICKUP` is registered on Minecraft 1.9 and newer.
+- `BREED` is registered on Minecraft 1.10 and newer.
+- Materials and entity names must exist on the running server version.
 
-1. Run startup checks using the tagged JAR.
-2. Complete the Stonebreaker golden path.
-3. Verify persistence across restart.
-4. Test optional integrations before marking them verified.
-5. Capture screenshots from that exact release candidate.
+## Before production use
 
-Combinations not listed are unverified, not automatically incompatible.
+1. Run startup checks with the exact release JAR.
+2. Complete the Stonebreaker tutorial with a player.
+3. Restart and check saved data.
+4. Test every optional integration you use.
+5. Test your own quests on every server version you support.
+
+A server not listed here is unverified, not automatically incompatible.

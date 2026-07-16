@@ -1,0 +1,22 @@
+quests:
+  ranch-hand:
+    name: "&eRanch Hand"
+    group: "ranch"
+    options:
+      sequential-tasks: true
+    rewards:
+      - "[message] &6Ranch Hand complete!"
+    tasks:
+      1:
+        task_type: "BREED"
+        required_amount: 2
+        required_target: COW
+        task_rewards:
+          - "[message] &aThe cows are ready."
+      2:
+        task_type: "SHEAR"
+        required_amount: 3
+        conditions:
+          sheep_color: WHITE
+        task_rewards:
+          - "[message] &aThree white sheep sheared."

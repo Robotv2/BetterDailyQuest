@@ -1,16 +1,20 @@
-# Reward-action reference
+---
+description: Reference every supported BetterDailyQuest reward action and its sender behavior.
+---
 
-Every action begins with a prefix followed by its argument.
+# Reward action reference
+
+Every reward action starts with a prefix.
 
 | Prefix | Argument | Runs as | Offline behavior |
 | --- | --- | --- | --- |
-| `[player]` | Command without leading slash | Completing player | Skipped if player is not online |
-| `[console]` | Command without leading slash | Server console | Runs even if player lookup is offline; `%player%` uses stored name |
-| `[message]` | Message text | Direct message | Skipped if player is not online |
-| `[close]` | No argument | Closes player inventory | Skipped if player is not online |
-| `[sound]` | XSeries sound expression | Plays to completing player | Skipped if player is not online |
+| `[player]` | Command without `/` | Completing player | Skipped |
+| `[console]` | Command without `/` | Server console | Runs with the saved player name |
+| `[message]` | Message text | Direct player message | Skipped |
+| `[close]` | No argument | Closes the inventory | Skipped |
+| `[sound]` | XSeries sound expression | Plays to the player | Skipped |
 
-## Examples
+## Complete example
 
 ```yaml
 rewards:
@@ -20,13 +24,13 @@ rewards:
   - "[close]"
 ```
 
-Actions run in list order. Prefix matching ignores case. Unknown prefixes produce a warning and do not execute.
+Actions run in list order. Prefix matching ignores case. An unknown prefix creates a warning and does not run as a command.
 
-## Security
+## Safety
 
-- Quest files are privileged because `[console]` can run any server command.
-- Do not insert untrusted placeholder output into privileged commands.
-- Prefer console commands with explicit, bounded arguments.
-- Exercise reward failure cases on a test server.
+- `[console]` can run any server command.
+- Do not insert untrusted text into console commands.
+- Check the final command after placeholders are replaced.
+- Test player commands with the player's real permissions.
 
-Applicable internal placeholders depend on whether the list is a task reward or quest reward. See [Placeholder scopes](placeholders.md).
+Available internal placeholders depend on whether the list belongs to a task or quest. See [Placeholder and cosmetic reference](placeholders-cosmetics.md).

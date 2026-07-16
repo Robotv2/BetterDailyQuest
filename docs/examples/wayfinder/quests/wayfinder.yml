@@ -1,0 +1,18 @@
+quests:
+  wayfinder:
+    name: "&eWayfinder"
+    group: "exploration"
+    conditions:
+      worlds:
+        - world
+    rewards:
+      - "[message] &6You reached the destination!"
+    tasks:
+      1:
+        task_type: "LOCATION"
+        required_location:
+          world: world
+          x: 100
+          y: 64
+          z: -25
+          distance_from_location: 5
