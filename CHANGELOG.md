@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.0.2] - 2026-07-16
+
+Documentation-focused beta release.
+
+### Changed
+
+- Rebuilt the administrator guide with a shorter and clearer structure.
+- Unified page titles and rewrote the guide in accessible English.
+- Added complete quest recipes and stronger documentation validation.
+- Updated the public release and compatibility references.
+
 ## [0.0.1] - 2026-07-14
 
 First public beta of BetterDailyQuest.
@@ -20,4 +31,5 @@ First public beta of BetterDailyQuest.
 - Numerical placeholder comparator guidance is limited to exact string matching.
 - Paper 26.1.2 may log a cron4j classloader warning during shutdown.
 
+[0.0.2]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.2
 [0.0.1]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1

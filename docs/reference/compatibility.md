@@ -6,7 +6,7 @@ description: Review release-specific BetterDailyQuest server, Java, startup, and
 
 Compatibility claims are based on repeatable tests. A startup test and a gameplay test do not prove the same thing.
 
-## Version 0.0.1 Beta evidence
+## Version 0.0.2 Beta evidence
 
 | Server | Java used | Date | Startup | Player gameplay |
 | --- | --- | --- | --- | --- |
