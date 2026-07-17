@@ -38,6 +38,7 @@ dependencies {
     implementation 'fr.robotv2.anchor:Anchor-bukkit:1.0-SNAPSHOT'
     implementation 'fr.robotv2.anchor:Anchor-mariadb:1.0-SNAPSHOT'
     implementation 'fr.robotv2.anchor:Anchor-sqlite:1.0-SNAPSHOT'
+    runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.17'
     zap 'com.github.Robotv2:PlaceholderAnnotationLib:v1.1.0'
 }
 
@@ -78,9 +79,11 @@ processResources {
     }
 }
 
+def bundledLibraryPrefix = 'fr.robotv2.betterdailyquest.libs'
+
 zapper {
     libsFolder = '.libs'
-    relocationPrefix = 'fr.robotv2.betterdailyquest.libs'
+    relocationPrefix = bundledLibraryPrefix
     repositories {
         maven('https://repo.maven.apache.org/maven2/')
         maven('https://repo.alessiodp.com/releases/')
@@ -98,6 +101,11 @@ zapper {
 
 shadowJar {
     archiveClassifier.set('')
+    mergeServiceFiles()
+    relocate('fr.robotv2.anchor', "${bundledLibraryPrefix}.anchor")
+    relocate('com.zaxxer.hikari', "${bundledLibraryPrefix}.hikari")
+    relocate('net.byteflux.libby', "${bundledLibraryPrefix}.libby")
+    relocate('org.slf4j', "${bundledLibraryPrefix}.slf4j")
 }
 
 publishing {
