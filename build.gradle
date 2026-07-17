@@ -31,8 +31,8 @@ dependencies {
     zap 'com.github.cryptomorin:XSeries:13.7.1'
     zap 'it.sauronsoftware.cron4j:cron4j:2.2.5'
     zap 'io.github.classgraph:classgraph:4.8.157'
-    zap 'com.github.Revxrsal.Lamp:common:3.3.6'
-    zap 'com.github.Revxrsal.Lamp:bukkit:3.3.6'
+    implementation 'com.github.Revxrsal.Lamp:common:3.3.6'
+    implementation 'com.github.Revxrsal.Lamp:bukkit:3.3.6'
     // Anchor is not published to a public Maven repository yet. Bundle it so
     // production servers never depend on the build machine's local repository.
     implementation 'fr.robotv2.anchor:Anchor-bukkit:1.0-SNAPSHOT'
@@ -95,17 +95,20 @@ zapper {
     relocate('it.sauronsoftware.cron4j', 'cron4j')
     relocate('io.github.classgraph', 'classgraph')
     relocate('nonapi.io.github.classgraph', 'classgraph-nonapi')
-    relocate('revxrsal.commands', 'lamp')
     relocate('fr.robotv2.placeholderannotationlib', 'pal')
 }
 
 shadowJar {
     archiveClassifier.set('')
     mergeServiceFiles()
+    // Lamp 3's optional Brigadier bridge cannot parse Paper's 26.2 API version.
+    // BDQ does not register this bridge, so keep Lamp's standard Bukkit fallback.
+    exclude('revxrsal/commands/bukkit/brigadier/**')
     relocate('fr.robotv2.anchor', "${bundledLibraryPrefix}.anchor")
     relocate('com.zaxxer.hikari', "${bundledLibraryPrefix}.hikari")
     relocate('net.byteflux.libby', "${bundledLibraryPrefix}.libby")
     relocate('org.slf4j', "${bundledLibraryPrefix}.slf4j")
+    relocate('revxrsal.commands', "${bundledLibraryPrefix}.lamp")
 }
 
 publishing {

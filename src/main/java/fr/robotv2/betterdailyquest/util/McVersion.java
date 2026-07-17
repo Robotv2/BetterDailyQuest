@@ -4,19 +4,30 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class McVersion implements Comparable<McVersion> {
 
-    private static final McVersion CURRENT_VERSION;
+    private static final Pattern VERSION_PATTERN = Pattern.compile(
+            "^(\\d+)\\.(\\d+)(?:\\.(\\d+))?(?:[.-].*)?$"
+    );
     private static final McVersion v1_17 = new McVersion(1, 17);
 
-    static {
-        final int currentMajor = Integer.parseInt(Bukkit.getBukkitVersion().split("\\.")[0]);
-        final int currentMinor = Integer.parseInt(Bukkit.getBukkitVersion().split("\\.")[1].split("-")[0]);
-        boolean hasPatch = countChar(Bukkit.getBukkitVersion(), '.') == 3;
-        final int currentPatch = hasPatch ? Integer.parseInt(Bukkit.getBukkitVersion().split("\\.")[2].split("-")[0]) : 0;
+    private static class CurrentVersionHolder {
+        private static final McVersion INSTANCE = parse(Bukkit.getBukkitVersion());
+    }
 
-        CURRENT_VERSION = new McVersion(currentMajor, currentMinor, currentPatch);
+    static McVersion parse(final String version) {
+        final Matcher matcher = VERSION_PATTERN.matcher(version);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException("Unsupported Minecraft version: " + version);
+        }
+
+        final int major = Integer.parseInt(matcher.group(1));
+        final int minor = Integer.parseInt(matcher.group(2));
+        final int patch = matcher.group(3) == null ? 0 : Integer.parseInt(matcher.group(3));
+        return new McVersion(major, minor, patch);
     }
 
     private final int major;
@@ -37,7 +48,7 @@ public class McVersion implements Comparable<McVersion> {
      * Gets the currently running McVersion
      */
     public static McVersion current() {
-        return CURRENT_VERSION;
+        return CurrentVersionHolder.INSTANCE;
     }
 
     public boolean hasVersionInNmsPackageName() {
@@ -112,14 +123,4 @@ public class McVersion implements Comparable<McVersion> {
         return this.isAtLeast(new McVersion(major, minor));
     }
 
-    private static int countChar(final String string, final char aChar) {
-        int count = 0;
-        char[] arr = string.toCharArray();
-        for (int i = 0; i < string.length(); i++) {
-            if (arr[i] == aChar) {
-                count++;
-            }
-        }
-        return count;
-    }
 }
