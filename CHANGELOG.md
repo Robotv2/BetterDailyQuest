@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.0.3] - 2026-07-18
+
+Assignment-start and runtime-hardening beta release.
+
+### Added
+
+- Added player and staff commands for starting waiting quest assignments.
+- Added `QuestStartEvent` for addons that react when an assignment starts.
+
+### Fixed
+
+- Accepted modern Paper API version strings with two components, such as `26.2`.
+- Restored SQLite decimal task progress correctly after a server restart.
+
+### Changed
+
+- Isolated and relocated bundled runtime libraries to reduce dependency conflicts.
+
 ## [0.0.2] - 2026-07-16
 
 Documentation-focused beta release.
@@ -31,5 +49,7 @@ First public beta of BetterDailyQuest.
 - Numerical placeholder comparator guidance is limited to exact string matching.
 - Paper 26.1.2 may log a cron4j classloader warning during shutdown.
 
+[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.3...HEAD
+[0.0.3]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.3
 [0.0.2]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.2
 [0.0.1]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1

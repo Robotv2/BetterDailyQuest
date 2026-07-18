@@ -42,10 +42,10 @@ max-rerolls: 2
 | --- | --- | --- |
 | `repeatable` | `false` | Allow completed quests to be selected again |
 | `sequential-tasks` | `false` | Require tasks to finish in number order |
-| `need-starting` | `false` | Create assignments that need an external start action |
+| `need-starting` | `false` | Wait for a player or staff start command before progress |
 | `automatically-given` | `true` | Fill the group when player data loads or the group resets |
 
-Keep `need-starting: false` for core setups. Core BDQ has no command that starts a waiting assignment.
+Use `need-starting: true` when players should explicitly accept or begin an assignment. Players use `bdq start <questID>`; staff or the console use `bdq start-others <player> <questID>`.
 
 ## Assignment limits
 

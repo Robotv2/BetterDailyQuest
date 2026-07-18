@@ -268,6 +268,18 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
                     .collect(Collectors.toSet());
         });
 
+        commandHandler.getAutoCompleter().registerSuggestion("waiting_target_quests", (args, sender, command) -> {
+            final String filter = args.size() > 1 ? args.get(args.size() - 2) : "";
+            Player player = Bukkit.getPlayer(filter);
+            if(player == null) player = sender.as(BukkitCommandActor.class).requirePlayer();
+            final QuestPlayer questPlayer = getDatabaseManager().getCachedQuestPlayer(player);
+            if(questPlayer == null) return Collections.emptySet();
+            return questPlayer.getActiveQuests().stream()
+                    .filter(activeQuest -> !activeQuest.isStarted() && !activeQuest.isDone())
+                    .map(ActiveQuest::getQuestId)
+                    .collect(Collectors.toSet());
+        });
+
         commandHandler.getAutoCompleter().registerParameterSuggestions(Quest.class, "quests");
 
         commandHandler.register(new BetterDailyQuestCommand(this));

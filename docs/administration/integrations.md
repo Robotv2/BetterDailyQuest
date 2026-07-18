@@ -68,4 +68,6 @@ Put trusted addon JARs in `plugins/BetterDailyQuest/addons/`.
 
 Restart after adding, removing, or replacing an addon JAR. `bdq reload` cannot load new Java classes.
 
+Addons can listen for `QuestStartEvent` after a waiting assignment changes to its started state. The event exposes the configured quest, the player-specific assignment, and the player. It is not cancellable.
+
 Addons run with server-plugin access. Install only trusted files and include them in backups.

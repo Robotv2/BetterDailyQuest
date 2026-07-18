@@ -70,12 +70,15 @@ All keys start with `messages.commands.`.
 | `quest_already_has` | None |
 | `quest_unavailable` | `%quest_id%` |
 | `quest_already_completed` | None |
+| `quest_already_started` | None |
 | `max_rerolls_reached` | None |
 | `no_quest_available` | None |
 | `specify_player_for_reroll` | None |
 | `give_success` | `%quest_id%`, `%player%` |
 | `clear_success` | `%quest_id%`, `%player%` |
 | `reset_success` | `%quest_id%`, `%player%` |
+| `start_success_others` | `%quest_id%`, `%player%` |
+| `start_success_self` | `%quest_id%` |
 | `reroll_success_others` | `%quest_id%`, `%player%` |
 | `reroll_success_self` | `%quest_id%` |
 | `complete_success` | `%quest_id%`, `%player%` |

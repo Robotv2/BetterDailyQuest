@@ -18,7 +18,7 @@ Several groups can share one file under a `groups` section, but one group per fi
 | --- | --- | --- | --- |
 | `options.repeatable` | Boolean | `false` | Allow completed quests again |
 | `options.sequential-tasks` | Boolean | `false` | Require task-number order |
-| `options.need-starting` | Boolean | `false` | Wait for an external start action |
+| `options.need-starting` | Boolean | `false` | Wait for a player or staff start command |
 | `options.automatically-given` | Boolean | `true` | Fill assignments after load or reset |
 | `automatic-reset` | Cron text | No schedule | Refresh the group |
 | `global-assignment-limit` | Integer | `0` | Fallback assignment count |
@@ -52,7 +52,7 @@ cosmetics:
 
 ## Important points
 
-- Core BDQ cannot start an assignment created with `need-starting: true`.
+- Start a waiting assignment with `bdq start <questID>` or `bdq start-others <player> <questID>`.
 - A high limit does not create quests that do not exist.
 - `max-rerolls: 0` still needs a different eligible quest.
 - Use only canonical keys. Old `assignations`, `global-assignation`, and `dependant-tasks` keys are not parsed.

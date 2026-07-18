@@ -14,11 +14,12 @@ description: Test BetterDailyQuest content safely before using it on a productio
 4. Run `bdq reload`.
 5. Read every warning for the changed group and quest.
 6. Give the quest to a test player with `bdq give`.
-7. Test actions that should add progress.
-8. Test actions that should not add progress.
-9. Check task rewards, quest rewards, and cosmetics.
-10. Restart the server and check saved progress.
-11. Test reset or reroll behavior when the quest uses it.
+7. If it uses `need-starting: true`, confirm progress is ignored before `bdq start`, then start it.
+8. Test actions that should add progress.
+9. Test actions that should not add progress.
+10. Check task rewards, quest rewards, and cosmetics.
+11. Restart the server and check saved progress and started state.
+12. Test reset or reroll behavior when the quest uses it.
 
 ## Content checklist
 
@@ -29,6 +30,7 @@ description: Test BetterDailyQuest content safely before using it on a productio
 - [ ] Conditions pass and fail in the correct situations.
 - [ ] Console commands are safe after placeholders are replaced.
 - [ ] Repeatability and assignment limits match the intended design.
+- [ ] Waiting assignments ignore progress until they are started.
 - [ ] Removing old content will not leave broken saved assignments.
 
 ## Production rollout
