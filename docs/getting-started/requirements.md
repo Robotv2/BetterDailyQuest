@@ -11,7 +11,7 @@ Check these points before you install BetterDailyQuest.
 - A Bukkit-compatible Minecraft server.
 - A Java runtime supported by that server.
 - Access to the server console and `plugins` folder.
-- The JAR from [BetterDailyQuest 0.0.2 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.2).
+- The JAR from [BetterDailyQuest 0.0.3 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.3).
 
 BetterDailyQuest targets Java 17 bytecode. A recent server can require a newer Java version. Use the Java version required by your server software.
 

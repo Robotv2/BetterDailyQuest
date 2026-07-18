@@ -6,12 +6,12 @@ description: Review release-specific BetterDailyQuest server, Java, startup, and
 
 Compatibility claims are based on repeatable tests. A startup test and a gameplay test do not prove the same thing.
 
-## Version 0.0.2 Beta evidence
+## Version 0.0.3 Beta evidence
 
 | Server | Java used | Date | Startup | Player gameplay |
 | --- | --- | --- | --- | --- |
-| Paper 1.8.8 | Java 17 | 2026-07-14 | Plugin enabled, example loaded, server ready | Not release-verified |
-| Paper 26.1.2 build 74 | Java 25 | 2026-07-14 | Plugin enabled, example loaded, server ready | Not release-verified |
+| Paper 1.8.8 build 445 | Java 17 | 2026-07-18 | Plugin enabled, example loaded, server ready | Not release-verified |
+| Paper 26.1.2 build 74 | Java 25 | 2026-07-18 | Plugin enabled, example loaded, server ready | Not release-verified |
 
 The plugin bytecode targets Java 17. A server can require a newer Java runtime.
 
