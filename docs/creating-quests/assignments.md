@@ -44,7 +44,16 @@ Use `repeatable: true` only when the quest and its rewards are safe to complete 
 
 ## Waiting assignments
 
-`need-starting: true` creates an assignment that cannot progress until something starts it. Core BDQ has no start command. Keep the value `false` unless a tested addon provides the full start flow.
+`need-starting: true` creates an assignment that cannot progress until it is started:
+
+```text
+bdq start questID
+bdq start-others PlayerName questID
+```
+
+Give players `betterdailyquest.command.start` when they should start their own assignments. Reserve `betterdailyquest.command.start.others` for trusted staff. Both commands require the target player to be online and loaded.
+
+Keep `need-starting: false` when assignments should receive progress immediately.
 
 ## Check the design
 

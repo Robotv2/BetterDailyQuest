@@ -33,6 +33,17 @@ At the scheduled time, BDQ removes assignments from that group. When `automatica
 
 The scheduler uses the server JVM time zone. Test the time on a private server before changing a live group.
 
+## Start a waiting assignment
+
+Assignments created with `need-starting: true` ignore progress until they are started:
+
+```text
+bdq start questID
+bdq start-others PlayerName questID
+```
+
+The first command is player-only. The second works for trusted staff and the console when the target player is online and loaded. Starting changes only the assignment state; it does not reset task progress.
+
 ## Restart the same quest
 
 ```text
@@ -58,6 +69,6 @@ A successful reroll carries the increased reroll count to the new assignment. A 
 
 ## Test the full flow
 
-Test the first reroll, the final allowed reroll, no available replacement, a scheduled refresh, and a player with completed non-repeatable quests.
+Test progress before and after starting a waiting assignment, the first reroll, the final allowed reroll, no available replacement, a scheduled refresh, and a player with completed non-repeatable quests.
 
 Use `%betterdailyquest_group_reset_<group>%` through PlaceholderAPI to show the time before the next scheduled refresh.

@@ -15,13 +15,16 @@ The root command is `betterdailyquest`. The short alias is `bdq`.
 | `bdq give <group> <quest> [player]` | `betterdailyquest.command.give` | Give one quest |
 | `bdq clear <player> <questID>` | `betterdailyquest.command.clear` | Delete one assignment and its progress |
 | `bdq reset <player> <questID>` | `betterdailyquest.command.reset` | Restart the same quest |
+| `bdq start <questID>` | `betterdailyquest.command.start` | Start your waiting assignment |
+| `bdq start-others <player> <questID>` | `betterdailyquest.command.start.others` | Start another player's waiting assignment |
 | `bdq reroll <questID>` | `betterdailyquest.command.reroll` | Replace your quest with another one |
 | `bdq reroll-others <player> <questID>` | `betterdailyquest.command.reroll.others` | Replace another player's quest |
 | `bdq complete <player> <questID>` | `betterdailyquest.command.complete` | Complete all unfinished tasks |
 
 ## Safe permission design
 
-- Give `reload`, `give`, `clear`, `reset`, `reroll-others`, and `complete` only to trusted staff.
+- Give `reload`, `give`, `clear`, `reset`, `start-others`, `reroll-others`, and `complete` only to trusted staff.
+- Give self-start to players when a group uses `need-starting: true`.
 - Give self-reroll to players only when group limits and rewards cannot be abused.
 - Avoid broad wildcard permissions because future versions can add commands.
 
@@ -33,8 +36,11 @@ Commands that change a player's assignment use loaded online player data. If BDQ
 
 - `clear` deletes an assignment without recording completion.
 - `reset` deletes current progress and creates the same quest again.
+- `start` changes a waiting assignment into a started assignment without resetting progress.
 - `reroll` selects a different eligible quest from the same group.
 - `complete` runs task and quest completion behavior, including rewards.
+
+The console cannot use the self `start` command because it has no assignment. Use `start-others` with an online player instead.
 
 ## Check permissions
 

@@ -50,6 +50,7 @@ messages:
     quest_already_has: "&cThe target already has this quest."
     quest_unavailable: "&cThe quest is not available. (%quest_id%)"
     quest_already_completed: "&cThe quest is already completed."
+    quest_already_started: "&cThe quest assignment is already started."
     max_rerolls_reached: "&cYou have reached the maximum rerolls for this quest group."
     no_quest_available: "&cNo replacement quest is available for reroll."
     specify_player_for_reroll: "&cYou must specify a player for reroll-others."
@@ -62,6 +63,10 @@ messages:
 
     # Reset command (same-quest assignment restart)
     reset_success: "&aThe quest assignment '%quest_id%' has successfully been restarted for the player '%player%'."
+
+    # Start commands
+    start_success_others: "&aThe quest assignment '%quest_id%' has been started for the player '%player%'."
+    start_success_self: "&aYour quest assignment '%quest_id%' has been started."
 
     # Reroll commands (different-quest replacement)
     reroll_success_others: "&aThe quest '%quest_id%' has successfully been rerolled for the player '%player%'."

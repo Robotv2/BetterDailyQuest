@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Added player and staff commands for starting waiting quest assignments.
+- Added `QuestStartEvent` for addons that react when an assignment starts.
+
 ## [0.0.2] - 2026-07-16
 
 Documentation-focused beta release.
@@ -33,3 +40,4 @@ First public beta of BetterDailyQuest.
 
 [0.0.2]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.2
 [0.0.1]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1
+[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.2...HEAD
