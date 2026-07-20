@@ -3,8 +3,3 @@ plugins {
 }
 
 rootProject.name = 'BetterDailyQuest'
-
-def localAnchor = file('../Anchor')
-if (localAnchor.isDirectory() && new File(localAnchor, 'settings.gradle').isFile()) {
-    includeBuild(localAnchor)
-}
