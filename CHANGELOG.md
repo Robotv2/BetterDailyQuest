@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.0.4] - 2026-07-20
+
+Runtime dependency delivery beta release.
+
+### Changed
+
+- Load Anchor `v0.1.1` from JitPack on first startup instead of embedding it in the plugin JAR.
+- Build against the public Anchor release without a local Anchor checkout.
+
 ## [0.0.3] - 2026-07-18
 
 Assignment-start and runtime-hardening beta release.
@@ -49,7 +58,8 @@ First public beta of BetterDailyQuest.
 - Numerical placeholder comparator guidance is limited to exact string matching.
 - Paper 26.1.2 may log a cron4j classloader warning during shutdown.
 
-[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.3...HEAD
+[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.4...HEAD
+[0.0.4]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.4
 [0.0.3]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.3
 [0.0.2]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.2
 [0.0.1]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.1
