@@ -11,11 +11,12 @@ description: Install BetterDailyQuest and confirm that the plugin starts without
 ## Install the plugin
 
 1. Stop the server.
-2. Download the JAR attached to [BetterDailyQuest 0.0.3 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.3).
+2. Download the JAR attached to [BetterDailyQuest 0.0.4 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.4).
 3. Put the JAR directly in the server `plugins` folder.
 4. Make sure there is only one BetterDailyQuest JAR in that folder.
-5. Start the server.
-6. Wait until the server reports that startup is complete.
+5. Allow the server to access the internet for the first startup.
+6. Start the server.
+7. Wait until the server reports that startup is complete.
 
 ## Check the installation
 
@@ -51,6 +52,7 @@ Check the first error that mentions BetterDailyQuest. Common causes are:
 - the server is using the wrong Java version;
 - the JAR is damaged or not from a release;
 - two BetterDailyQuest JARs are installed;
+- the server cannot reach JitPack or Maven Central on first startup;
 - `config.yml` contains an invalid database setup;
 - the server cannot write to the plugin folder.
 

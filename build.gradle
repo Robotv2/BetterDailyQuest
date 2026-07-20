@@ -7,11 +7,10 @@ plugins {
 }
 
 group = 'fr.robotv2'
-version = '0.0.3'
+version = '0.0.4'
 
 repositories {
     mavenCentral()
-    mavenLocal()
     maven { url = 'https://repo.alessiodp.com/releases/' }
     maven { url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
     maven { url = 'https://jitpack.io' }
@@ -34,14 +33,14 @@ dependencies {
     zap 'io.github.classgraph:classgraph:4.8.157'
     implementation 'com.github.Revxrsal.Lamp:common:3.3.6'
     implementation 'com.github.Revxrsal.Lamp:bukkit:3.3.6'
-    // Anchor is not published to a public Maven repository yet. Bundle it so
-    // production servers never depend on the build machine's local repository.
-    implementation 'fr.robotv2.anchor:Anchor-bukkit:1.0-SNAPSHOT'
-    implementation 'fr.robotv2.anchor:Anchor-mariadb:1.0-SNAPSHOT'
-    implementation 'fr.robotv2.anchor:Anchor-sqlite:1.0-SNAPSHOT'
+    zap 'com.github.Robotv2.Anchor:Anchor-bukkit:v0.1.1'
+    zap 'com.github.Robotv2.Anchor:Anchor-mariadb:v0.1.1'
+    zap 'com.github.Robotv2.Anchor:Anchor-sqlite:v0.1.1'
     runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.17'
     zap 'com.github.Robotv2:PlaceholderAnnotationLib:v1.1.0'
 }
+
+configurations.testImplementation.extendsFrom(configurations.zap)
 
 tasks {
     runServer {
@@ -97,6 +96,10 @@ zapper {
     relocate('io.github.classgraph', 'classgraph')
     relocate('nonapi.io.github.classgraph', 'classgraph-nonapi')
     relocate('fr.robotv2.placeholderannotationlib', 'pal')
+    relocate('fr.robotv2.anchor', 'anchor')
+    relocate('com.zaxxer.hikari', 'hikari')
+    relocate('net.byteflux.libby', 'libby')
+    relocate('org.slf4j', 'slf4j')
 }
 
 shadowJar {
@@ -105,9 +108,6 @@ shadowJar {
     // Lamp 3's optional Brigadier bridge cannot parse Paper's 26.2 API version.
     // BDQ does not register this bridge, so keep Lamp's standard Bukkit fallback.
     exclude('revxrsal/commands/bukkit/brigadier/**')
-    relocate('fr.robotv2.anchor', "${bundledLibraryPrefix}.anchor")
-    relocate('com.zaxxer.hikari', "${bundledLibraryPrefix}.hikari")
-    relocate('net.byteflux.libby', "${bundledLibraryPrefix}.libby")
     relocate('org.slf4j', "${bundledLibraryPrefix}.slf4j")
     relocate('revxrsal.commands', "${bundledLibraryPrefix}.lamp")
 }
