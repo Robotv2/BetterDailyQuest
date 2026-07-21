@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.0.5] - 2026-07-21
+
+Condition reliability and clean-lifecycle beta release.
+
+### Added
+
+- Added a `permissions` progress condition with `ALL` and `ANY` matching modes.
+
+### Fixed
+
+- Made numerical PlaceholderAPI comparators return their numerical result instead of also requiring exact text equality.
+- Rejected quests with invalid condition configuration instead of loading them without the intended restriction.
+- Stopped quest-group schedulers before plugin resources close during shutdown.
+
+### Changed
+
+- Extended cross-version server checks to require a clean process exit without BetterDailyQuest shutdown errors.
+
 ## [0.0.4] - 2026-07-20
 
 Runtime dependency delivery beta release.
@@ -58,7 +76,8 @@ First public beta of BetterDailyQuest.
 - Numerical placeholder comparator guidance is limited to exact string matching.
 - Paper 26.1.2 may log a cron4j classloader warning during shutdown.
 
-[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.4...HEAD
+[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.5...HEAD
+[0.0.5]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.5
 [0.0.4]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.4
 [0.0.3]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.3
 [0.0.2]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.2
