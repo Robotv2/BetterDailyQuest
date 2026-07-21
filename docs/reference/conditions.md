@@ -6,6 +6,26 @@ description: Reference every supported BetterDailyQuest progress condition and i
 
 Conditions can appear under a quest or task `conditions` section.
 
+## `permissions`
+
+```yaml
+conditions:
+  permissions:
+    required:
+      - server.quests.stonebreaker
+      - server.world.resource
+    mode: ALL
+    error-message: "&cYou cannot progress this quest."
+```
+
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `required` | Required | Non-empty list of Bukkit permission nodes |
+| `mode` | `ALL` | `ALL` requires every node; `ANY` requires at least one |
+| `error-message` | No message | Text sent when the condition blocks progress |
+
+Mode names are case-insensitive. Invalid modes and empty permission lists prevent the quest from loading.
+
 ## `worlds`
 
 ```yaml
@@ -68,11 +88,23 @@ conditions:
     ready-state:
       placeholder: "%some_plugin_state%"
       match: "ready"
+    minimum-balance:
+      placeholder: "%vault_eco_balance_fixed%"
+      match: "100"
+      comparator: MORE_EQUAL
 ```
 
 Each named entry must match. External placeholders need PlaceholderAPI.
 
-Only exact string matching is recommended. Although `MORE`, `MORE_EQUAL`, `EQUAL`, `LESS_EQUAL`, and `LESS` comparator names exist, numerical comparisons also pass through an exact-text check in the current code.
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `placeholder` | Required | Text or PlaceholderAPI value to resolve |
+| `match` | Required | Expected text or numeric comparison value |
+| `comparator` | `EQUAL` | `MORE`, `MORE_EQUAL`, `EQUAL`, `LESS_EQUAL`, or `LESS` |
+
+Text matching is exact and case-sensitive. Numeric equality ignores representation differences such as `10` and `10.0`. Ordered comparators require numeric configured and resolved values.
+
+Missing values, unknown comparators, and ordered comparators with non-numeric match values prevent the quest from loading.
 
 ## Error messages
 

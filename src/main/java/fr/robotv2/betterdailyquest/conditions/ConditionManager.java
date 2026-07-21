@@ -4,6 +4,7 @@ import fr.robotv2.betterdailyquest.BetterDailyQuest;
 import fr.robotv2.betterdailyquest.conditions.impl.entity.VillagerCondition;
 import fr.robotv2.betterdailyquest.conditions.impl.item.EnchantCondition;
 import fr.robotv2.betterdailyquest.conditions.impl.player.PlaceholderCondition;
+import fr.robotv2.betterdailyquest.conditions.impl.player.PermissionCondition;
 import fr.robotv2.betterdailyquest.conditions.impl.player.WorldCondition;
 import fr.robotv2.betterdailyquest.conditions.impl.entity.SheepColorCondition;
 import org.bukkit.configuration.ConfigurationSection;
@@ -54,7 +55,13 @@ public class ConditionManager {
         try {
             final Constructor<? extends Condition> constructor = conditionClazz.getConstructor(String.class, ConfigurationSection.class);
             return Optional.of(constructor.newInstance(key, parent));
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException exception) {
+        } catch (InvocationTargetException exception) {
+            final Throwable cause = exception.getCause();
+            if(cause instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            throw new IllegalArgumentException("Invalid condition '" + key + "'.", cause);
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException exception) {
             plugin.getLogger().log(Level.SEVERE, "An error occurred while creating condition for class: " + conditionClazz.getSimpleName(), exception);
         }
 
@@ -64,6 +71,7 @@ public class ConditionManager {
     public void registerDefaultConditions() {
 
         registerCondition("placeholders", PlaceholderCondition.class);
+        registerCondition("permissions", PermissionCondition.class);
         registerCondition("worlds", WorldCondition.class);
 
         registerCondition("required_enchants", EnchantCondition.class);
