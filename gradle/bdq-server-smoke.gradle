@@ -184,7 +184,7 @@ def runServerSmokeTest = { Map target, String label ->
                 if (line =~ /Done \(.*\)! For help, type/) {
                     ready.set(true)
                 }
-                if (line =~ /(?i)(Error occurred while enabling BetterDailyQuest|Could not load.*BetterDailyQuest|InvalidPluginException|UnsupportedClassVersionError)/) {
+                if (line =~ /(?i)(Error occurred while (enabling|disabling) BetterDailyQuest|Could not load.*BetterDailyQuest|InvalidPluginException|UnsupportedClassVersionError|zip file closed)/) {
                     failures.add(line)
                 }
             }
@@ -196,22 +196,32 @@ def runServerSmokeTest = { Map target, String label ->
         Thread.sleep(250)
     }
 
+    def cleanShutdown = false
     if (process.isAlive()) {
         if (ready.get() && enabled.get() && failures.isEmpty()) {
             process.outputStream.withWriter(StandardCharsets.UTF_8.name()) { writer ->
                 writer.write('stop\n')
                 writer.flush()
             }
-            process.waitFor(30, TimeUnit.SECONDS)
+            cleanShutdown = process.waitFor(30, TimeUnit.SECONDS)
+            if (cleanShutdown && process.exitValue() != 0) {
+                failures.add("Server exited with code ${process.exitValue()}.")
+                cleanShutdown = false
+            }
         } else {
             process.destroy()
             process.waitFor(10, TimeUnit.SECONDS)
         }
     }
     if (process.isAlive()) {
+        failures.add('Server did not stop within 30 seconds.')
         process.destroyForcibly()
+        process.waitFor(10, TimeUnit.SECONDS)
     }
     readerThread.join(10_000)
+    if (readerThread.isAlive()) {
+        failures.add('Server output reader did not finish after shutdown.')
+    }
 
     def reportDirectory = layout.buildDirectory.dir('reports/bdq-server-smoke').get().asFile
     reportDirectory.mkdirs()
@@ -220,20 +230,20 @@ def runServerSmokeTest = { Map target, String label ->
         logFile.setText(output.toString(), StandardCharsets.UTF_8.name())
     }
 
-    if (!enabled.get() || !canonicalQuestLoaded.get() || !ready.get() || !failures.isEmpty()) {
+    if (!enabled.get() || !canonicalQuestLoaded.get() || !ready.get() || !cleanShutdown || !failures.isEmpty()) {
         throw new GradleException(
                 "BDQ failed its Paper ${minecraftVersion} smoke test. " +
                         "enabled=${enabled.get()}, canonicalQuestLoaded=${canonicalQuestLoaded.get()}, " +
-                        "ready=${ready.get()}, failures=${failures.size()}. " +
+                        "ready=${ready.get()}, cleanShutdown=${cleanShutdown}, failures=${failures.size()}. " +
                         "See ${logFile}."
         )
     }
-    logger.lifecycle("BDQ enabled and loaded Stonebreaker without detected errors on Paper ${minecraftVersion}. Log: ${logFile}")
+    logger.lifecycle("BDQ enabled, loaded Stonebreaker, and stopped cleanly on Paper ${minecraftVersion}. Log: ${logFile}")
 }
 
 def smokeTest18 = tasks.register('smokeTestBdqOnMinecraft18') {
     group = 'verification'
-    description = 'Starts Paper 1.8.8 and verifies that BDQ enables without errors.'
+    description = 'Starts Paper 1.8.8 and verifies that BDQ enables and stops without errors.'
     dependsOn tasks.named('shadowJar')
     dependsOn localAnchorPublications
     doLast {
@@ -243,7 +253,7 @@ def smokeTest18 = tasks.register('smokeTestBdqOnMinecraft18') {
 
 def smokeTestLatest = tasks.register('smokeTestBdqOnLatestMinecraft') {
     group = 'verification'
-    description = 'Starts the newest stable Paper server and verifies that BDQ enables without errors.'
+    description = 'Starts the newest stable Paper server and verifies that BDQ enables and stops without errors.'
     dependsOn tasks.named('shadowJar')
     dependsOn localAnchorPublications
     mustRunAfter smokeTest18
@@ -254,7 +264,7 @@ def smokeTestLatest = tasks.register('smokeTestBdqOnLatestMinecraft') {
 
 tasks.register('smokeTestBdqServers') {
     group = 'verification'
-    description = 'Verifies that BDQ enables without errors on Paper 1.8.8 and the newest stable Paper server.'
+    description = 'Verifies that BDQ enables and stops without errors on Paper 1.8.8 and the newest stable Paper server.'
     dependsOn tasks.named('shadowJar')
     dependsOn localAnchorPublications
     doLast {

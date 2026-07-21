@@ -7,7 +7,7 @@ description: Install BetterDailyQuest, create quests, and manage player progress
 BetterDailyQuest lets server owners create repeatable quest content with YAML files. It assigns quests to players, tracks their progress, saves their data, and runs rewards when they finish.
 
 [Create your first quest](getting-started/first-quest.md){ .md-button .md-button--primary }
-[Download 0.0.4 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.4){ .md-button }
+[Download 0.0.5 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.5){ .md-button }
 
 !!! warning "Use the guide for your release"
     The public site is built from a release tag. Pages in the repository can describe work that is not released yet.
@@ -58,6 +58,6 @@ BetterDailyQuest does not include a player quest menu or a command that lists ev
 
 ## Current compatibility evidence
 
-Version 0.0.4 Beta has passed startup checks on Paper 1.8.8 and Paper 26.1.2. A startup check proves that the plugin enables and loads its example content. It does not prove every task type or integration.
+Version 0.0.5 Beta has passed startup and clean-shutdown checks on Paper 1.8.8 and Paper 26.1.2. Stonebreaker gameplay is release-verified on Paper 26.1.2. These checks do not prove every task type or integration.
 
 [Read the compatibility reference](reference/compatibility.md)

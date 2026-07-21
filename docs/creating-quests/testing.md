@@ -28,6 +28,7 @@ description: Test BetterDailyQuest content safely before using it on a productio
 - [ ] Every task ID is a unique number.
 - [ ] Task types and targets exist on supported server versions.
 - [ ] Conditions pass and fail in the correct situations.
+- [ ] Invalid condition values prevent the quest from loading.
 - [ ] Console commands are safe after placeholders are replaced.
 - [ ] Repeatability and assignment limits match the intended design.
 - [ ] Waiting assignments ignore progress until they are started.

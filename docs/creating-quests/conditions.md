@@ -1,5 +1,5 @@
 ---
-description: Restrict BetterDailyQuest progress by world, enchantment, entity data, or placeholder value.
+description: Restrict BetterDailyQuest progress by permission, world, enchantment, entity data, or placeholder value.
 ---
 
 # Add progress conditions
@@ -12,6 +12,22 @@ Conditions stop an otherwise matching action from adding progress.
 - A task condition applies only to that task.
 
 Place a condition as close as possible to the task that needs it.
+
+## Permission condition
+
+```yaml
+conditions:
+  permissions:
+    required:
+      - server.quests.stonebreaker
+      - server.world.resource
+    mode: ALL
+    error-message: "&cYou cannot progress this quest."
+```
+
+`ALL` requires every listed permission. `ANY` requires at least one. The mode defaults to `ALL`.
+
+BDQ uses Bukkit permission checks, including permissions granted by your permission plugin. The `required` list cannot be empty.
 
 ## World condition
 
@@ -69,12 +85,19 @@ conditions:
     ready-state:
       placeholder: "%some_plugin_state%"
       match: "ready"
+    minimum-balance:
+      placeholder: "%vault_eco_balance_fixed%"
+      match: "100"
+      comparator: MORE_EQUAL
 ```
 
 PlaceholderAPI must be installed for external placeholders to resolve.
 
-!!! warning "Use exact text matching"
-    Only exact string matching is safe public guidance. Numerical comparator values exist in the code, but the current path also performs an exact text check.
+Text values use exact, case-sensitive equality. Numeric values support `MORE`, `MORE_EQUAL`, `EQUAL`, `LESS_EQUAL`, and `LESS`. A numeric comparator fails when the resolved value is not a number.
+
+## Invalid conditions
+
+BDQ does not load a quest when one of its conditions is malformed. The first load warning identifies the Quest ID and configuration error. Fix the YAML, then run `bdq reload` again.
 
 ## Test both results
 

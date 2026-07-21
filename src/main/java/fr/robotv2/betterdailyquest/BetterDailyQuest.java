@@ -133,6 +133,9 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
     @Override
     public void onDisable() {
 
+        // stop group schedulers before closing plugin resources
+        getQuestGroupManager().getGroups().forEach(QuestGroup::stopCronJob);
+
         // disable addons
         getAddonManager().getAddons().forEach(Addon::onDisable);
 

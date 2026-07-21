@@ -6,6 +6,7 @@ import fr.robotv2.betterdailyquest.util.NumberUtil;
 import fr.robotv2.betterdailyquest.util.placeholder.Placeholders;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +23,9 @@ public class PlaceholderCondition extends AbstractCondition {
         final ConfigurationSection child = Objects.requireNonNull(parent.getConfigurationSection(key));
         for(String placeholderKey : child.getKeys(false)) {
             final ConfigurationSection placeholderSection = child.getConfigurationSection(placeholderKey);
-            if(placeholderSection == null) continue;
+            if(placeholderSection == null) {
+                throw new IllegalArgumentException("Placeholder condition '" + placeholderKey + "' must be a section.");
+            }
             final PlaceholderConditionRecord record = new PlaceholderConditionRecord(placeholderSection);
             placeholderConditions.add(record);
         }
@@ -34,16 +37,7 @@ public class PlaceholderCondition extends AbstractCondition {
         for(PlaceholderConditionRecord record : placeholderConditions) {
 
             final String placeholder = Placeholders.safePlaceholderAPI(context.getInitiator(), record.placeholder);
-
-            if(record.type == PlaceholderValueType.NUMERICAL && NumberUtil.isNumber(placeholder)) {
-                final PlaceholderValueComparator comparator = record.comparator == null ? PlaceholderValueComparator.EQUAL : record.comparator;
-                final double playerValue = NumberUtil.toNumber(placeholder).doubleValue();
-                if(!comparator.function.apply(playerValue, record.matchValue)) {
-                    return false;
-                }
-            }
-
-            if(!record.match.equals(placeholder)) {
+            if(!record.matches(placeholder)) {
                 return false;
             }
         }
@@ -59,22 +53,25 @@ public class PlaceholderCondition extends AbstractCondition {
 
     private enum PlaceholderValueComparator {
 
-        MORE((playerValue, matchValue) -> playerValue > matchValue),
-        MORE_EQUAL((playerValue, matchValue) -> playerValue >= matchValue),
-        EQUAL(Objects::equals),
-        LESS_EQUAL((playerValue, matchValue) -> playerValue <= matchValue),
-        LESS(((playerValue, matchValue) -> playerValue < matchValue)),
+        MORE((playerValue, matchValue) -> playerValue.compareTo(matchValue) > 0),
+        MORE_EQUAL((playerValue, matchValue) -> playerValue.compareTo(matchValue) >= 0),
+        EQUAL((playerValue, matchValue) -> playerValue.compareTo(matchValue) == 0),
+        LESS_EQUAL((playerValue, matchValue) -> playerValue.compareTo(matchValue) <= 0),
+        LESS((playerValue, matchValue) -> playerValue.compareTo(matchValue) < 0),
         ;
 
-        private final BiFunction<Double, Double, Boolean> function;
+        private final BiFunction<BigDecimal, BigDecimal, Boolean> function;
         private final static PlaceholderValueComparator[] VALUES = values();
 
-        PlaceholderValueComparator(BiFunction<Double, Double, Boolean> function) {
+        PlaceholderValueComparator(BiFunction<BigDecimal, BigDecimal, Boolean> function) {
             this.function = function;
         }
 
         private static PlaceholderValueComparator fromName(String value) {
-            return Arrays.stream(VALUES).filter(valueComparator -> valueComparator.name().equalsIgnoreCase(value)).findFirst().orElse(null);
+            return Arrays.stream(VALUES)
+                    .filter(valueComparator -> valueComparator.name().equalsIgnoreCase(value))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Unknown placeholder comparator '" + value + "'."));
         }
     }
 
@@ -83,15 +80,15 @@ public class PlaceholderCondition extends AbstractCondition {
         private final String placeholder;
         private final PlaceholderValueComparator comparator;
         private final String match;
-        private final double matchValue;
+        private final BigDecimal matchValue;
 
         private final PlaceholderValueType type;
 
         private PlaceholderConditionRecord(ConfigurationSection child) {
             this(
-                    child.getString("placeholder"),
-                    PlaceholderValueComparator.fromName(child.getString("comparator")),
-                    child.getString("match")
+                    requireValue(child, "placeholder", false),
+                    PlaceholderValueComparator.fromName(child.getString("comparator", PlaceholderValueComparator.EQUAL.name())),
+                    requireValue(child, "match", true)
             );
         }
 
@@ -100,7 +97,25 @@ public class PlaceholderCondition extends AbstractCondition {
             this.comparator = comparator;
             this.match = match;
             this.type = NumberUtil.isNumber(match) ? PlaceholderValueType.NUMERICAL : PlaceholderValueType.STRING;
-            this.matchValue = type == PlaceholderValueType.NUMERICAL ? NumberUtil.toNumber(match).doubleValue() : 0;
+            if(type == PlaceholderValueType.STRING && comparator != PlaceholderValueComparator.EQUAL) {
+                throw new IllegalArgumentException("Placeholder comparator '" + comparator + "' requires a numeric match value.");
+            }
+            this.matchValue = type == PlaceholderValueType.NUMERICAL ? new BigDecimal(match) : null;
+        }
+
+        private boolean matches(String value) {
+            if(type == PlaceholderValueType.STRING) {
+                return match.equals(value);
+            }
+            return NumberUtil.isNumber(value) && comparator.function.apply(new BigDecimal(value), matchValue);
+        }
+
+        private static String requireValue(ConfigurationSection section, String key, boolean allowEmpty) {
+            final String value = section.getString(key);
+            if(value == null || (!allowEmpty && value.isBlank())) {
+                throw new IllegalArgumentException("Missing placeholder condition value '" + key + "'.");
+            }
+            return value;
         }
     }
 }
