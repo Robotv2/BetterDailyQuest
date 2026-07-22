@@ -2,20 +2,17 @@ package fr.robotv2.betterdailyquest.command;
 
 import fr.robotv2.betterdailyquest.BetterDailyQuest;
 import fr.robotv2.betterdailyquest.configurations.messages.MessageConfiguration;
+import fr.robotv2.betterdailyquest.configurations.QuestBoardConfiguration;
 import fr.robotv2.betterdailyquest.event.QuestDoneEvent;
-import fr.robotv2.betterdailyquest.event.QuestStartEvent;
 import fr.robotv2.betterdailyquest.event.TaskDoneEvent;
 import fr.robotv2.betterdailyquest.group.QuestGroup;
 import fr.robotv2.betterdailyquest.quest.Quest;
-import fr.robotv2.betterdailyquest.storage.DatabaseManager;
+import fr.robotv2.betterdailyquest.questboard.QuestBoard;
 import fr.robotv2.betterdailyquest.storage.model.ActiveQuest;
 import fr.robotv2.betterdailyquest.storage.model.QuestPlayer;
-import fr.robotv2.betterdailyquest.util.color.ColorProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Default;
@@ -24,8 +21,6 @@ import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.BukkitCommandActor;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
-
-import java.util.function.Consumer;
 
 @Command({"betterdailyquest", "bdq"})
 public class BetterDailyQuestCommand {
@@ -163,60 +158,41 @@ public class BetterDailyQuestCommand {
         handleStart(actor, target, questID, true);
     }
 
-    private void handleStart(BukkitCommandActor actor, Player target, String questID, boolean isOthers) {
-        MessageConfiguration.CommandMessages messages = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages();
-        handleStart(
-                actor.getSender(),
-                target,
-                questID,
-                isOthers,
-                plugin.getDatabaseManager(),
-                messages,
-                plugin.getColorProvider(),
-                event -> Bukkit.getPluginManager().callEvent(event)
-        );
+    @Subcommand("quests")
+    public void onQuests(BukkitCommandActor actor) {
+        Player player = actor.requirePlayer();
+        QuestBoardConfiguration boardConfiguration = plugin.getQuestConfiguration().getQuestBoardConfiguration();
+        if(!boardConfiguration.isEnabled()) {
+            sendBoardUnavailable(player);
+            return;
+        }
+
+        QuestPlayer questPlayer = plugin.getDatabaseManager().getCachedQuestPlayer(player);
+        if(questPlayer == null) {
+            MessageConfiguration.CommandMessages messages = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages();
+            player.sendMessage(plugin.getColorProvider().colorize(messages.getPlayerNotLoaded()));
+            return;
+        }
+
+        java.util.Optional<String> overflow = boardConfiguration.findOverflow(questPlayer);
+        if(overflow.isPresent()) {
+            plugin.getLogger().warning("Quest Board rejected for player '" + player.getName() + "': group '" + overflow.get() + "' has more assignments than configured slots.");
+            sendBoardUnavailable(player);
+            return;
+        }
+
+        QuestBoard board = new QuestBoard(plugin, player, questPlayer);
+        board.populate();
+        player.openInventory(board.getInventory());
     }
 
-    static void handleStart(CommandSender sender, Player target, String questID, boolean isOthers,
-                            DatabaseManager databaseManager, MessageConfiguration.CommandMessages messages,
-                            ColorProvider colorProvider, Consumer<Event> eventDispatcher) {
-        final QuestPlayer questPlayer = databaseManager.getCachedQuestPlayer(target);
-        if(questPlayer == null) {
-            sender.sendMessage(colorProvider.colorize(messages.getPlayerNotLoaded()));
-            return;
-        }
+    private void sendBoardUnavailable(Player player) {
+        String message = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages().getQuestBoardUnavailable();
+        player.sendMessage(plugin.getColorProvider().colorize(message));
+    }
 
-        final ActiveQuest activeQuest = questPlayer.getActiveQuest(questID);
-        if(activeQuest == null) {
-            sender.sendMessage(colorProvider.colorize(messages.getQuestNotFound()));
-            return;
-        }
-
-        if(activeQuest.isDone()) {
-            sender.sendMessage(colorProvider.colorize(messages.getQuestAlreadyCompleted()));
-            return;
-        }
-
-        if(activeQuest.isStarted()) {
-            sender.sendMessage(colorProvider.colorize(messages.getQuestAlreadyStarted()));
-            return;
-        }
-
-        final Quest quest = activeQuest.getQuest();
-        if(quest == null) {
-            String unavailableMessage = messages.getQuestUnavailable()
-                    .replace("%quest_id%", activeQuest.getQuestId());
-            sender.sendMessage(colorProvider.colorize(unavailableMessage));
-            return;
-        }
-
-        activeQuest.setStarted(true);
-        eventDispatcher.accept(new QuestStartEvent(quest, activeQuest, target));
-
-        String successMessage = (isOthers ? messages.getStartSuccessOthers() : messages.getStartSuccessSelf())
-                .replace("%quest_id%", activeQuest.getQuestId())
-                .replace("%player%", target.getName());
-        sender.sendMessage(colorProvider.colorize(successMessage));
+    private void handleStart(BukkitCommandActor actor, Player target, String questID, boolean isOthers) {
+        plugin.getQuestAssignmentStarter().start(actor.getSender(), target, questID, isOthers);
     }
 
     @Subcommand("reroll")

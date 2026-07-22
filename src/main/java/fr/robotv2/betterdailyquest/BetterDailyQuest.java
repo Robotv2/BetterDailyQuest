@@ -10,7 +10,9 @@ import fr.robotv2.betterdailyquest.group.QuestGroupManager;
 import fr.robotv2.betterdailyquest.listeners.QuestCosmeticListener;
 import fr.robotv2.betterdailyquest.listeners.StatisticListeners;
 import fr.robotv2.betterdailyquest.quest.Quest;
+import fr.robotv2.betterdailyquest.quest.QuestAssignmentStarter;
 import fr.robotv2.betterdailyquest.quest.QuestManager;
+import fr.robotv2.betterdailyquest.questboard.QuestBoardListener;
 import fr.robotv2.betterdailyquest.quest.type.QuestTypes;
 import fr.robotv2.betterdailyquest.storage.DatabaseManager;
 import fr.robotv2.betterdailyquest.storage.DatabaseManagerImpl;
@@ -54,6 +56,7 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
     private QuestResetHandler resetHandler;
     private ConditionManager conditionManager;
     private AddonManager addonManager;
+    private QuestAssignmentStarter questAssignmentStarter;
 
     private ColorProvider colorProvider;
     private File libsFolder;
@@ -105,6 +108,14 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
 
         this.resetHandler = new QuestResetHandler(this);
         this.colorProvider = McVersion.current().isAtLeast(1, 17) ? new ModernColorProvider() : new LegacyColorProvider();
+        getQuestConfiguration().getQuestBoardConfiguration().validateGroups(getQuestGroupManager().getGroups());
+        getQuestConfiguration().getQuestBoardConfiguration().logErrors(getLogger());
+        this.questAssignmentStarter = new QuestAssignmentStarter(
+                getDatabaseManager(),
+                () -> getQuestConfiguration().getMessageConfiguration().getCommandMessages(),
+                getColorProvider(),
+                event -> Bukkit.getPluginManager().callEvent(event)
+        );
 
         registerListeners();
         registerCommands();
@@ -162,6 +173,8 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
         getQuestGroupManager().getGroups().forEach(QuestGroup::stopCronJob);
         getQuestGroupManager().loadGroups();
         getQuestManager().loadQuests();
+        getQuestConfiguration().getQuestBoardConfiguration().validateGroups(getQuestGroupManager().getGroups());
+        getQuestConfiguration().getQuestBoardConfiguration().logErrors(getLogger());
 
         getAddonManager().getAddons().forEach(Addon::onReload);
     }
@@ -212,6 +225,10 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
         return conditionManager;
     }
 
+    public QuestAssignmentStarter getQuestAssignmentStarter() {
+        return questAssignmentStarter;
+    }
+
     public BukkitCommandHandler getCommandHandler() {
         return commandHandler;
     }
@@ -230,6 +247,7 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
 
         pm.registerEvents(new QuestCosmeticListener(this), this);
         pm.registerEvents(new StatisticListeners(), this);
+        pm.registerEvents(new QuestBoardListener(this), this);
 
         QuestTypes.getLoadedTypes().forEach((type) -> {
             try {

@@ -1,8 +1,7 @@
-package fr.robotv2.betterdailyquest.command;
+package fr.robotv2.betterdailyquest.quest;
 
 import fr.robotv2.betterdailyquest.configurations.messages.MessageConfiguration;
 import fr.robotv2.betterdailyquest.event.QuestStartEvent;
-import fr.robotv2.betterdailyquest.quest.Quest;
 import fr.robotv2.betterdailyquest.storage.DatabaseManager;
 import fr.robotv2.betterdailyquest.storage.model.ActiveQuest;
 import fr.robotv2.betterdailyquest.storage.model.QuestPlayer;
@@ -14,12 +13,15 @@ import org.bukkit.event.Event;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.function.Consumer;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
@@ -29,63 +31,51 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BetterDailyQuestCommandTest {
+class QuestAssignmentStarterTest {
 
-    @Mock
-    private DatabaseManager databaseManager;
+    @Mock private DatabaseManager databaseManager;
+    @Mock private ColorProvider colorProvider;
+    @Mock private CommandSender sender;
+    @Mock private Player target;
+    @Mock private QuestPlayer questPlayer;
+    @Mock private ActiveQuest activeQuest;
+    @Mock private Quest quest;
+    @Mock private Consumer<Event> eventDispatcher;
 
-    @Mock
-    private ColorProvider colorProvider;
-
-    @Mock
-    private CommandSender sender;
-
-    @Mock
-    private Player target;
-
-    @Mock
-    private QuestPlayer questPlayer;
-
-    @Mock
-    private ActiveQuest activeQuest;
-
-    @Mock
-    private Quest quest;
-
-    @Mock
-    private Consumer<Event> eventDispatcher;
-
-    private MessageConfiguration.CommandMessages messages;
+    private QuestAssignmentStarter starter;
 
     @BeforeEach
     void setUp() {
-        messages = new MessageConfiguration(new YamlConfiguration()).getCommandMessages();
+        MessageConfiguration.CommandMessages messages = new MessageConfiguration(new YamlConfiguration()).getCommandMessages();
+        starter = new QuestAssignmentStarter(databaseManager, messages, colorProvider, eventDispatcher);
         when(colorProvider.colorize(anyString())).thenAnswer(invocation -> invocation.getArgument(0));
         lenient().when(target.getName()).thenReturn("ExamplePlayer");
         when(databaseManager.getCachedQuestPlayer(target)).thenReturn(questPlayer);
     }
 
     @Test
-    void startTransitionsWaitingAssignmentAndFiresEventOnce() {
+    void waitingAssignmentTransitionsOnlyOnceAndFiresOneEvent() {
         when(questPlayer.getActiveQuest("stonebreaker")).thenReturn(activeQuest);
         when(activeQuest.getQuest()).thenReturn(quest);
         when(activeQuest.getQuestId()).thenReturn("stonebreaker");
+        when(activeQuest.isStarted()).thenReturn(false, true);
 
-        start("stonebreaker", false);
+        assertTrue(start("stonebreaker"));
+        assertFalse(start("stonebreaker"));
 
-        verify(activeQuest).setStarted(true);
+        verify(activeQuest, times(1)).setStarted(true);
         verify(eventDispatcher, times(1)).accept(any(QuestStartEvent.class));
     }
 
     @Test
-    void startEventContainsAssignmentQuestAndPlayer() {
+    void eventContainsAssignmentQuestAndPlayer() {
         when(questPlayer.getActiveQuest("stonebreaker")).thenReturn(activeQuest);
         when(activeQuest.getQuest()).thenReturn(quest);
         when(activeQuest.getQuestId()).thenReturn("stonebreaker");
 
-        start("stonebreaker", false);
+        assertTrue(start("stonebreaker"));
 
-        org.mockito.ArgumentCaptor<Event> eventCaptor = org.mockito.ArgumentCaptor.forClass(Event.class);
+        ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
         verify(eventDispatcher).accept(eventCaptor.capture());
         QuestStartEvent event = (QuestStartEvent) eventCaptor.getValue();
         assertSame(quest, event.getQuest());
@@ -94,79 +84,46 @@ class BetterDailyQuestCommandTest {
     }
 
     @Test
-    void missingAssignmentDoesNotMutateOrFireEvent() {
-        when(questPlayer.getActiveQuest("missing")).thenReturn(null);
-
-        start("missing", false);
-
-        verify(activeQuest, never()).setStarted(true);
-        verify(eventDispatcher, never()).accept(any());
-    }
-
-    @Test
-    void unloadedPlayerDoesNotMutateOrFireEvent() {
+    void unloadedPlayerIsRejectedWithoutMutation() {
         when(databaseManager.getCachedQuestPlayer(target)).thenReturn(null);
-
-        start("stonebreaker", false);
-
-        verify(activeQuest, never()).setStarted(true);
-        verify(eventDispatcher, never()).accept(any());
+        assertRejected("stonebreaker");
     }
 
     @Test
-    void completedAssignmentDoesNotMutateOrFireEvent() {
+    void missingAssignmentIsRejectedWithoutMutation() {
+        when(questPlayer.getActiveQuest("missing")).thenReturn(null);
+        assertRejected("missing");
+    }
+
+    @Test
+    void completedAssignmentIsRejectedWithoutMutation() {
         when(questPlayer.getActiveQuest("stonebreaker")).thenReturn(activeQuest);
         when(activeQuest.isDone()).thenReturn(true);
-
-        assertStartRejected();
+        assertRejected("stonebreaker");
     }
 
     @Test
-    void alreadyStartedAssignmentDoesNotMutateOrFireEvent() {
+    void startedAssignmentIsRejectedWithoutMutation() {
         when(questPlayer.getActiveQuest("stonebreaker")).thenReturn(activeQuest);
         when(activeQuest.isStarted()).thenReturn(true);
-
-        assertStartRejected();
+        assertRejected("stonebreaker");
     }
 
     @Test
-    void unavailableAssignmentDoesNotMutateOrFireEvent() {
+    void unavailableAssignmentIsRejectedWithoutMutation() {
         when(questPlayer.getActiveQuest("stonebreaker")).thenReturn(activeQuest);
         when(activeQuest.getQuest()).thenReturn(null);
         when(activeQuest.getQuestId()).thenReturn("stonebreaker");
-
-        assertStartRejected();
+        assertRejected("stonebreaker");
     }
 
-    @Test
-    void startOthersUsesTheSelectedTarget() {
-        when(questPlayer.getActiveQuest("stonebreaker")).thenReturn(activeQuest);
-        when(activeQuest.getQuest()).thenReturn(quest);
-        when(activeQuest.getQuestId()).thenReturn("stonebreaker");
-
-        start("stonebreaker", true);
-
-        verify(databaseManager).getCachedQuestPlayer(target);
-        verify(activeQuest).setStarted(true);
-    }
-
-    private void assertStartRejected() {
-        start("stonebreaker", false);
-
+    private void assertRejected(String questId) {
+        assertFalse(start(questId));
         verify(activeQuest, never()).setStarted(true);
         verify(eventDispatcher, never()).accept(any());
     }
 
-    private void start(String questId, boolean isOthers) {
-        BetterDailyQuestCommand.handleStart(
-                sender,
-                target,
-                questId,
-                isOthers,
-                databaseManager,
-                messages,
-                colorProvider,
-                eventDispatcher
-        );
+    private boolean start(String questId) {
+        return starter.start(sender, target, questId, false);
     }
 }

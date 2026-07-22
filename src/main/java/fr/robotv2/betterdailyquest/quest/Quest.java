@@ -73,6 +73,10 @@ public class Quest implements Optionnable, Cosmeticable {
         return questName;
     }
 
+    public List<String> getDescription() {
+        return questSection.getStringList("description");
+    }
+
     public Set<Condition> getConditions() {
         return Collections.unmodifiableSet(conditions);
     }

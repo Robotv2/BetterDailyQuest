@@ -51,6 +51,10 @@ public class Task implements Cosmeticable {
         return section;
     }
 
+    public String getTaskDescription() {
+        return section.getString("task_description", "");
+    }
+
     public Range getRequiredAmount() {
         return requiredAmount;
     }

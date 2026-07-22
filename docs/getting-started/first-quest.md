@@ -35,6 +35,7 @@ Important values:
 - `BREAK` listens for blocks broken by the assigned player.
 - `required_amount: 10` means that ten matching events are needed.
 - `STONE` and `COBBLESTONE` are the only accepted targets.
+- `description` and `task_description` provide the text and live progress shown by `bdq quests`.
 
 Use spaces for YAML indentation. Do not use tab characters.
 
@@ -66,6 +67,8 @@ bdq give daily stonebreaker PlayerName
 ```
 
 Replace `PlayerName` with the exact name of an online player. The player must be online and their data must be loaded.
+
+As that player, run `bdq quests`. Stonebreaker should appear with its description, task progress, status, and reset time. The inventory is protected: clicking or dragging must not move items.
 
 ## 5. Complete the quest
 

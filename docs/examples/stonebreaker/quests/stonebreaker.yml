@@ -1,12 +1,15 @@
 quests:
   stonebreaker:
     name: "&e&lStonebreaker"
+    description:
+      - "&7Break ten stone or cobblestone blocks."
     group: "daily"
     rewards:
       - "[message] &6Stonebreaker complete!"
     tasks:
       1:
         task_type: "BREAK"
+        task_description: "&7Broken: &e%task_progress%&8/&e%task_required%"
         required_amount: 10
         required_targets:
           - STONE

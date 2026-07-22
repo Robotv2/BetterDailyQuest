@@ -1,5 +1,33 @@
 debug: true
 
+quest-board:
+  title: "&6&lQuest Board &8| &7Quests"
+  rows: 6
+  filler-item:
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+  status:
+    waiting: "&eWaiting"
+    started: "&aIn progress"
+    completed: "&aCompleted"
+    unavailable: "&cUnavailable"
+  groups:
+    daily:
+      slots: [10, 11, 12]
+      quest-item:
+        material: PAPER
+        name: "&6&l%quest_name%"
+        lore:
+          - "%quest_description%"
+          - ""
+          - "%task_descriptions%"
+          - ""
+          - "&7Status: %quest_status%"
+          - "&7Refresh: &e%quest_reset_time%"
+      empty-item:
+        material: BARRIER
+        name: "&cNo quest assigned"
+
 database:
   type: SQLITE
   mariadb:
@@ -54,6 +82,8 @@ messages:
     max_rerolls_reached: "&cYou have reached the maximum rerolls for this quest group."
     no_quest_available: "&cNo replacement quest is available for reroll."
     specify_player_for_reroll: "&cYou must specify a player for reroll-others."
+    quest_board_unavailable: "&cThe Quest Board is unavailable. Please contact a server administrator."
+    quest_board_start_denied: "&cYou do not have permission to start this quest assignment."
 
     # Give command
     give_success: "&aThe quest '%quest_id%' has successfully been given to the player '%player%'."

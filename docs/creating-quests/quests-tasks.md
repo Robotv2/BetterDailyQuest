@@ -25,10 +25,13 @@ Quest IDs must be unique across all files and groups.
 quests:
   stonebreaker:
     name: "&eStonebreaker"
+    description:
+      - "&7Break ten stone or cobblestone blocks."
     group: "daily"
     tasks:
       1:
         task_type: "BREAK"
+        task_description: "&7Broken: &e%task_progress%&8/&e%task_required%"
         required_amount: 10
         required_targets:
           - STONE
@@ -36,6 +39,8 @@ quests:
 ```
 
 Use spaces for indentation. Lists use a dash. Text with color codes or special characters should be inside quotes.
+
+`description` supplies the Quest Board summary. Each nonblank `task_description` becomes a progress line on the board, ordered by numeric Task ID. These fields describe progress only; reward actions are never shown.
 
 ## Task questions
 

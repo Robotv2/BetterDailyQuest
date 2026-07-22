@@ -10,7 +10,8 @@ BDQ works without optional integrations. Add one only when it solves a clear nee
 | --- | --- |
 | Role-based assignment limits | Vault and a permissions provider |
 | Reset time in another plugin | PlaceholderAPI |
-| Menu, scoreboard, or quest browser | A compatible presentation plugin or addon |
+| Built-in inventory Quest Board | Core BDQ with `bdq quests` |
+| Scoreboard or advanced quest browser | A compatible presentation plugin or addon |
 | Extra BDQ behavior | A compatible addon |
 
 ## Vault role limits
@@ -48,7 +49,7 @@ No separate eCloud expansion is needed. Internal values such as `%quest_name%` a
 
 ## Presentation plugins
 
-Core BDQ has no quest menu and does not display the `description` or `task_description` fields. Before using a presentation layer, check:
+Core BDQ displays `description` and `task_description` on its inventory Quest Board. Before replacing or extending that presentation, check:
 
 - exact BDQ version support;
 - how players find active assignments;
