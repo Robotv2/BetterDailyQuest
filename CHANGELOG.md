@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.0.6] - 2026-07-22
+
+Built-in Quest Board beta release.
+
+### Added
+
+- Added the built-in `/bdq quests` inventory Quest Board with protected self-viewing and click-to-start support for permitted players.
+- Added configurable board layouts, status labels, items, and board failure messages.
+
+### Fixed
+
+- Made `%quest_name%` fall back to the Quest ID when a quest omits its optional name.
+- Persisted newly assigned quests and task rows before their progress changes.
+- Avoided modern `InventoryView` ABI calls so Quest Board protection works on Paper 1.8.8.
+
 ## [0.0.5] - 2026-07-21
 
 Condition reliability and clean-lifecycle beta release.
@@ -76,7 +91,8 @@ First public beta of BetterDailyQuest.
 - Numerical placeholder comparator guidance is limited to exact string matching.
 - Paper 26.1.2 may log a cron4j classloader warning during shutdown.
 
-[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.5...HEAD
+[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.6...HEAD
+[0.0.6]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.6
 [0.0.5]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.5
 [0.0.4]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.4
 [0.0.3]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.3

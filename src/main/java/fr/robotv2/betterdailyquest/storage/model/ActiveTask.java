@@ -40,6 +40,7 @@ public class ActiveTask implements java.io.Serializable, DirtyAware {
         this.required = BigDecimal.valueOf(task.getRequiredAmount().randomInt());
         this.progress = BigDecimal.valueOf(0);
         this.done = false;
+        this.dirty = true;
     }
 
     public ActiveTask(ActiveTaskDto dto) {

@@ -25,7 +25,7 @@ public class Placeholders {
         if(text == null || text.isEmpty() || value == null) return text;
         return text
                 .replace("%quest_id%", value.getQuestId())
-                .replace("%quest_name%", value.getQuestName())
+                .replace("%quest_name%", Optional.ofNullable(value.getQuestName()).orElse(value.getQuestId()))
                 .replace("%quest_group%", value.getQuestGroup().getGroupId())
                 .replace("%quest_tasks%", String.valueOf(value.getTasks().size()))
         ;
@@ -42,7 +42,10 @@ public class Placeholders {
     public static ValuePlaceholder<ActiveQuest> ACTIVE_QUEST_PLACEHOLDER = (text, value) -> {
         if(text == null || text.isEmpty() || value == null) return text;
         final Quest quest = BetterDailyQuest.instance().getQuestManager().fromId(value.getQuestId(), value.getGroupId());
-        return QUEST_PLACEHOLDER.apply(text, quest)
+        String questText = quest == null
+                ? text.replace("%quest_id%", value.getQuestId()).replace("%quest_group%", value.getGroupId())
+                : QUEST_PLACEHOLDER.apply(text, quest);
+        return questText
                 .replace("%quest_player%", Optional.ofNullable(Bukkit.getPlayer(value.getOwner())).map(Player::getName).orElse("Unknown."))
                 .replace("%quest_started%", String.valueOf(value.isStarted()))
                 .replace("%quest_done%", String.valueOf(value.isDone()))

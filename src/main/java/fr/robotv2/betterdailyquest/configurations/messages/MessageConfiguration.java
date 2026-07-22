@@ -35,6 +35,8 @@ public class MessageConfiguration {
         private final String rerollSuccessOthers;
         private final String rerollSuccessSelf;
         private final String completeSuccess;
+        private final String questBoardUnavailable;
+        private final String questBoardStartDenied;
 
         public CommandMessages(ConfigurationSection section) {
             this.reloadSuccess = getStringOrDefault(section, "reload_success", "&aThe plugin has been reloaded successfully.");
@@ -56,6 +58,8 @@ public class MessageConfiguration {
             this.rerollSuccessOthers = getStringOrDefault(section, "reroll_success_others", "&aThe quest '%quest_id%' has successfully been rerolled for the player '%player%'.");
             this.rerollSuccessSelf = getStringOrDefault(section, "reroll_success_self", "&aYour quest '%quest_id%' has been successfully rerolled.");
             this.completeSuccess = getStringOrDefault(section, "complete_success", "&aThe quest '%quest_id%' has successfully been completed for the player '%player%'.");
+            this.questBoardUnavailable = getStringOrDefault(section, "quest_board_unavailable", "&cThe Quest Board is unavailable. Please contact a server administrator.");
+            this.questBoardStartDenied = getStringOrDefault(section, "quest_board_start_denied", "&cYou do not have permission to start this quest assignment.");
         }
 
         private String getStringOrDefault(ConfigurationSection section, String key, String defaultValue) {
@@ -132,6 +136,14 @@ public class MessageConfiguration {
 
         public String getCompleteSuccess() {
             return completeSuccess;
+        }
+
+        public String getQuestBoardUnavailable() {
+            return questBoardUnavailable;
+        }
+
+        public String getQuestBoardStartDenied() {
+            return questBoardStartDenied;
         }
     }
 }

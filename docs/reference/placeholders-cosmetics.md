@@ -36,6 +36,8 @@ Quest-completion cosmetics and quest rewards can also use:
 | `%quest_reset_timestamp%` | Next reset time in milliseconds |
 | `%quest_reset_time%` | Formatted time until reset |
 
+The Quest Board also supports `%quest_status%`, using the configured waiting, in-progress, completed, or unavailable label. Board item names and lore apply internal values first, optional PlaceholderAPI values second, and BDQ color formatting last.
+
 ## Task values
 
 Task progress and task rewards can also use:

@@ -51,7 +51,7 @@ bdq start questID
 bdq start-others PlayerName questID
 ```
 
-Give players `betterdailyquest.command.start` when they should start their own assignments. Reserve `betterdailyquest.command.start.others` for trusted staff. Both commands require the target player to be online and loaded.
+Players can also run `bdq quests` and left-click a waiting assignment. Give players `betterdailyquest.command.start` when they should start their own assignments by command or click. Reserve `betterdailyquest.command.start.others` for trusted staff. Both start paths require the target player to be online and loaded.
 
 Keep `need-starting: false` when assignments should receive progress immediately.
 

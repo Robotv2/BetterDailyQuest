@@ -4,13 +4,14 @@ description: Reference every supported BetterDailyQuest config.yml section and v
 
 # `config.yml` reference
 
-`config.yml` controls global storage, cosmetics, reset-time formatting, command messages, and debug output.
+`config.yml` controls the Quest Board, global storage, cosmetics, reset-time formatting, command messages, and debug output.
 
 ## Top-level sections
 
 | Path | Type | Bundled value | Use |
 | --- | --- | --- | --- |
 | `debug` | Boolean | `true` | Add BDQ diagnostic messages |
+| `quest-board` | Section | Six-row daily layout | Configure the built-in player board |
 | `database` | Section | SQLite setup | Choose and configure storage |
 | `cosmetics` | Section | Enabled task and quest messages | Global display fallback |
 | `time_format` | Section | Short English units | Format reset time |
@@ -58,6 +59,32 @@ Event sections are `task_increment`, `task_done`, and `quest_done`.
 
 Supported tokens are `%days%`, `%hours%`, `%minutes%`, and `%seconds%`.
 
+## Quest Board
+
+`bdq quests` opens the command sender's board. Group layouts are rendered in configuration order; assignments use case-insensitive Quest ID order. Completed assignments stay visible until the group refresh removes them.
+
+| Path | Type | Use |
+| --- | --- | --- |
+| `quest-board.title` | Text, at most 32 characters | Inventory title |
+| `quest-board.rows` | Integer from `1` to `6` | Inventory size |
+| `quest-board.filler-item` | Item section | Fill unused inventory slots |
+| `quest-board.status.waiting` | Text | Waiting assignment label |
+| `quest-board.status.started` | Text | Started assignment label |
+| `quest-board.status.completed` | Text | Completed assignment label |
+| `quest-board.status.unavailable` | Text | Missing quest-content label |
+| `quest-board.groups.<group>.slots` | Integer list | Ordered slots reserved for the group |
+| `quest-board.groups.<group>.quest-item` | Item section | Assignment item |
+| `quest-board.groups.<group>.empty-item` | Item section | Unused group slot item |
+
+Each item section has an XSeries `material` and `name`. `quest-item` also has a `lore` list. Existing quest, assignment, task, and PlaceholderAPI values work in item names and lore. Two exact lore markers expand into multiple lines:
+
+- `%quest_description%` inserts the quest's `description` list.
+- `%task_descriptions%` inserts nonblank `task_description` values in numeric Task ID order.
+
+`%quest_status%` is board-only. The board never displays executable quest or task reward actions.
+
+Every loaded Quest Group needs a layout. Rows, title length, current-server materials, slot bounds, repeated or overlapping slots, and group coverage are checked on startup and `bdq reload`. An invalid layout disables only the board and logs each error. A board also refuses to open instead of hiding assignments when any group has more assignments than slots.
+
 ## Command messages
 
 All keys start with `messages.commands.`.
@@ -82,5 +109,7 @@ All keys start with `messages.commands.`.
 | `reroll_success_others` | `%quest_id%`, `%player%` |
 | `reroll_success_self` | `%quest_id%` |
 | `complete_success` | `%quest_id%`, `%player%` |
+| `quest_board_unavailable` | None |
+| `quest_board_start_denied` | None |
 
 Keep the `messages` section present. Missing command keys use built-in English fallback messages.

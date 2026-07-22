@@ -7,7 +7,7 @@ description: Install BetterDailyQuest, create quests, and manage player progress
 BetterDailyQuest lets server owners create repeatable quest content with YAML files. It assigns quests to players, tracks their progress, saves their data, and runs rewards when they finish.
 
 [Create your first quest](getting-started/first-quest.md){ .md-button .md-button--primary }
-[Download 0.0.5 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.5){ .md-button }
+[Download 0.0.6 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.6){ .md-button }
 
 !!! warning "Use the guide for your release"
     The public site is built from a release tag. Pages in the repository can describe work that is not released yet.
@@ -52,12 +52,12 @@ BetterDailyQuest lets server owners create repeatable quest content with YAML fi
 - Action bars and titles for progress and completion.
 - Optional Vault, PlaceholderAPI, and addon support.
 
-## What the core plugin does not include
+## Built-in Quest Board
 
-BetterDailyQuest does not include a player quest menu or a command that lists every active quest. Use progress messages or a compatible presentation addon if players need a menu, scoreboard, or browser.
+Players can open their own built-in Quest Board with `bdq quests`. It lists waiting, active, completed, and unavailable assignments; players with `betterdailyquest.command.start` can left-click a waiting assignment to start it.
 
 ## Current compatibility evidence
 
-Version 0.0.5 Beta has passed startup and clean-shutdown checks on Paper 1.8.8 and Paper 26.1.2. Stonebreaker gameplay is release-verified on Paper 26.1.2. These checks do not prove every task type or integration.
+Version 0.0.6 Beta has passed startup, clean-shutdown, Quest Board, Stonebreaker completion, reload, reconnect, and persistence checks on Paper 1.8.8 and Paper 26.1.2. These checks do not prove every task type or integration.
 
 [Read the compatibility reference](reference/compatibility.md)

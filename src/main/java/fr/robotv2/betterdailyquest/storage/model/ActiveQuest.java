@@ -41,6 +41,7 @@ public class ActiveQuest implements java.io.Serializable, DirtyAware {
         this.tasks = quest.getTasks().stream().map((task) -> new ActiveTask(quest, getUID(), task)).collect(Collectors.toSet());
         this.started = !quest.getOptionValue(Optionnable.Option.NEED_STARTING);
         this.rerollCount = 0;
+        this.dirty = true;
     }
 
     public ActiveQuest(ActiveQuestDto dto, Collection<ActiveTask> tasks) {

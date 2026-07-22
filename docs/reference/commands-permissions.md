@@ -19,6 +19,7 @@ Shows the running plugin version. It has no explicit permission.
 
 | Syntax | Permission | Target | Common failure |
 | --- | --- | --- | --- |
+| `bdq quests` | None | Command sender | Board configuration invalid or assignment count exceeds configured slots |
 | `bdq reload` | `betterdailyquest.command.reload` | None | Invalid content is skipped and logged |
 | `bdq give <group> <quest> [player]` | `betterdailyquest.command.give` | Online; defaults to sender | Already assigned or completed non-repeatable quest |
 | `bdq clear <player> <questID>` | `betterdailyquest.command.clear` | Online and loaded | Assignment not found |
@@ -35,10 +36,12 @@ Shows the running plugin version. It has no explicit permission.
 - `clear` deletes the assignment and task progress without recording completion.
 - `reset` restarts the same quest with fresh progress.
 - `start` lets a player begin a waiting assignment created with `need-starting: true`.
+- `quests` opens the sender's protected inventory board. Left-clicking a waiting quest uses the same start transition and requires `betterdailyquest.command.start`.
 - `start-others` lets staff or the console start a waiting assignment for an online, loaded player.
 - `reroll` chooses a different eligible quest from the same group.
 - `complete` finishes tasks and runs configured completion events and rewards.
 - Quest IDs are matched without case, but using the configured spelling is clearer in logs.
 - The self `start` command requires a player sender. The console must use `start-others`.
+- The `quests` command also requires a player sender and cannot view another player's assignments.
 
 See [Use commands and permissions](../administration/commands-permissions.md) for staff-role guidance.
