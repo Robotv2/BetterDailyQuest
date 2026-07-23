@@ -11,11 +11,13 @@ Check these points before you install BetterDailyQuest.
 - A Bukkit-compatible Minecraft server.
 - A Java runtime supported by that server.
 - Access to the server console and `plugins` folder.
-- The JAR from [BetterDailyQuest 0.0.6 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.6).
+- The JAR from [BetterDailyQuest 0.0.7 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.7).
 
 BetterDailyQuest targets Java 17 bytecode. A recent server can require a newer Java version. Use the Java version required by your server software.
 
 BetterDailyQuest downloads its required runtime libraries on first startup. Allow the server to reach JitPack and Maven Central, and keep the generated `.libs` folder. Do not install Anchor as a separate server plugin.
+
+BetterDailyQuest uses [bStats](https://bstats.org/docs/server-owners) for anonymous usage metrics, including the configured database type. It does not send database connection details. Server owners can disable metrics globally in `plugins/bStats/config.yml`.
 
 ## Optional plugins
 

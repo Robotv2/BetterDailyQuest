@@ -6,14 +6,16 @@ description: Review release-specific BetterDailyQuest server, Java, startup, and
 
 Compatibility claims are based on repeatable tests. A startup test and a gameplay test do not prove the same thing.
 
-## Version 0.0.6 Beta evidence
+## Version 0.0.7 Beta evidence
 
 | Server | Java used | Date | Startup | Player gameplay |
 | --- | --- | --- | --- | --- |
-| Paper 1.8.8 build 445 | Java 17 | 2026-07-22 | Plugin enabled, example loaded, clean shutdown | Quest Board opening and protection, Stonebreaker start and completion, reload, reconnect, and persistence verified |
-| Paper 26.1.2 build 74 | Java 25 | 2026-07-22 | Plugin enabled, example loaded, clean shutdown | Quest Board opening and protection, Stonebreaker start and completion, reload, reconnect, and persistence verified |
+| Paper 1.8.8 build 445 | Java 17 | 2026-07-23 | Plugin enabled, example loaded, clean shutdown | Not rerun; player-facing code is unchanged from the 0.0.6 verification |
+| Paper 26.1.2 build 74 | Java 25 | 2026-07-23 | Plugin enabled, example loaded, clean shutdown | Not rerun; player-facing code is unchanged from the 0.0.6 verification |
 
 The plugin bytecode targets Java 17. A server can require a newer Java runtime.
+
+Version 0.0.6 verified Quest Board opening and protection, Stonebreaker start and completion, reload, reconnect, and persistence on both listed servers. Version 0.0.7 only adds bStats metrics.
 
 ## What a startup test proves
 
