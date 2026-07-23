@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'fr.robotv2'
-version = '0.0.6'
+version = '0.0.7'
 
 repositories {
     mavenCentral()
@@ -33,6 +33,7 @@ dependencies {
     zap 'io.github.classgraph:classgraph:4.8.157'
     implementation 'com.github.Revxrsal.Lamp:common:3.3.6'
     implementation 'com.github.Revxrsal.Lamp:bukkit:3.3.6'
+    implementation 'org.bstats:bstats-bukkit:3.2.1'
     zap 'com.github.Robotv2.Anchor:Anchor-bukkit:v0.1.1'
     zap 'com.github.Robotv2.Anchor:Anchor-mariadb:v0.1.1'
     zap 'com.github.Robotv2.Anchor:Anchor-sqlite:v0.1.1'
@@ -108,6 +109,7 @@ shadowJar {
     // Lamp 3's optional Brigadier bridge cannot parse Paper's 26.2 API version.
     // BDQ does not register this bridge, so keep Lamp's standard Bukkit fallback.
     exclude('revxrsal/commands/bukkit/brigadier/**')
+    relocate('org.bstats', "${bundledLibraryPrefix}.bstats")
     relocate('org.slf4j', "${bundledLibraryPrefix}.slf4j")
     relocate('revxrsal.commands', "${bundledLibraryPrefix}.lamp")
 }

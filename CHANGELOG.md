@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.7] - 2026-07-23
+
+bStats usage metrics beta release.
+
+### Added
+
+- Added anonymous bStats usage metrics under plugin ID `32844`, including the configured database type.
+
 ## [0.0.6] - 2026-07-22
 
 Built-in Quest Board beta release.
@@ -91,7 +99,8 @@ First public beta of BetterDailyQuest.
 - Numerical placeholder comparator guidance is limited to exact string matching.
 - Paper 26.1.2 may log a cron4j classloader warning during shutdown.
 
-[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.6...HEAD
+[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.7...HEAD
+[0.0.7]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.7
 [0.0.6]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.6
 [0.0.5]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.5
 [0.0.4]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.4

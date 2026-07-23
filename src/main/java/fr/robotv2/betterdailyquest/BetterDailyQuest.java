@@ -26,6 +26,8 @@ import fr.robotv2.betterdailyquest.util.color.ColorProvider;
 import fr.robotv2.betterdailyquest.util.color.LegacyColorProvider;
 import fr.robotv2.betterdailyquest.util.color.ModernColorProvider;
 import fr.robotv2.placeholderannotationlib.api.PlaceholderAnnotationProcessor;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -40,6 +42,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -95,6 +98,12 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
         saveDefaultConfig();
         this.questConfiguration = new BetterDailyQuestConfiguration();
         getQuestConfiguration().loadConfiguration(getConfig());
+
+        Metrics metrics = new Metrics(this, 32844);
+        metrics.addCustomChart(new SimplePie(
+                "database_type",
+                () -> getConfig().getString("database.type", "UNKNOWN").toUpperCase(Locale.ROOT)
+        ));
 
         this.questGroupManager = new QuestGroupManager(getRelativeFile("groups"));
         this.questManager = new QuestManager(this, getRelativeFile("quests"));
