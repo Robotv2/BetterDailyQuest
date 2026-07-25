@@ -12,6 +12,38 @@ def paperProjectUrl = 'https://fill.papermc.io/v3/projects/paper'
 def smokeUserAgent = 'BDQ-server-smoke/1.0 (https://github.com/Robotv2/BetterDailyQuest)'
 def startupTimeoutSeconds = providers.gradleProperty('bdqServerStartupTimeoutSeconds').getOrElse('300').toInteger()
 def javaToolchains = extensions.getByType(JavaToolchainService)
+def expectedDefaultQuestIds = [
+        'daily-stonebreaker',
+        'daily-woodcutter',
+        'daily-builder',
+        'daily-baker',
+        'daily-cook',
+        'daily-monster-hunter',
+        'daily-archer',
+        'daily-angler',
+        'daily-shepherd',
+        'daily-dairy-farmer',
+        'weekly-quarry-worker',
+        'weekly-ore-prospector',
+        'weekly-site-builder',
+        'weekly-monster-slayer',
+        'weekly-master-angler',
+        'weekly-head-chef',
+        'weekly-artisan',
+        'weekly-enchanter',
+        'weekly-animal-caretaker',
+        'weekly-wolf-tamer',
+        'monthly-master-miner',
+        'monthly-grand-builder',
+        'monthly-legendary-hunter',
+        'monthly-seasoned-angler',
+        'monthly-master-chef',
+        'monthly-ranch-master',
+        'monthly-master-smith',
+        'monthly-master-archer',
+        'monthly-provisioner',
+        'monthly-all-rounder'
+] as Set
 def localAnchorBuild = gradle.includedBuilds.find { it.name == 'Anchor' }
 def localAnchorPublications = localAnchorBuild == null ? [] : [
         localAnchorBuild.task(':Anchor-api:publishToMavenLocal'),
@@ -118,21 +150,6 @@ def runServerSmokeTest = { Map target, String label ->
     def pluginsDirectory = new File(runDirectory, 'plugins')
     pluginsDirectory.mkdirs()
     Files.copy(pluginJar.toPath(), new File(pluginsDirectory, pluginJar.name).toPath(), StandardCopyOption.REPLACE_EXISTING)
-    def pluginDataDirectory = new File(pluginsDirectory, 'BetterDailyQuest')
-    def groupDirectory = new File(pluginDataDirectory, 'groups')
-    def questDirectory = new File(pluginDataDirectory, 'quests')
-    groupDirectory.mkdirs()
-    questDirectory.mkdirs()
-    Files.copy(
-            file('docs/examples/stonebreaker/groups/daily.yml').toPath(),
-            new File(groupDirectory, 'daily.yml').toPath(),
-            StandardCopyOption.REPLACE_EXISTING
-    )
-    Files.copy(
-            file('docs/examples/stonebreaker/quests/stonebreaker.yml').toPath(),
-            new File(questDirectory, 'stonebreaker.yml').toPath(),
-            StandardCopyOption.REPLACE_EXISTING
-    )
     new File(runDirectory, 'eula.txt').setText('eula=true\n', StandardCharsets.UTF_8.name())
     new File(runDirectory, 'server.properties').setText(
             'online-mode=false\nserver-port=0\ngenerate-structures=false\nlevel-type=FLAT\n',
@@ -164,7 +181,7 @@ def runServerSmokeTest = { Map target, String label ->
             .redirectErrorStream(true)
             .start()
     def enabled = new AtomicBoolean(false)
-    def canonicalQuestLoaded = new AtomicBoolean(false)
+    def loadedDefaultQuestIds = Collections.synchronizedSet(new HashSet<String>())
     def ready = new AtomicBoolean(false)
     def failures = new CopyOnWriteArrayList<String>()
     def output = new StringBuilder()
@@ -178,13 +195,14 @@ def runServerSmokeTest = { Map target, String label ->
                 if (line =~ /\[BetterDailyQuest\] Enabling BetterDailyQuest/) {
                     enabled.set(true)
                 }
-                if (line =~ /\[BetterDailyQuest\] stonebreaker has been loaded successfully\./) {
-                    canonicalQuestLoaded.set(true)
+                def loadedQuest = line =~ /\[BetterDailyQuest\] ([a-z0-9-]+) has been loaded successfully\./
+                if (loadedQuest.find()) {
+                    loadedDefaultQuestIds.add(loadedQuest.group(1))
                 }
                 if (line =~ /Done \(.*\)! For help, type/) {
                     ready.set(true)
                 }
-                if (line =~ /(?i)(Error occurred while (enabling|disabling) BetterDailyQuest|Could not load.*BetterDailyQuest|InvalidPluginException|UnsupportedClassVersionError|zip file closed)/) {
+                if (line =~ /(?i)(Error occurred while (enabling|disabling) BetterDailyQuest|Could not load.*BetterDailyQuest|InvalidPluginException|UnsupportedClassVersionError|zip file closed|An error occurred while loading quest|This quest will not be loaded|Quest Board disabled)/) {
                     failures.add(line)
                 }
             }
@@ -230,15 +248,17 @@ def runServerSmokeTest = { Map target, String label ->
         logFile.setText(output.toString(), StandardCharsets.UTF_8.name())
     }
 
-    if (!enabled.get() || !canonicalQuestLoaded.get() || !ready.get() || !cleanShutdown || !failures.isEmpty()) {
+    def missingDefaultQuestIds = expectedDefaultQuestIds - loadedDefaultQuestIds
+    if (!enabled.get() || !missingDefaultQuestIds.isEmpty() || !ready.get() || !cleanShutdown || !failures.isEmpty()) {
         throw new GradleException(
                 "BDQ failed its Paper ${minecraftVersion} smoke test. " +
-                        "enabled=${enabled.get()}, canonicalQuestLoaded=${canonicalQuestLoaded.get()}, " +
+                        "enabled=${enabled.get()}, loadedDefaultQuests=${loadedDefaultQuestIds.size()}/${expectedDefaultQuestIds.size()}, " +
                         "ready=${ready.get()}, cleanShutdown=${cleanShutdown}, failures=${failures.size()}. " +
+                        "Missing default quests: ${missingDefaultQuestIds.sort()}. " +
                         "See ${logFile}."
         )
     }
-    logger.lifecycle("BDQ enabled, loaded Stonebreaker, and stopped cleanly on Paper ${minecraftVersion}. Log: ${logFile}")
+    logger.lifecycle("BDQ enabled, loaded all ${expectedDefaultQuestIds.size()} default quests, and stopped cleanly on Paper ${minecraftVersion}. Log: ${logFile}")
 }
 
 def smokeTest18 = tasks.register('smokeTestBdqOnMinecraft18') {

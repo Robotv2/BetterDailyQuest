@@ -11,7 +11,7 @@ description: Install BetterDailyQuest and confirm that the plugin starts without
 ## Install the plugin
 
 1. Stop the server.
-2. Download the JAR attached to [BetterDailyQuest 0.0.7 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.7).
+2. Download the JAR attached to [BetterDailyQuest 0.0.8 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.8).
 3. Put the JAR directly in the server `plugins` folder.
 4. Make sure there is only one BetterDailyQuest JAR in that folder.
 5. Allow the server to access the internet for the first startup.
@@ -35,12 +35,17 @@ plugins/BetterDailyQuest/
 ├── config.yml
 ├── data.database
 ├── groups/
-│   └── daily.yml
+│   ├── daily.yml
+│   ├── weekly.yml
+│   └── monthly.yml
 └── quests/
-    └── daily-quests.yml
+    ├── daily-quests.yml
+    ├── weekly-quests.yml
+    └── monthly-quests.yml
 ```
 
 `data.database` is created when SQLite starts. An `addons` folder can appear after you install an addon.
+The three quest files contain ten examples each. By default, players receive five daily, three weekly, and one monthly quest.
 
 !!! success "Installation checkpoint"
     The console shows that BetterDailyQuest was enabled, the server reaches its ready state, and no enable error appears.

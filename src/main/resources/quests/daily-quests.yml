@@ -1,26 +1,152 @@
 quests:
-  break-block-1:
-    name: "&e&lBreak Block - 1"
+  daily-stonebreaker:
+    name: "Stonebreaker"
     description:
-      - "&7Break &e10 &7blocks of stone or cobblestone"
-      - "&7Break &e64 &7blocks of coal ore or deepslate coal ore"
+      - "&7Break stone or cobblestone."
     group: "daily"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
     tasks:
       1:
         task_type: "BREAK"
-        task_description: "&7Break &e%task_progress%&8/&e%task_required% &7blocks of stone or cobblestone"
-        required_amount: 10
+        task_description: "&7Stone broken: &f%task_progress%&8/&f%task_required%"
+        required_amount: 32
         required_targets:
           - STONE
           - COBBLESTONE
-        task_rewards:
-          - "[console] broadcast The player %player% just finished the first task !"
-      2:
+
+  daily-woodcutter:
+    name: "Woodcutter"
+    description:
+      - "&7Gather logs from common tree types."
+    group: "daily"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
         task_type: "BREAK"
-        task_description: "&7Break &e%task_progress%&8/&e%task_required% &7blocks of coal ore or deepslate coal ore"
-        required_amount: 64
+        task_description: "&7Logs gathered: &f%task_progress%&8/&f%task_required%"
+        required_amount: 24
         required_targets:
-          - COAL_ORE
-          - DEEPSLATE_COAL_ORE
-        task_rewards:
-          - "[console] broadcast The player %player% just finished the second task !"
+          - OAK_LOG
+          - BIRCH_LOG
+          - SPRUCE_LOG
+          - JUNGLE_LOG
+
+  daily-builder:
+    name: "Builder"
+    description:
+      - "&7Place basic building blocks."
+    group: "daily"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "PLACE"
+        task_description: "&7Blocks placed: &f%task_progress%&8/&f%task_required%"
+        required_amount: 32
+        required_targets:
+          - COBBLESTONE
+          - OAK_PLANKS
+
+  daily-baker:
+    name: "Baker"
+    description:
+      - "&7Craft bread for the day."
+    group: "daily"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "CRAFT"
+        task_description: "&7Bread crafted: &f%task_progress%&8/&f%task_required%"
+        required_amount: 8
+        required_target: BREAD
+
+  daily-cook:
+    name: "Cook"
+    description:
+      - "&7Prepare cooked food in a furnace."
+    group: "daily"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "COOK"
+        task_description: "&7Food cooked: &f%task_progress%&8/&f%task_required%"
+        required_amount: 16
+        required_targets:
+          - COOKED_BEEF
+          - COOKED_CHICKEN
+          - BAKED_POTATO
+
+  daily-monster-hunter:
+    name: "Monster Hunter"
+    description:
+      - "&7Defeat common hostile creatures."
+    group: "daily"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "KILL"
+        task_description: "&7Monsters defeated: &f%task_progress%&8/&f%task_required%"
+        required_amount: 12
+        required_targets:
+          - ZOMBIE
+          - SKELETON
+          - SPIDER
+
+  daily-archer:
+    name: "Archer"
+    description:
+      - "&7Practice with a bow and arrow."
+    group: "daily"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "LAUNCH"
+        task_description: "&7Arrows launched: &f%task_progress%&8/&f%task_required%"
+        required_amount: 32
+        required_target: ARROW
+
+  daily-angler:
+    name: "Angler"
+    description:
+      - "&7Catch items while fishing."
+    group: "daily"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "FISH_ITEM"
+        task_description: "&7Items caught: &f%task_progress%&8/&f%task_required%"
+        required_amount: 5
+        required_target: "*"
+
+  daily-shepherd:
+    name: "Shepherd"
+    description:
+      - "&7Shear sheep for wool."
+    group: "daily"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "SHEAR"
+        task_description: "&7Sheep sheared: &f%task_progress%&8/&f%task_required%"
+        required_amount: 8
+
+  daily-dairy-farmer:
+    name: "Dairy Farmer"
+    description:
+      - "&7Collect milk from cows."
+    group: "daily"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "MILK"
+        task_description: "&7Cows milked: &f%task_progress%&8/&f%task_required%"
+        required_amount: 4

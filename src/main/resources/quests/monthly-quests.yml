@@ -1,0 +1,255 @@
+quests:
+  monthly-master-miner:
+    name: "Master Miner"
+    description:
+      - "&7Complete a structured month-long mining operation."
+    group: "monthly"
+    options:
+      sequential-tasks: true
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "BREAK"
+        task_description: "&7Stone broken: &f%task_progress%&8/&f%task_required%"
+        required_amount: 2000
+        required_targets:
+          - STONE
+          - COBBLESTONE
+      2:
+        task_type: "BREAK"
+        task_description: "&7Common ores mined: &f%task_progress%&8/&f%task_required%"
+        required_amount: 256
+        required_targets:
+          - COAL_ORE
+          - IRON_ORE
+          - GOLD_ORE
+      3:
+        task_type: "BREAK"
+        task_description: "&7Diamond ore mined: &f%task_progress%&8/&f%task_required%"
+        required_amount: 16
+        required_target: DIAMOND_ORE
+
+  monthly-grand-builder:
+    name: "Grand Builder"
+    description:
+      - "&7Complete the stages of a major construction project."
+    group: "monthly"
+    options:
+      sequential-tasks: true
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "PLACE"
+        task_description: "&7Masonry placed: &f%task_progress%&8/&f%task_required%"
+        required_amount: 1024
+        required_targets:
+          - STONE
+          - COBBLESTONE
+          - BRICKS
+      2:
+        task_type: "PLACE"
+        task_description: "&7Planks placed: &f%task_progress%&8/&f%task_required%"
+        required_amount: 512
+        required_targets:
+          - OAK_PLANKS
+          - BIRCH_PLANKS
+          - SPRUCE_PLANKS
+          - JUNGLE_PLANKS
+      3:
+        task_type: "CRAFT"
+        task_description: "&7Torches crafted: &f%task_progress%&8/&f%task_required%"
+        required_amount: 64
+        required_target: TORCH
+
+  monthly-legendary-hunter:
+    name: "Legendary Hunter"
+    description:
+      - "&7Defeat several classes of hostile creatures."
+    group: "monthly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "KILL"
+        task_description: "&7Common monsters defeated: &f%task_progress%&8/&f%task_required%"
+        required_amount: 250
+        required_targets:
+          - ZOMBIE
+          - SKELETON
+          - SPIDER
+      2:
+        task_type: "KILL"
+        task_description: "&7Creepers defeated: &f%task_progress%&8/&f%task_required%"
+        required_amount: 100
+        required_target: CREEPER
+      3:
+        task_type: "KILL"
+        task_description: "&7Endermen defeated: &f%task_progress%&8/&f%task_required%"
+        required_amount: 25
+        required_target: ENDERMAN
+
+  monthly-seasoned-angler:
+    name: "Seasoned Angler"
+    description:
+      - "&7Build an exceptional catch over the month."
+    group: "monthly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "FISH_ITEM"
+        task_description: "&7Items caught: &f%task_progress%&8/&f%task_required%"
+        required_amount: 256
+        required_target: "*"
+
+  monthly-master-chef:
+    name: "Master Chef"
+    description:
+      - "&7Cook, bake, and consume a broad food supply."
+    group: "monthly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "COOK"
+        task_description: "&7Food cooked: &f%task_progress%&8/&f%task_required%"
+        required_amount: 256
+        required_target: "*"
+      2:
+        task_type: "CRAFT"
+        task_description: "&7Bread crafted: &f%task_progress%&8/&f%task_required%"
+        required_amount: 64
+        required_target: BREAD
+      3:
+        task_type: "CONSUME"
+        task_description: "&7Food consumed: &f%task_progress%&8/&f%task_required%"
+        required_amount: 64
+        required_target: "*"
+
+  monthly-ranch-master:
+    name: "Ranch Master"
+    description:
+      - "&7Maintain livestock and train new companions."
+    group: "monthly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "SHEAR"
+        task_description: "&7Sheep sheared: &f%task_progress%&8/&f%task_required%"
+        required_amount: 128
+      2:
+        task_type: "MILK"
+        task_description: "&7Cows milked: &f%task_progress%&8/&f%task_required%"
+        required_amount: 64
+      3:
+        task_type: "TAME"
+        task_description: "&7Wolves tamed: &f%task_progress%&8/&f%task_required%"
+        required_amount: 5
+        required_target: WOLF
+
+  monthly-master-smith:
+    name: "Master Smith"
+    description:
+      - "&7Craft iron equipment before enchanting it."
+    group: "monthly"
+    options:
+      sequential-tasks: true
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "CRAFT"
+        task_description: "&7Iron tools crafted: &f%task_progress%&8/&f%task_required%"
+        required_amount: 16
+        required_targets:
+          - IRON_PICKAXE
+          - IRON_SWORD
+      2:
+        task_type: "ENCHANT"
+        task_description: "&7Items enchanted: &f%task_progress%&8/&f%task_required%"
+        required_amount: 10
+        required_target: "*"
+
+  monthly-master-archer:
+    name: "Master Archer"
+    description:
+      - "&7Craft bows before completing extensive target practice."
+    group: "monthly"
+    options:
+      sequential-tasks: true
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "CRAFT"
+        task_description: "&7Bows crafted: &f%task_progress%&8/&f%task_required%"
+        required_amount: 16
+        required_target: BOW
+      2:
+        task_type: "LAUNCH"
+        task_description: "&7Arrows launched: &f%task_progress%&8/&f%task_required%"
+        required_amount: 512
+        required_target: ARROW
+
+  monthly-provisioner:
+    name: "Provisioner"
+    description:
+      - "&7Produce storage, processing, and lighting supplies."
+    group: "monthly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "CRAFT"
+        task_description: "&7Chests crafted: &f%task_progress%&8/&f%task_required%"
+        required_amount: 64
+        required_target: CHEST
+      2:
+        task_type: "CRAFT"
+        task_description: "&7Furnaces crafted: &f%task_progress%&8/&f%task_required%"
+        required_amount: 64
+        required_target: FURNACE
+      3:
+        task_type: "CRAFT"
+        task_description: "&7Torches crafted: &f%task_progress%&8/&f%task_required%"
+        required_amount: 128
+        required_target: TORCH
+
+  monthly-all-rounder:
+    name: "All-Rounder"
+    description:
+      - "&7Gather, build, and fight across a complete cycle."
+    group: "monthly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "BREAK"
+        task_description: "&7Logs gathered: &f%task_progress%&8/&f%task_required%"
+        required_amount: 512
+        required_targets:
+          - OAK_LOG
+          - BIRCH_LOG
+          - SPRUCE_LOG
+          - JUNGLE_LOG
+      2:
+        task_type: "PLACE"
+        task_description: "&7Planks placed: &f%task_progress%&8/&f%task_required%"
+        required_amount: 512
+        required_targets:
+          - OAK_PLANKS
+          - BIRCH_PLANKS
+          - SPRUCE_PLANKS
+          - JUNGLE_PLANKS
+      3:
+        task_type: "KILL"
+        task_description: "&7Monsters defeated: &f%task_progress%&8/&f%task_required%"
+        required_amount: 100
+        required_targets:
+          - ZOMBIE
+          - SKELETON
+          - SPIDER
+          - CREEPER

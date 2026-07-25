@@ -1,10 +1,10 @@
 debug: true
 
 quest-board:
-  title: "&6&lQuest Board &8| &7Quests"
+  title: "&8Quest Board"
   rows: 6
   filler-item:
-    material: BLACK_STAINED_GLASS_PANE
+    material: GRAY_STAINED_GLASS_PANE
     name: " "
   status:
     waiting: "&eWaiting"
@@ -13,20 +13,50 @@ quest-board:
     unavailable: "&cUnavailable"
   groups:
     daily:
-      slots: [10, 11, 12]
+      slots: [10, 11, 12, 13, 14]
       quest-item:
         material: PAPER
-        name: "&6&l%quest_name%"
+        name: "&f%quest_name%"
         lore:
           - "%quest_description%"
           - ""
           - "%task_descriptions%"
           - ""
           - "&7Status: %quest_status%"
-          - "&7Refresh: &e%quest_reset_time%"
+          - "&7Resets in: &f%quest_reset_time%"
       empty-item:
         material: BARRIER
-        name: "&cNo quest assigned"
+        name: "&8No daily quest assigned"
+    weekly:
+      slots: [28, 29, 30]
+      quest-item:
+        material: BOOK
+        name: "&a%quest_name%"
+        lore:
+          - "%quest_description%"
+          - ""
+          - "%task_descriptions%"
+          - ""
+          - "&7Status: %quest_status%"
+          - "&7Resets in: &f%quest_reset_time%"
+      empty-item:
+        material: BARRIER
+        name: "&8No weekly quest assigned"
+    monthly:
+      slots: [40]
+      quest-item:
+        material: NETHER_STAR
+        name: "&6%quest_name%"
+        lore:
+          - "%quest_description%"
+          - ""
+          - "%task_descriptions%"
+          - ""
+          - "&7Status: %quest_status%"
+          - "&7Resets in: &f%quest_reset_time%"
+      empty-item:
+        material: BARRIER
+        name: "&8No monthly quest assigned"
 
 database:
   type: SQLITE
