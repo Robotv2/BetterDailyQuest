@@ -63,5 +63,7 @@ public class QuestGroupManager {
 
     private void setupDefaultGroups() {
         BetterDailyQuest.instance().saveResource("groups" + File.separator + "daily.yml", false);
+        BetterDailyQuest.instance().saveResource("groups" + File.separator + "weekly.yml", false);
+        BetterDailyQuest.instance().saveResource("groups" + File.separator + "monthly.yml", false);
     }
 }

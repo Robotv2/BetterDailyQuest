@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.8] - 2026-07-25
+
+Default configuration showcase beta release.
+
+### Added
+
+- Added ten daily, ten weekly, and ten monthly quests to fresh installations.
+- Added recurring weekly and monthly groups alongside the daily group.
+
+### Changed
+
+- Reworked the default Quest Board into a restrained three-group layout with five daily, three weekly, and one monthly assignment slot.
+- Made fresh-install server smoke tests load and validate all thirty bundled quests.
+
 ## [0.0.7] - 2026-07-23
 
 bStats usage metrics beta release.
@@ -99,7 +113,8 @@ First public beta of BetterDailyQuest.
 - Numerical placeholder comparator guidance is limited to exact string matching.
 - Paper 26.1.2 may log a cron4j classloader warning during shutdown.
 
-[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.7...HEAD
+[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.8...HEAD
+[0.0.8]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.8
 [0.0.7]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.7
 [0.0.6]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.6
 [0.0.5]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.5

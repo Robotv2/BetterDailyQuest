@@ -4,6 +4,6 @@ options:
   need-starting: false
   automatically-given: true
 
-automatic-reset: "0 0 * * *"
-global-assignment-limit: 5
-max-rerolls: 2
+automatic-reset: "0 0 1 * *"
+global-assignment-limit: 1
+max-rerolls: 1

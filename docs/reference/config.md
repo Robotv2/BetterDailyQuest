@@ -11,7 +11,7 @@ description: Reference every supported BetterDailyQuest config.yml section and v
 | Path | Type | Bundled value | Use |
 | --- | --- | --- | --- |
 | `debug` | Boolean | `true` | Add BDQ diagnostic messages |
-| `quest-board` | Section | Six-row daily layout | Configure the built-in player board |
+| `quest-board` | Section | Six-row daily, weekly, and monthly layout | Configure the built-in player board |
 | `database` | Section | SQLite setup | Choose and configure storage |
 | `cosmetics` | Section | Enabled task and quest messages | Global display fallback |
 | `time_format` | Section | Short English units | Format reset time |
@@ -62,6 +62,8 @@ Supported tokens are `%days%`, `%hours%`, `%minutes%`, and `%seconds%`.
 ## Quest Board
 
 `bdq quests` opens the command sender's board. Group layouts are rendered in configuration order; assignments use case-insensitive Quest ID order. Completed assignments stay visible until the group refresh removes them.
+
+The bundled layout reserves five daily slots, three weekly slots, and one monthly slot. The matching group files assign the same maximum counts, so a fresh installation cannot hide assignments through insufficient board capacity.
 
 | Path | Type | Use |
 | --- | --- | --- |

@@ -153,6 +153,8 @@ public class QuestManager {
 
     private void setupDefaultQuests() {
         plugin.saveResource("quests" + File.separator + "daily-quests.yml", false);
+        plugin.saveResource("quests" + File.separator + "weekly-quests.yml", false);
+        plugin.saveResource("quests" + File.separator + "monthly-quests.yml", false);
     }
 
     @Nullable

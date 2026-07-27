@@ -1,0 +1,161 @@
+quests:
+  weekly-quarry-worker:
+    name: "Quarry Worker"
+    description:
+      - "&7Clear a substantial amount of stone."
+    group: "weekly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "BREAK"
+        task_description: "&7Stone broken: &f%task_progress%&8/&f%task_required%"
+        required_amount: 512
+        required_targets:
+          - STONE
+          - COBBLESTONE
+
+  weekly-ore-prospector:
+    name: "Ore Prospector"
+    description:
+      - "&7Mine common metal and fuel ores."
+    group: "weekly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "BREAK"
+        task_description: "&7Ores mined: &f%task_progress%&8/&f%task_required%"
+        required_amount: 96
+        required_targets:
+          - COAL_ORE
+          - IRON_ORE
+          - GOLD_ORE
+
+  weekly-site-builder:
+    name: "Site Builder"
+    description:
+      - "&7Place durable construction materials."
+    group: "weekly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "PLACE"
+        task_description: "&7Blocks placed: &f%task_progress%&8/&f%task_required%"
+        required_amount: 256
+        required_targets:
+          - COBBLESTONE
+          - OAK_PLANKS
+          - BRICKS
+
+  weekly-monster-slayer:
+    name: "Monster Slayer"
+    description:
+      - "&7Reduce the hostile creature population."
+    group: "weekly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "KILL"
+        task_description: "&7Monsters defeated: &f%task_progress%&8/&f%task_required%"
+        required_amount: 75
+        required_targets:
+          - ZOMBIE
+          - SKELETON
+          - SPIDER
+          - CREEPER
+
+  weekly-master-angler:
+    name: "Master Angler"
+    description:
+      - "&7Bring in a full week's catch."
+    group: "weekly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "FISH_ITEM"
+        task_description: "&7Items caught: &f%task_progress%&8/&f%task_required%"
+        required_amount: 32
+        required_target: "*"
+
+  weekly-head-chef:
+    name: "Head Chef"
+    description:
+      - "&7Prepare a large supply of cooked food."
+    group: "weekly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "COOK"
+        task_description: "&7Food cooked: &f%task_progress%&8/&f%task_required%"
+        required_amount: 128
+        required_targets:
+          - COOKED_BEEF
+          - COOKED_CHICKEN
+          - BAKED_POTATO
+
+  weekly-artisan:
+    name: "Artisan"
+    description:
+      - "&7Craft practical supplies for the week."
+    group: "weekly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "CRAFT"
+        task_description: "&7Supplies crafted: &f%task_progress%&8/&f%task_required%"
+        required_amount: 24
+        required_targets:
+          - CHEST
+          - FURNACE
+          - TORCH
+
+  weekly-enchanter:
+    name: "Enchanter"
+    description:
+      - "&7Enchant equipment of your choice."
+    group: "weekly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "ENCHANT"
+        task_description: "&7Items enchanted: &f%task_progress%&8/&f%task_required%"
+        required_amount: 5
+        required_target: "*"
+
+  weekly-animal-caretaker:
+    name: "Animal Caretaker"
+    description:
+      - "&7Care for sheep and cows throughout the week."
+    group: "weekly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "SHEAR"
+        task_description: "&7Sheep sheared: &f%task_progress%&8/&f%task_required%"
+        required_amount: 32
+      2:
+        task_type: "MILK"
+        task_description: "&7Cows milked: &f%task_progress%&8/&f%task_required%"
+        required_amount: 16
+
+  weekly-wolf-tamer:
+    name: "Wolf Tamer"
+    description:
+      - "&7Tame wolves as loyal companions."
+    group: "weekly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "TAME"
+        task_description: "&7Wolves tamed: &f%task_progress%&8/&f%task_required%"
+        required_amount: 3
+        required_target: WOLF
