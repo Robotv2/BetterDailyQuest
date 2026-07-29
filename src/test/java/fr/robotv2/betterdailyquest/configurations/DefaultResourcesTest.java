@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DefaultResourcesTest {
 
     private static final Map<String, GroupExpectation> GROUPS = Map.of(
-            "daily", new GroupExpectation("0 0 * * *", 5, 2, List.of(10, 11, 12, 13, 14)),
-            "weekly", new GroupExpectation("0 0 * * mon", 3, 1, List.of(28, 29, 30)),
-            "monthly", new GroupExpectation("0 0 1 * *", 1, 1, List.of(40))
+            "daily", new GroupExpectation("0 0 * * *", 5, 2, 11, List.of(10, 11, 12, 13, 14)),
+            "weekly", new GroupExpectation("0 0 * * mon", 3, 1, 11, List.of(28, 29, 30)),
+            "monthly", new GroupExpectation("0 0 1 * *", 1, 1, 10, List.of(40))
     );
 
     private static final Map<String, List<TaskExpectation>> QUESTS = Map.ofEntries(
@@ -38,6 +38,7 @@ class DefaultResourcesTest {
             quest("daily-angler", task("FISH_ITEM", 5, "*")),
             quest("daily-shepherd", task("SHEAR", 8)),
             quest("daily-dairy-farmer", task("MILK", 4)),
+            quest("daily-traveler", task("WALK", 500)),
             quest("weekly-quarry-worker", task("BREAK", 512, "STONE", "COBBLESTONE")),
             quest("weekly-ore-prospector", task("BREAK", 96, "COAL_ORE", "IRON_ORE", "GOLD_ORE")),
             quest("weekly-site-builder", task("PLACE", 256, "COBBLESTONE", "OAK_PLANKS", "BRICKS")),
@@ -48,6 +49,7 @@ class DefaultResourcesTest {
             quest("weekly-enchanter", task("ENCHANT", 5, "*")),
             quest("weekly-animal-caretaker", task("SHEAR", 32), task("MILK", 16)),
             quest("weekly-wolf-tamer", task("TAME", 3, "WOLF")),
+            quest("weekly-swimmer", task("SWIM", 1000)),
             quest("monthly-master-miner",
                     task("BREAK", 2000, "STONE", "COBBLESTONE"),
                     task("BREAK", 256, "COAL_ORE", "IRON_ORE", "GOLD_ORE"),
@@ -125,7 +127,7 @@ class DefaultResourcesTest {
         Map<String, ConfigurationSection> actualQuests = new HashMap<>();
         GROUPS.keySet().forEach(groupId -> {
             ConfigurationSection quests = section(resource("quests/" + groupId + "-quests.yml"), "quests");
-            assertEquals(10, quests.getKeys(false).size(), groupId);
+            assertEquals(GROUPS.get(groupId).questCount(), quests.getKeys(false).size(), groupId);
             quests.getKeys(false).forEach(questId -> {
                 ConfigurationSection previous = actualQuests.put(
                         questId.toLowerCase(),
@@ -191,7 +193,7 @@ class DefaultResourcesTest {
         return YamlConfiguration.loadConfiguration(new InputStreamReader(stream, StandardCharsets.UTF_8));
     }
 
-    private record GroupExpectation(String schedule, int assignmentLimit, int maxRerolls, List<Integer> slots) {
+    private record GroupExpectation(String schedule, int assignmentLimit, int maxRerolls, int questCount, List<Integer> slots) {
     }
 
     private record TaskExpectation(String type, int amount, List<String> targets) {

@@ -9,6 +9,8 @@ import fr.robotv2.betterdailyquest.quest.context.entity.*;
 import fr.robotv2.betterdailyquest.quest.context.item.*;
 import fr.robotv2.betterdailyquest.quest.context.player.PlayerDeathListener;
 import fr.robotv2.betterdailyquest.quest.context.player.PlayerLocationListener;
+import fr.robotv2.betterdailyquest.quest.context.player.PlayerSwimListener;
+import fr.robotv2.betterdailyquest.quest.context.player.PlayerWalkListener;
 import fr.robotv2.betterdailyquest.util.McVersion;
 import org.bukkit.Location;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -50,6 +52,8 @@ public class QuestTypes {
     // player types
     public static final QuestType<EntityDamageEvent.DamageCause> PLAYER_DEATH_TYPE = registerType(new QuestType<>("DEATH", EntityDamageEvent.DamageCause.class, PlayerDeathListener.class));
     public static final QuestType<Location>     LOCATION_TYPE = registerType(new QuestType<>("LOCATION", Location.class, PlayerLocationListener.class,false));
+    public static final QuestType<Void>         WALK_TYPE = registerType(new QuestType<>("WALK", Void.class, PlayerWalkListener.class));
+    public static final QuestType<Void>         SWIM_TYPE = registerType(new QuestType<>("SWIM", Void.class, PlayerSwimListener.class));
 
     @Contract("_ -> _")
     public static <T> QuestType<T> registerType(QuestType<T> type) {

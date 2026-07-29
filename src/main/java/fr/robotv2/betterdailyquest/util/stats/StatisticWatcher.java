@@ -38,13 +38,16 @@ public class StatisticWatcher {
 
     public void check(Player player) {
         int value = player.getStatistic(statistic);
-        int lastValue = playerStats.get(player.getUniqueId(), statistic);
-        if(value != lastValue) {
-            playerStats.put(player.getUniqueId(), statistic, value);
-            final Event event = callEvent.apply(player, lastValue, value);
-            if(event != null) {
-                Bukkit.getPluginManager().callEvent(event);
-            }
+        Integer lastValue = playerStats.get(player.getUniqueId(), statistic);
+        playerStats.put(player.getUniqueId(), statistic, value);
+
+        if(lastValue == null || value <= lastValue) {
+            return;
+        }
+
+        final Event event = callEvent.apply(player, lastValue, value);
+        if(event != null) {
+            Bukkit.getPluginManager().callEvent(event);
         }
     }
 }

@@ -12,41 +12,45 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class StatisticListeners implements Listener {
 
     public static final int DELAY = 20;
-    public static final Set<StatisticWatcher> WATCHERS = new HashSet<>();
+    private final List<StatisticWatcher> watchers = List.of(
+            new StatisticWatcher(Statistic.WALK_ONE_CM, PlayerWalkEvent::new),
+            new StatisticWatcher(Statistic.SPRINT_ONE_CM, PlayerWalkEvent::new),
+            new StatisticWatcher(Statistic.CROUCH_ONE_CM, PlayerWalkEvent::new),
+            new StatisticWatcher(Statistic.SWIM_ONE_CM, PlayerSwimEvent::new)
+    );
 
     public StatisticListeners() {
-        WATCHERS.add(new StatisticWatcher(Statistic.WALK_ONE_CM, PlayerWalkEvent::new));
-        WATCHERS.add(new StatisticWatcher(Statistic.SWIM_ONE_CM, PlayerSwimEvent::new));
-        // WATCHERS.add(new StatisticWatcher(Statistic.PLAY_ONE_MINUTE, (player, ignored1, ignored2) -> new PlayerStayOnlineEvent(player)));
+        Bukkit.getOnlinePlayers().forEach(this::initialize);
 
         Bukkit.getScheduler().runTaskTimer(BetterDailyQuest.instance(), () -> {
-
             for(Player player : Bukkit.getOnlinePlayers()) {
-                for(StatisticWatcher watcher : WATCHERS) {
+                for(StatisticWatcher watcher : watchers) {
                     watcher.check(player);
                 }
             }
-
         }, DELAY, DELAY);
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        for(StatisticWatcher watcher : WATCHERS) {
-            watcher.init(event.getPlayer());
-        }
+        initialize(event.getPlayer());
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        for(StatisticWatcher watcher : WATCHERS) {
+        for(StatisticWatcher watcher : watchers) {
             watcher.clear(event.getPlayer());
+        }
+    }
+
+    private void initialize(Player player) {
+        for(StatisticWatcher watcher : watchers) {
+            watcher.init(player);
         }
     }
 }

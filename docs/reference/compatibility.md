@@ -6,6 +6,16 @@ description: Review release-specific BetterDailyQuest server, Java, startup, and
 
 Compatibility claims are based on repeatable tests. A startup test and a gameplay test do not prove the same thing.
 
+## Version 0.0.9 pre-release evidence
+
+| Server | Java used | Date | Startup | Player gameplay |
+| --- | --- | --- | --- | --- |
+| Paper 1.8.8 build 445 | Java 17 | 2026-07-29 | Plugin enabled, all thirty-two fresh-install quests loaded, clean shutdown | Not run |
+| Paper 26.2 build 87 | Java 25 | 2026-07-29 | Plugin enabled, all thirty-two fresh-install quests loaded, clean shutdown | Not run |
+| User gameplay check | Not recorded | 2026-07-29 | Not used for startup evidence | Walking, sprinting, sneaking, swimming, completion, and persistence confirmed |
+
+Version 0.0.9 adds `WALK` and `SWIM` progression. Automated tests cover statistic baselines, positive distance changes, statistic resets, player cleanup, and conversion from centimeters to blocks. Cross-version player gameplay was not recorded, so the two server rows only claim startup and shutdown compatibility.
+
 ## Version 0.0.8 Beta evidence
 
 | Server | Java used | Date | Startup | Player gameplay |
