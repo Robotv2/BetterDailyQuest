@@ -150,3 +150,16 @@ quests:
         task_type: "MILK"
         task_description: "&7Cows milked: &f%task_progress%&8/&f%task_required%"
         required_amount: 4
+
+  daily-traveler:
+    name: "Traveler"
+    description:
+      - "&7Travel 500 blocks on foot."
+    group: "daily"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "WALK"
+        task_description: "&7Distance on foot: &f%task_progress%&8/&f%task_required% &7blocks"
+        required_amount: 500

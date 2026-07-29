@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.9] - 2026-07-29
+
+Movement quest types beta release.
+
+### Added
+
+- Added `WALK` tasks for distance traveled while walking, sprinting, or sneaking.
+- Added `SWIM` tasks for swimming distance.
+- Added one daily walking quest and one weekly swimming quest to fresh installations.
+
+### Changed
+
+- Made movement-statistic tracking safely initialize already-online players and ignore statistic resets.
+
 ## [0.0.8] - 2026-07-25
 
 Default configuration showcase beta release.
@@ -113,7 +127,8 @@ First public beta of BetterDailyQuest.
 - Numerical placeholder comparator guidance is limited to exact string matching.
 - Paper 26.1.2 may log a cron4j classloader warning during shutdown.
 
-[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.8...HEAD
+[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.9...HEAD
+[0.0.9]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.9
 [0.0.8]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.8
 [0.0.7]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.7
 [0.0.6]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.6

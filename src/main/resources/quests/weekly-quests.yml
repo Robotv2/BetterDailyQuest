@@ -159,3 +159,16 @@ quests:
         task_description: "&7Wolves tamed: &f%task_progress%&8/&f%task_required%"
         required_amount: 3
         required_target: WOLF
+
+  weekly-swimmer:
+    name: "Swimmer"
+    description:
+      - "&7Swim 1,000 blocks."
+    group: "weekly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "SWIM"
+        task_description: "&7Distance swum: &f%task_progress%&8/&f%task_required% &7blocks"
+        required_amount: 1000
