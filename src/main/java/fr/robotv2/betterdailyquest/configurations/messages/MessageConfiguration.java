@@ -18,6 +18,7 @@ public class MessageConfiguration {
     public static class CommandMessages {
 
         private final String reloadSuccess;
+        private final String reloadFailure;
         private final String playerNotLoaded;
         private final String questNotFound;
         private final String questAlreadyHas;
@@ -40,6 +41,7 @@ public class MessageConfiguration {
 
         public CommandMessages(ConfigurationSection section) {
             this.reloadSuccess = getStringOrDefault(section, "reload_success", "&aThe plugin has been reloaded successfully.");
+            this.reloadFailure = getStringOrDefault(section, "reload_failure", "&cReload failed. The previous configuration is still active. Check the console.");
             this.playerNotLoaded = getStringOrDefault(section, "player_not_loaded", "&cThe player is not connected or is not loaded.");
             this.questNotFound = getStringOrDefault(section, "quest_not_found", "&cThe target does not have this quest.");
             this.questAlreadyHas = getStringOrDefault(section, "quest_already_has", "&cThe target already has this quest.");
@@ -68,6 +70,10 @@ public class MessageConfiguration {
 
         public String getReloadSuccess() {
             return reloadSuccess;
+        }
+
+        public String getReloadFailure() {
+            return reloadFailure;
         }
 
         public String getPlayerNotLoaded() {

@@ -163,3 +163,16 @@ quests:
         task_type: "WALK"
         task_description: "&7Distance on foot: &f%task_progress%&8/&f%task_required% &7blocks"
         required_amount: 500
+
+  daily-acrobat:
+    name: "Acrobat"
+    description:
+      - "&7Jump 100 times."
+    group: "daily"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "JUMP"
+        task_description: "&7Jumps: &f%task_progress%&8/&f%task_required%"
+        required_amount: 100

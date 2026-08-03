@@ -11,7 +11,7 @@ description: Install BetterDailyQuest and confirm that the plugin starts without
 ## Install the plugin
 
 1. Stop the server.
-2. Download the JAR attached to [BetterDailyQuest 0.0.9 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.9).
+2. Download the JAR attached to [BetterDailyQuest 0.0.10 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.10).
 3. Put the JAR directly in the server `plugins` folder.
 4. Make sure there is only one BetterDailyQuest JAR in that folder.
 5. Allow the server to access the internet for the first startup.

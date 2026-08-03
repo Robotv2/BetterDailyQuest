@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.0.10] - 2026-08-05
+
+Movement and safe reload beta release.
+
+### Added
+
+- Added `JUMP` tasks for counting jumps.
+- Added `BOAT` and `MINECART` tasks for vehicle distance in blocks.
+- Added one daily, weekly, and monthly movement quest to fresh installations.
+- Added a configurable failure message for `bdq reload`.
+
+### Fixed
+
+- Invalid configuration or content no longer replaces the working runtime during `bdq reload`.
+- Quest group schedules now start only after their content has loaded successfully.
+
 ## [0.0.9] - 2026-07-29
 
 Movement quest types beta release.
@@ -127,7 +143,8 @@ First public beta of BetterDailyQuest.
 - Numerical placeholder comparator guidance is limited to exact string matching.
 - Paper 26.1.2 may log a cron4j classloader warning during shutdown.
 
-[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.9...HEAD
+[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.10...HEAD
+[0.0.10]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.10
 [0.0.9]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.9
 [0.0.8]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.8
 [0.0.7]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.7

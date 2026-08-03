@@ -7,8 +7,11 @@ import fr.robotv2.betterdailyquest.quest.context.block.BlockPlaceListener;
 import fr.robotv2.betterdailyquest.quest.context.block.PumpkinCarveListener;
 import fr.robotv2.betterdailyquest.quest.context.entity.*;
 import fr.robotv2.betterdailyquest.quest.context.item.*;
+import fr.robotv2.betterdailyquest.quest.context.player.PlayerBoatListener;
 import fr.robotv2.betterdailyquest.quest.context.player.PlayerDeathListener;
+import fr.robotv2.betterdailyquest.quest.context.player.PlayerJumpListener;
 import fr.robotv2.betterdailyquest.quest.context.player.PlayerLocationListener;
+import fr.robotv2.betterdailyquest.quest.context.player.PlayerMinecartListener;
 import fr.robotv2.betterdailyquest.quest.context.player.PlayerSwimListener;
 import fr.robotv2.betterdailyquest.quest.context.player.PlayerWalkListener;
 import fr.robotv2.betterdailyquest.util.McVersion;
@@ -54,6 +57,9 @@ public class QuestTypes {
     public static final QuestType<Location>     LOCATION_TYPE = registerType(new QuestType<>("LOCATION", Location.class, PlayerLocationListener.class,false));
     public static final QuestType<Void>         WALK_TYPE = registerType(new QuestType<>("WALK", Void.class, PlayerWalkListener.class));
     public static final QuestType<Void>         SWIM_TYPE = registerType(new QuestType<>("SWIM", Void.class, PlayerSwimListener.class));
+    public static final QuestType<Void>         JUMP_TYPE = registerType(new QuestType<>("JUMP", Void.class, PlayerJumpListener.class));
+    public static final QuestType<Void>         BOAT_TYPE = registerType(new QuestType<>("BOAT", Void.class, PlayerBoatListener.class));
+    public static final QuestType<Void>         MINECART_TYPE = registerType(new QuestType<>("MINECART", Void.class, PlayerMinecartListener.class));
 
     @Contract("_ -> _")
     public static <T> QuestType<T> registerType(QuestType<T> type) {

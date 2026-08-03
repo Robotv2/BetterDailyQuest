@@ -44,11 +44,18 @@ public class Quest implements Optionnable, Cosmeticable {
     }
 
     public Quest(BetterDailyQuest plugin, String questId, ConfigurationSection section) {
+        this(plugin, questId, section, Objects.requireNonNull(
+                plugin.getQuestGroupManager().getGroup(section.getString("group")),
+                "Unknown quest group '" + section.getString("group") + "'."
+        ));
+    }
+
+    public Quest(BetterDailyQuest plugin, String questId, ConfigurationSection section, QuestGroup questGroup) {
         this.plugin = plugin;
         this.questId = questId;
         this.questSection = section;
         this.questName = section.getString("name");
-        this.questGroup = Objects.requireNonNull(plugin.getQuestGroupManager().getGroup(section.getString("group")));
+        this.questGroup = questGroup;
         this.options = new QuestOption(section.getConfigurationSection("options"));
         this.cosmetics = new CosmeticMap(section.getConfigurationSection("cosmetics"));
         this.rewards = section.getStringList("rewards");

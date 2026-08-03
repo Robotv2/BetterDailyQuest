@@ -30,7 +30,7 @@ If `debug` is missing, Bukkit reads it as `false`. The bundled file currently se
 | `database.mariadb.username` | Text | Database user |
 | `database.mariadb.password` | Text | Database password |
 
-Changing the type does not move player data. See [Configure storage and backups](../administration/storage-backups.md).
+Changing storage requires a full server restart and does not move player data. See [Configure storage and backups](../administration/storage-backups.md).
 
 ## Cosmetics
 
@@ -85,7 +85,7 @@ Each item section has an XSeries `material` and `name`. `quest-item` also has a 
 
 `%quest_status%` is board-only. The board never displays executable quest or task reward actions.
 
-Every loaded Quest Group needs a layout. Rows, title length, current-server materials, slot bounds, repeated or overlapping slots, and group coverage are checked on startup and `bdq reload`. An invalid layout disables only the board and logs each error. A board also refuses to open instead of hiding assignments when any group has more assignments than slots.
+Every loaded Quest Group needs a layout. Rows, title length, current-server materials, slot bounds, repeated or overlapping slots, and group coverage are checked on startup and `bdq reload`. An invalid startup layout disables only the board and logs each error. During `bdq reload`, any layout error rejects the reload and keeps the previous runtime active. A board also refuses to open instead of hiding assignments when any group has more assignments than slots.
 
 ## Command messages
 
@@ -94,6 +94,7 @@ All keys start with `messages.commands.`.
 | Key | Placeholders |
 | --- | --- |
 | `reload_success` | None |
+| `reload_failure` | None |
 | `player_not_loaded` | None |
 | `quest_not_found` | None |
 | `quest_already_has` | None |

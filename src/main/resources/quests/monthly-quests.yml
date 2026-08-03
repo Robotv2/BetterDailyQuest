@@ -253,3 +253,16 @@ quests:
           - SKELETON
           - SPIDER
           - CREEPER
+
+  monthly-rail-traveler:
+    name: "Rail Traveler"
+    description:
+      - "&7Travel 10,000 blocks by minecart."
+    group: "monthly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "MINECART"
+        task_description: "&7Distance by minecart: &f%task_progress%&8/&f%task_required% &7blocks"
+        required_amount: 10000

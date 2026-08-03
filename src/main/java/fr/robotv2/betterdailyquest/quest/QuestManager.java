@@ -1,49 +1,60 @@
 package fr.robotv2.betterdailyquest.quest;
 
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import fr.robotv2.betterdailyquest.BetterDailyQuest;
 import fr.robotv2.betterdailyquest.group.QuestGroup;
+import fr.robotv2.betterdailyquest.group.QuestGroupManager;
 import fr.robotv2.betterdailyquest.quest.options.Optionnable;
 import fr.robotv2.betterdailyquest.storage.model.QuestPlayer;
 import fr.robotv2.betterdailyquest.util.FileUtil;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
-public class QuestManager {
+public final class QuestManager {
 
     private static final SplittableRandom QUEST_RANDOM = new SplittableRandom();
 
-    private final BetterDailyQuest plugin;
-    private final File questFolder;
     private final Table<String, String, Quest> quests;
-    private final Map<String, String> questGroupsByQuestId;
+    private final List<String> errors;
 
-    public QuestManager(BetterDailyQuest plugin, File questFolder) {
-        this.plugin = plugin;
-        this.questFolder = questFolder;
-        this.quests = HashBasedTable.create();
-        this.questGroupsByQuestId = new HashMap<>();
+    private QuestManager(Table<String, String, Quest> quests, List<String> errors) {
+        this.quests = ImmutableTable.copyOf(quests);
+        this.errors = List.copyOf(errors);
+    }
+
+    public static QuestManager load(BetterDailyQuest plugin, File questFolder, QuestGroupManager groupManager) {
+        final Table<String, String, Quest> quests = HashBasedTable.create();
+        final Map<String, String> questGroupsByQuestId = new HashMap<>();
+        final List<String> errors = new ArrayList<>();
+
+        if(!questFolder.exists()) {
+            questFolder.mkdirs();
+            setupDefaultQuests(Objects.requireNonNull(plugin, "plugin"));
+        }
+
+        FileUtil.iterateFiles(questFolder, file -> loadFile(
+                plugin, file, groupManager, quests, questGroupsByQuestId, errors
+        ));
+        return new QuestManager(quests, errors);
     }
 
     public Quest fromId(@NotNull String id, @NotNull String groupId) {
         return quests.get(id, groupId);
     }
 
-    public void clearQuests() {
-        quests.clear();
-        questGroupsByQuestId.clear();
-    }
-
     @UnmodifiableView
     public Collection<Quest> getQuests() {
-        return Collections.unmodifiableCollection(this.quests.values());
+        return this.quests.values();
     }
 
     @UnmodifiableView
@@ -103,62 +114,65 @@ public class QuestManager {
         return randomQuests;
     }
 
-    public void loadQuests() {
-
-        clearQuests();
-
-        if(!questFolder.exists()) {
-            questFolder.mkdirs();
-            setupDefaultQuests();
+    private static void loadFile(BetterDailyQuest plugin, File file, QuestGroupManager groups,
+                                 Table<String, String, Quest> quests, Map<String, String> questIds,
+                                 List<String> errors) {
+        if(!file.getName().endsWith(".yml")) {
+            return;
         }
 
-        FileUtil.iterateFiles(questFolder, (file) -> {
-            final YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
-            if(configuration.isConfigurationSection("quests")) {
-                final ConfigurationSection questSection = Objects.requireNonNull(configuration.getConfigurationSection("quests"));
-                questSection.getKeys(false).forEach((key) -> loadQuest(key, questSection.getConfigurationSection(key)));
-            } else {
-                loadQuest(FileUtil.getFileNameWithoutExtension(file).toLowerCase(), configuration);
-            }
-        });
+        final YamlConfiguration configuration = new YamlConfiguration();
+        try {
+            configuration.load(file);
+        } catch (IOException | InvalidConfigurationException exception) {
+            errors.add("Quest file '" + file.getName() + "': " + exception.getMessage());
+            return;
+        }
+
+        if(configuration.isConfigurationSection("quests")) {
+            final ConfigurationSection section = Objects.requireNonNull(configuration.getConfigurationSection("quests"));
+            section.getKeys(false).forEach(id -> loadQuest(
+                    plugin, id, section.getConfigurationSection(id), groups, quests, questIds, errors
+            ));
+        } else {
+            loadQuest(plugin, FileUtil.getFileNameWithoutExtension(file).toLowerCase(Locale.ROOT), configuration,
+                    groups, quests, questIds, errors);
+        }
     }
 
-    private void loadQuest(String questId, @NotNull ConfigurationSection section) {
+    private static void loadQuest(BetterDailyQuest plugin, String questId, @NotNull ConfigurationSection section,
+                                  QuestGroupManager groups, Table<String, String, Quest> quests,
+                                  Map<String, String> questIds, List<String> errors) {
         try {
-            final Quest quest = new Quest(plugin, questId, section);
+            final String configuredGroupId = section.getString("group");
+            final QuestGroup group = Objects.requireNonNull(
+                    groups.getGroup(configuredGroupId),
+                    "Unknown quest group '" + configuredGroupId + "'."
+            );
+            final Quest quest = new Quest(plugin, questId, section, group);
             final String groupId = quest.getQuestGroup().getGroupId();
-            final String existingGroup = registerQuestId(quest.getQuestId(), groupId);
+            final String existingGroup = questIds.putIfAbsent(quest.getQuestId().toLowerCase(Locale.ROOT), groupId);
             if(existingGroup != null) {
-                plugin.getLogger().warning(" ");
-                plugin.getLogger().warning(" WARNING - " + questId);
-                plugin.getLogger().warning("Duplicate quest id '" + quest.getQuestId() + "' found in group '" + groupId + "'.");
-                plugin.getLogger().warning("Quest ids must be globally unique. This quest id is already registered in group '" + existingGroup + "'.");
-                plugin.getLogger().warning("This duplicate quest will not be loaded.");
-                plugin.getLogger().warning(" ");
+                errors.add("Duplicate quest id '" + quest.getQuestId() + "' in groups '" + existingGroup + "' and '" + groupId + "'.");
                 return;
             }
             quests.put(quest.getQuestId(), quest.getQuestGroup().getGroupId(), quest);
-            this.plugin.getLogger().info(questId + " has been loaded successfully.");
+            if(plugin != null) {
+                plugin.getLogger().info(questId + " has been loaded successfully.");
+            }
         } catch (Exception exception) {
-            plugin.getLogger().warning(" ");
-            plugin.getLogger().warning(" WARNING - " + questId);
-            plugin.getLogger().warning("An error occurred while loading quest '" + questId + "'");
-            plugin.getLogger().warning("Error's message: " + exception.getMessage());
-            plugin.getLogger().warning(" ");
-            plugin.getLogger().warning("This quest will not be loaded. Please fix it and then reload");
-            plugin.getLogger().warning("the plugin.");
-            plugin.getLogger().warning(" ");
+            errors.add("Quest '" + questId + "': " + exception.getMessage());
         }
     }
 
-    private void setupDefaultQuests() {
+    public List<String> getErrors() {
+        return errors;
+    }
+
+    private static void setupDefaultQuests(BetterDailyQuest plugin) {
         plugin.saveResource("quests" + File.separator + "daily-quests.yml", false);
         plugin.saveResource("quests" + File.separator + "weekly-quests.yml", false);
         plugin.saveResource("quests" + File.separator + "monthly-quests.yml", false);
     }
 
-    @Nullable
-    String registerQuestId(String questId, String groupId) {
-        return questGroupsByQuestId.putIfAbsent(questId.toLowerCase(Locale.ROOT), groupId);
-    }
 }

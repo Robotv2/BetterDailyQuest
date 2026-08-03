@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DefaultResourcesTest {
 
     private static final Map<String, GroupExpectation> GROUPS = Map.of(
-            "daily", new GroupExpectation("0 0 * * *", 5, 2, 11, List.of(10, 11, 12, 13, 14)),
-            "weekly", new GroupExpectation("0 0 * * mon", 3, 1, 11, List.of(28, 29, 30)),
-            "monthly", new GroupExpectation("0 0 1 * *", 1, 1, 10, List.of(40))
+            "daily", new GroupExpectation("0 0 * * *", 5, 2, 12, List.of(10, 11, 12, 13, 14)),
+            "weekly", new GroupExpectation("0 0 * * mon", 3, 1, 12, List.of(28, 29, 30)),
+            "monthly", new GroupExpectation("0 0 1 * *", 1, 1, 11, List.of(40))
     );
 
     private static final Map<String, List<TaskExpectation>> QUESTS = Map.ofEntries(
@@ -39,6 +39,7 @@ class DefaultResourcesTest {
             quest("daily-shepherd", task("SHEAR", 8)),
             quest("daily-dairy-farmer", task("MILK", 4)),
             quest("daily-traveler", task("WALK", 500)),
+            quest("daily-acrobat", task("JUMP", 100)),
             quest("weekly-quarry-worker", task("BREAK", 512, "STONE", "COBBLESTONE")),
             quest("weekly-ore-prospector", task("BREAK", 96, "COAL_ORE", "IRON_ORE", "GOLD_ORE")),
             quest("weekly-site-builder", task("PLACE", 256, "COBBLESTONE", "OAK_PLANKS", "BRICKS")),
@@ -50,6 +51,7 @@ class DefaultResourcesTest {
             quest("weekly-animal-caretaker", task("SHEAR", 32), task("MILK", 16)),
             quest("weekly-wolf-tamer", task("TAME", 3, "WOLF")),
             quest("weekly-swimmer", task("SWIM", 1000)),
+            quest("weekly-sailor", task("BOAT", 5000)),
             quest("monthly-master-miner",
                     task("BREAK", 2000, "STONE", "COBBLESTONE"),
                     task("BREAK", 256, "COAL_ORE", "IRON_ORE", "GOLD_ORE"),
@@ -84,7 +86,8 @@ class DefaultResourcesTest {
             quest("monthly-all-rounder",
                     task("BREAK", 512, "OAK_LOG", "BIRCH_LOG", "SPRUCE_LOG", "JUNGLE_LOG"),
                     task("PLACE", 512, "OAK_PLANKS", "BIRCH_PLANKS", "SPRUCE_PLANKS", "JUNGLE_PLANKS"),
-                    task("KILL", 100, "ZOMBIE", "SKELETON", "SPIDER", "CREEPER"))
+                    task("KILL", 100, "ZOMBIE", "SKELETON", "SPIDER", "CREEPER")),
+            quest("monthly-rail-traveler", task("MINECART", 10000))
     );
 
     private static final Set<String> SEQUENTIAL_QUESTS = Set.of(

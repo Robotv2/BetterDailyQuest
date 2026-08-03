@@ -7,6 +7,9 @@ public class VoidTaskTarget extends TaskTarget<Void> {
 
     public VoidTaskTarget(Task task) {
         super(Void.class);
+        if(task.getTaskSection().contains("required_target") || task.getTaskSection().contains("required_targets")) {
+            throw new IllegalArgumentException("This task type does not accept a target.");
+        }
     }
 
     @Override

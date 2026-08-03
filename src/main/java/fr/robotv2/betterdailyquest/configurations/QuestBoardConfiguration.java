@@ -107,6 +107,10 @@ public class QuestBoardConfiguration {
         return errors.isEmpty();
     }
 
+    public List<String> getErrors() {
+        return Collections.unmodifiableList(errors);
+    }
+
     public void logErrors(Logger logger) {
         errors.forEach(error -> logger.warning("Quest Board disabled: " + error + "."));
     }

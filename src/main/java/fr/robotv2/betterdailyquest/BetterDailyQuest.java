@@ -29,6 +29,8 @@ import fr.robotv2.placeholderannotationlib.api.PlaceholderAnnotationProcessor;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,7 +41,11 @@ import revxrsal.zapper.ZapperJavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -105,17 +111,17 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
                 () -> getConfig().getString("database.type", "UNKNOWN").toUpperCase(Locale.ROOT)
         ));
 
-        this.questGroupManager = new QuestGroupManager(getRelativeFile("groups"));
-        this.questManager = new QuestManager(this, getRelativeFile("quests"));
         this.conditionManager = new ConditionManager(this);
 
         registerDatabaseManager();
 
-        getQuestGroupManager().loadGroups();
-        getQuestManager().loadQuests();
+        this.questGroupManager = QuestGroupManager.load(this, getRelativeFile("groups"));
+        this.questManager = QuestManager.load(this, getRelativeFile("quests"), getQuestGroupManager());
+        logContentErrors("startup", getQuestGroupManager().getErrors(), getQuestManager().getErrors());
         getDatabaseManager().init();
 
         this.resetHandler = new QuestResetHandler(this);
+        getQuestGroupManager().startCronJobs();
         this.colorProvider = McVersion.current().isAtLeast(1, 17) ? new ModernColorProvider() : new LegacyColorProvider();
         getQuestConfiguration().getQuestBoardConfiguration().validateGroups(getQuestGroupManager().getGroups());
         getQuestConfiguration().getQuestBoardConfiguration().logErrors(getLogger());
@@ -154,7 +160,7 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
     public void onDisable() {
 
         // stop group schedulers before closing plugin resources
-        getQuestGroupManager().getGroups().forEach(QuestGroup::stopCronJob);
+        getQuestGroupManager().stopCronJobs();
 
         // disable addons
         getAddonManager().getAddons().forEach(Addon::onDisable);
@@ -175,17 +181,82 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
         }
     }
 
-    public void onReload() {
+    public boolean onReload() {
+        final BetterDailyQuestConfiguration candidateConfiguration;
+        try {
+            candidateConfiguration = loadCandidateConfiguration();
+        } catch (IOException | InvalidConfigurationException | RuntimeException exception) {
+            getLogger().log(Level.WARNING, "Reload rejected: config.yml is invalid. The previous configuration remains active.", exception);
+            return false;
+        }
+
+        final QuestGroupManager candidateGroups = QuestGroupManager.load(this, getRelativeFile("groups"));
+        final QuestManager candidateQuests = QuestManager.load(this, getRelativeFile("quests"), candidateGroups);
+        candidateConfiguration.getQuestBoardConfiguration().validateGroups(candidateGroups.getGroups());
+
+        final List<String> errors = new ArrayList<>();
+        errors.addAll(candidateGroups.getErrors());
+        errors.addAll(candidateQuests.getErrors());
+        errors.addAll(candidateConfiguration.getQuestBoardConfiguration().getErrors());
+        if(!errors.isEmpty()) {
+            logContentErrors("reload", errors);
+            getLogger().warning("Reload rejected. The previous configuration remains active.");
+            return false;
+        }
+
+        getQuestGroupManager().stopCronJobs();
+        try {
+            candidateGroups.startCronJobs();
+        } catch (RuntimeException exception) {
+            try {
+                getQuestGroupManager().startCronJobs();
+            } catch (RuntimeException rollbackException) {
+                exception.addSuppressed(rollbackException);
+            }
+            getLogger().log(Level.SEVERE, "Reload rejected because the new schedules could not start. The previous schedules were restored.", exception);
+            return false;
+        }
+
+        this.questGroupManager = candidateGroups;
+        this.questManager = candidateQuests;
+        this.questConfiguration = candidateConfiguration;
         reloadConfig();
-        getQuestConfiguration().loadConfiguration(getConfig());
 
-        getQuestGroupManager().getGroups().forEach(QuestGroup::stopCronJob);
-        getQuestGroupManager().loadGroups();
-        getQuestManager().loadQuests();
-        getQuestConfiguration().getQuestBoardConfiguration().validateGroups(getQuestGroupManager().getGroups());
-        getQuestConfiguration().getQuestBoardConfiguration().logErrors(getLogger());
+        for(Addon addon : getAddonManager().getAddons()) {
+            try {
+                addon.onReload();
+            } catch (RuntimeException exception) {
+                getLogger().log(Level.SEVERE, "Addon '" + addon.getName() + "' failed its reload hook after the core configuration was reloaded.", exception);
+            }
+        }
+        return true;
+    }
 
-        getAddonManager().getAddons().forEach(Addon::onReload);
+    private BetterDailyQuestConfiguration loadCandidateConfiguration() throws IOException, InvalidConfigurationException {
+        final YamlConfiguration configuration = new YamlConfiguration();
+        configuration.load(new File(getDataFolder(), "config.yml"));
+
+        try(InputStream defaultsStream = getResource("config.yml")) {
+            if(defaultsStream != null) {
+                final YamlConfiguration defaults = YamlConfiguration.loadConfiguration(
+                        new InputStreamReader(defaultsStream, StandardCharsets.UTF_8)
+                );
+                configuration.setDefaults(defaults);
+            }
+        }
+
+        final BetterDailyQuestConfiguration candidate = new BetterDailyQuestConfiguration();
+        candidate.loadConfiguration(configuration);
+        return candidate;
+    }
+
+    @SafeVarargs
+    private final void logContentErrors(String phase, List<String>... errorLists) {
+        for(List<String> errors : errorLists) {
+            for(String error : errors) {
+                getLogger().warning("Invalid content during " + phase + ": " + error);
+            }
+        }
     }
 
     public void dbg(String message) {
@@ -271,7 +342,7 @@ public final class BetterDailyQuest extends ZapperJavaPlugin {
         commandHandler = BukkitCommandHandler.create(this);
 
         commandHandler.registerValueResolver(QuestGroup.class, (context) -> getQuestGroupManager().getGroup(context.pop()));
-        commandHandler.getAutoCompleter().registerSuggestion("groups", SuggestionProvider.map(getQuestGroupManager()::getGroups, QuestGroup::getGroupId));
+        commandHandler.getAutoCompleter().registerSuggestion("groups", SuggestionProvider.map(() -> getQuestGroupManager().getGroups(), QuestGroup::getGroupId));
         commandHandler.getAutoCompleter().registerParameterSuggestions(QuestGroup.class, "groups");
 
         commandHandler.registerValueResolver(Quest.class, (context) -> {
