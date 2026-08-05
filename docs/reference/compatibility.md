@@ -6,6 +6,17 @@ description: Review release-specific BetterDailyQuest server, Java, startup, and
 
 Compatibility claims are based on repeatable tests. A startup test and a gameplay test do not prove the same thing.
 
+## Version 0.0.10 pre-release evidence
+
+| Server | Java used | Date | Startup and reload | Player gameplay |
+| --- | --- | --- | --- | --- |
+| Paper 1.8.8 build 445 | Java 17 | 2026-08-03 | Plugin enabled, all thirty-five fresh-install quests loaded, invalid reload rejected, valid reload accepted, clean shutdown | Not run |
+| Paper 26.2 build 92 | Java 25 | 2026-08-03 | Plugin enabled, all thirty-five fresh-install quests loaded, invalid reload rejected, valid reload accepted, clean shutdown | Not run |
+
+Version 0.0.10 adds `JUMP`, `BOAT`, and `MINECART` progression. Automated tests cover jump counts, centimeter-to-block conversion, statistic baselines and resets, invalid candidate content, and the bundled quest catalog. The server smoke test changes the Quest Board to an invalid size, confirms that `bdq reload` is rejected, restores valid content, and confirms that the next reload succeeds.
+
+Cross-version player gameplay has not been recorded. Startup and console reload checks do not prove movement progression, completion, rewards, reconnect behavior, or persistence.
+
 ## Version 0.0.9 pre-release evidence
 
 | Server | Java used | Date | Startup | Player gameplay |

@@ -39,9 +39,13 @@ public class BetterDailyQuestCommand {
     @Subcommand("reload")
     @CommandPermission("betterdailyquest.command.reload")
     public void onReload(BukkitCommandActor actor) {
-        plugin.onReload();
-        MessageConfiguration.CommandMessages messages = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages();
-        actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getReloadSuccess()));
+        MessageConfiguration.CommandMessages previousMessages = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages();
+        if(plugin.onReload()) {
+            MessageConfiguration.CommandMessages messages = plugin.getQuestConfiguration().getMessageConfiguration().getCommandMessages();
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(messages.getReloadSuccess()));
+        } else {
+            actor.getSender().sendMessage(plugin.getColorProvider().colorize(previousMessages.getReloadFailure()));
+        }
     }
 
     @Subcommand("give")

@@ -1,5 +1,5 @@
 ---
-description: Configure BetterDailyQuest DEATH, LOCATION, WALK, and SWIM tasks.
+description: Configure BetterDailyQuest player and movement tasks.
 ---
 
 # Player task reference
@@ -73,3 +73,48 @@ required_amount: 1000
 - **Common mistake:** Walking through shallow water does not necessarily increase Minecraft's swimming statistic.
 
 Only distance gained after the player is being tracked counts. Walking, sprinting, flying, and vehicle travel do not count.
+
+## `JUMP`
+
+Counts increases to the player's Minecraft jump statistic.
+
+```yaml
+task_type: "JUMP"
+required_amount: 100
+```
+
+- **Target:** None.
+- **Progress:** Number of jumps recorded by Minecraft.
+- **Common mistake:** Adding a material or entity target makes the task invalid.
+
+The player's existing lifetime total is used as a baseline and does not become quest progress.
+
+## `BOAT`
+
+Counts distance traveled by boat.
+
+```yaml
+task_type: "BOAT"
+required_amount: 5000
+```
+
+- **Target:** None.
+- **Progress:** Boat distance in blocks; partial blocks can produce decimal progress.
+- **Common mistake:** Swimming and walking through water do not count.
+
+Only distance gained after the player is being tracked counts. Existing lifetime statistics are used as a baseline.
+
+## `MINECART`
+
+Counts distance traveled by minecart.
+
+```yaml
+task_type: "MINECART"
+required_amount: 10000
+```
+
+- **Target:** None.
+- **Progress:** Minecart distance in blocks; partial blocks can produce decimal progress.
+- **Common mistake:** Walking along rails does not count.
+
+Only distance gained after the player is being tracked counts. Existing lifetime statistics are used as a baseline.

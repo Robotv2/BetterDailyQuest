@@ -12,7 +12,7 @@ description: Test BetterDailyQuest content safely before using it on a productio
 2. Back up the files and database you will use.
 3. Change one quest idea at a time.
 4. Run `bdq reload`.
-5. Read every warning for the changed group and quest.
+5. Confirm that the command reports success, then read every warning for the changed group and quest.
 6. Give the quest to a test player with `bdq give`.
 7. If it uses `need-starting: true`, confirm progress is ignored before `bdq start`, then start it.
 8. Test actions that should add progress.
@@ -38,7 +38,7 @@ description: Test BetterDailyQuest content safely before using it on a productio
 
 Use a maintenance window. Keep a backup, reload once, and watch the full log. Test one real assignment before announcing the new content.
 
-If the reload fails, keep the first error and restore the matching files and database together. Do not keep reloading an unknown broken state.
+If the reload fails, the previous runtime remains active. Keep the first error, fix the files, and reload once more. Restore the matching files and database only when the underlying change also altered stored data.
 
 ## Next step
 

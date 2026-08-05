@@ -172,3 +172,16 @@ quests:
         task_type: "SWIM"
         task_description: "&7Distance swum: &f%task_progress%&8/&f%task_required% &7blocks"
         required_amount: 1000
+
+  weekly-sailor:
+    name: "Sailor"
+    description:
+      - "&7Travel 5,000 blocks by boat."
+    group: "weekly"
+    rewards:
+      - "[message] &aQuest complete: &f%quest_name%"
+    tasks:
+      1:
+        task_type: "BOAT"
+        task_description: "&7Distance by boat: &f%task_progress%&8/&f%task_required% &7blocks"
+        required_amount: 5000

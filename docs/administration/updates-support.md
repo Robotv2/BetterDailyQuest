@@ -15,7 +15,7 @@ Use the plugin command after changing:
 - quest YAML;
 - addon settings when the addon supports reloads.
 
-BDQ stops old group schedules, reloads its configuration and content, then calls addon reload hooks.
+BDQ validates the new configuration, groups, quests, conditions, and Quest Board before replacing the running state. If validation fails, the previous content and schedules remain active and the console lists each error. Addon reload hooks run only after the first-party reload succeeds.
 
 ## Restart the server
 

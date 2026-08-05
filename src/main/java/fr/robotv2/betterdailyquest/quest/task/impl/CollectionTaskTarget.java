@@ -51,9 +51,10 @@ public class CollectionTaskTarget<T> extends TaskTarget<T> {
 
     private void populate(String value, Function<String, T> function, Collection<T> collection) {
         final Collection<T> fetched = fetch(value, function);
-        if(!fetched.isEmpty()) {
-            collection.addAll(fetched);
+        if(fetched.isEmpty()) {
+            throw new IllegalArgumentException("Invalid task target '" + value + "'.");
         }
+        collection.addAll(fetched);
     }
 
     private Collection<T> fetch(String value, Function<String, T> stringTFunction) {

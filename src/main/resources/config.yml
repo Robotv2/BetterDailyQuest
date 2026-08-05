@@ -103,6 +103,7 @@ time_format:
 messages:
   commands:
     reload_success: "&aThe plugin has been reloaded successfully."
+    reload_failure: "&cReload failed. The previous configuration is still active. Check the console."
     player_not_loaded: "&cThe player is not connected or is not loaded."
     quest_not_found: "&cThe target does not have this quest."
     quest_already_has: "&cThe target already has this quest."

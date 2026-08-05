@@ -54,7 +54,6 @@ public class QuestGroup implements Cosmeticable {
         if(this.cronSyntax != null) {
             this.cronJob = new CronJob(this.cronSyntax, () -> BetterDailyQuest.instance().getResetHandler().reset(this));
             this.cronJob.prepare();
-            this.cronJob.start();
         } else {
             this.cronJob = null;
         }
@@ -93,6 +92,12 @@ public class QuestGroup implements Cosmeticable {
     public void stopCronJob() {
         if(cronJob != null) {
             cronJob.stop();
+        }
+    }
+
+    public void startCronJob() {
+        if(cronJob != null) {
+            cronJob.start();
         }
     }
 

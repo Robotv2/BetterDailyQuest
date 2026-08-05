@@ -24,6 +24,7 @@ def expectedDefaultQuestIds = [
         'daily-shepherd',
         'daily-dairy-farmer',
         'daily-traveler',
+        'daily-acrobat',
         'weekly-quarry-worker',
         'weekly-ore-prospector',
         'weekly-site-builder',
@@ -35,6 +36,7 @@ def expectedDefaultQuestIds = [
         'weekly-animal-caretaker',
         'weekly-wolf-tamer',
         'weekly-swimmer',
+        'weekly-sailor',
         'monthly-master-miner',
         'monthly-grand-builder',
         'monthly-legendary-hunter',
@@ -44,7 +46,8 @@ def expectedDefaultQuestIds = [
         'monthly-master-smith',
         'monthly-master-archer',
         'monthly-provisioner',
-        'monthly-all-rounder'
+        'monthly-all-rounder',
+        'monthly-rail-traveler'
 ] as Set
 def localAnchorBuild = gradle.includedBuilds.find { it.name == 'Anchor' }
 def localAnchorPublications = localAnchorBuild == null ? [] : [
@@ -216,6 +219,59 @@ def runServerSmokeTest = { Map target, String label ->
         Thread.sleep(250)
     }
 
+    def sendCommand = { String consoleCommand ->
+        process.outputStream.write((consoleCommand + System.lineSeparator()).getBytes(StandardCharsets.UTF_8))
+        process.outputStream.flush()
+    }
+    def waitForOutput = { String expected, int offset ->
+        def commandDeadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(20)
+        while (process.isAlive() && System.nanoTime() < commandDeadline) {
+            def found
+            synchronized (output) {
+                found = output.substring(Math.min(offset, output.length())).contains(expected)
+            }
+            if (found) return true
+            Thread.sleep(100)
+        }
+        false
+    }
+
+    def reloadVerified = false
+    if (process.isAlive() && ready.get() && enabled.get() && failures.isEmpty()) {
+        def pluginConfig = new File(runDirectory, 'plugins/BetterDailyQuest/config.yml')
+        def validConfig = pluginConfig.getText(StandardCharsets.UTF_8.name())
+        def invalidConfig = validConfig.replaceFirst('rows: 6', 'rows: 7')
+        if (invalidConfig == validConfig) {
+            failures.add('Could not prepare an invalid Quest Board configuration for the reload check.')
+        } else {
+            try {
+                pluginConfig.setText(invalidConfig, StandardCharsets.UTF_8.name())
+                def invalidOffset
+                synchronized (output) {
+                    invalidOffset = output.length()
+                }
+                sendCommand('bdq reload')
+                if (!waitForOutput('Reload rejected. The previous configuration remains active.', invalidOffset)) {
+                    failures.add('Invalid content did not reject bdq reload while preserving the previous runtime.')
+                }
+            } finally {
+                pluginConfig.setText(validConfig, StandardCharsets.UTF_8.name())
+            }
+
+            if (failures.isEmpty()) {
+                def validOffset
+                synchronized (output) {
+                    validOffset = output.length()
+                }
+                sendCommand('bdq reload')
+                reloadVerified = waitForOutput('The plugin has been reloaded successfully.', validOffset)
+                if (!reloadVerified) {
+                    failures.add('Valid content did not complete bdq reload after a rejected reload.')
+                }
+            }
+        }
+    }
+
     def cleanShutdown = false
     if (process.isAlive()) {
         if (ready.get() && enabled.get() && failures.isEmpty()) {
@@ -251,16 +307,16 @@ def runServerSmokeTest = { Map target, String label ->
     }
 
     def missingDefaultQuestIds = expectedDefaultQuestIds - loadedDefaultQuestIds
-    if (!enabled.get() || !missingDefaultQuestIds.isEmpty() || !ready.get() || !cleanShutdown || !failures.isEmpty()) {
+    if (!enabled.get() || !missingDefaultQuestIds.isEmpty() || !ready.get() || !reloadVerified || !cleanShutdown || !failures.isEmpty()) {
         throw new GradleException(
                 "BDQ failed its Paper ${minecraftVersion} smoke test. " +
                         "enabled=${enabled.get()}, loadedDefaultQuests=${loadedDefaultQuestIds.size()}/${expectedDefaultQuestIds.size()}, " +
-                        "ready=${ready.get()}, cleanShutdown=${cleanShutdown}, failures=${failures.size()}. " +
+                        "ready=${ready.get()}, reloadVerified=${reloadVerified}, cleanShutdown=${cleanShutdown}, failures=${failures.size()}. " +
                         "Missing default quests: ${missingDefaultQuestIds.sort()}. " +
                         "See ${logFile}."
         )
     }
-    logger.lifecycle("BDQ enabled, loaded all ${expectedDefaultQuestIds.size()} default quests, and stopped cleanly on Paper ${minecraftVersion}. Log: ${logFile}")
+    logger.lifecycle("BDQ enabled, loaded all ${expectedDefaultQuestIds.size()} default quests, rejected invalid reload content, accepted valid reload content, and stopped cleanly on Paper ${minecraftVersion}. Log: ${logFile}")
 }
 
 def smokeTest18 = tasks.register('smokeTestBdqOnMinecraft18') {
