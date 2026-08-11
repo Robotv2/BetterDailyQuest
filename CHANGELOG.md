@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.11] - 2026-08-11
+
+MySQL quest progress display fix.
+
+### Fixed
+
+- Quest progress loaded from a shared MySQL database no longer shows trailing decimal zeros or scientific notation after switching servers.
+
 ## [0.0.10] - 2026-08-05
 
 Movement and safe reload beta release.
@@ -143,7 +151,8 @@ First public beta of BetterDailyQuest.
 - Numerical placeholder comparator guidance is limited to exact string matching.
 - Paper 26.1.2 may log a cron4j classloader warning during shutdown.
 
-[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.10...HEAD
+[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.11...HEAD
+[0.0.11]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.11
 [0.0.10]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.10
 [0.0.9]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.9
 [0.0.8]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.8
