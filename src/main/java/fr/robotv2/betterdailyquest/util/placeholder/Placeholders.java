@@ -5,6 +5,7 @@ import fr.robotv2.betterdailyquest.quest.Quest;
 import fr.robotv2.betterdailyquest.quest.task.Task;
 import fr.robotv2.betterdailyquest.storage.model.ActiveQuest;
 import fr.robotv2.betterdailyquest.storage.model.ActiveTask;
+import fr.robotv2.betterdailyquest.util.DecimalUtil;
 import fr.robotv2.betterdailyquest.util.placeholder.impl.ValuePlaceholder;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
@@ -59,9 +60,9 @@ public class Placeholders {
         if(text == null || text.isEmpty() || value == null) return text;
         final Task task = value.getTask();
         return TASK_PLACEHOLDER.apply(text, task)
-                .replace("%task_progress%", value.getProgress().toString())
+                .replace("%task_progress%", DecimalUtil.format(value.getProgress()))
                 .replace("%task_done%", String.valueOf(value.isDone()))
-                .replace("%task_required%", value.getRequired().toString())
+                .replace("%task_required%", DecimalUtil.format(value.getRequired()))
                 ;
     };
 }
