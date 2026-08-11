@@ -2,6 +2,7 @@ package fr.robotv2.betterdailyquest.util;
 
 import org.bukkit.ChatColor;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 public class DecimalUtil {
@@ -10,6 +11,10 @@ public class DecimalUtil {
 
     public static String format(double value) {
         return DECIMAL_FORMAT.format(value);
+    }
+
+    public static String format(BigDecimal value) {
+        return value.stripTrailingZeros().toPlainString();
     }
 
     public static String percentage(double currentValue, double maximumValue) {

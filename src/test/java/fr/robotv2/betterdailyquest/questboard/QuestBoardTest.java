@@ -130,6 +130,24 @@ class QuestBoardTest {
         assertEquals("stonebreaker", Placeholders.QUEST_PLACEHOLDER.apply("%quest_name%", quest));
     }
 
+    @Test
+    void rendersDatabaseDecimalsAsPlayerFacingNumbers() {
+        when(firstActiveTask.getProgress()).thenReturn(new BigDecimal("1.0000000000"));
+        when(firstActiveTask.getRequired()).thenReturn(new BigDecimal("25.0000000000"));
+
+        try(MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
+            bukkit.when(Bukkit::getPluginManager).thenReturn(pluginManager);
+            when(pluginManager.isPluginEnabled("PlaceholderAPI")).thenReturn(false);
+
+            assertEquals("1/25", board.render(
+                    "%task_progress%/%task_required%", quest, activeQuest, firstTask, firstActiveTask));
+
+            when(firstActiveTask.getProgress()).thenReturn(new BigDecimal("2E+10"));
+            assertEquals("20000000000", board.render(
+                    "%task_progress%", quest, activeQuest, firstTask, firstActiveTask));
+        }
+    }
+
     private void task(Task task, ActiveTask activeTask, int id, String description) {
         lenient().when(task.getTaskId()).thenReturn(id);
         lenient().when(task.getTaskDescription()).thenReturn(description);

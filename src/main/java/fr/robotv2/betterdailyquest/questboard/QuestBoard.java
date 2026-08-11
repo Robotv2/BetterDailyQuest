@@ -13,6 +13,7 @@ import fr.robotv2.betterdailyquest.storage.model.ActiveQuest;
 import fr.robotv2.betterdailyquest.storage.model.ActiveTask;
 import fr.robotv2.betterdailyquest.storage.model.QuestPlayer;
 import fr.robotv2.betterdailyquest.storage.DatabaseManager;
+import fr.robotv2.betterdailyquest.util.DecimalUtil;
 import fr.robotv2.betterdailyquest.util.color.ColorProvider;
 import fr.robotv2.betterdailyquest.util.placeholder.Placeholders;
 import org.bukkit.Bukkit;
@@ -196,9 +197,9 @@ public class QuestBoard implements InventoryHolder {
         }
         if(activeTask != null) {
             rendered = rendered
-                    .replace("%task_progress%", activeTask.getProgress().toString())
+                    .replace("%task_progress%", DecimalUtil.format(activeTask.getProgress()))
                     .replace("%task_done%", String.valueOf(activeTask.isDone()))
-                    .replace("%task_required%", activeTask.getRequired().toString());
+                    .replace("%task_required%", DecimalUtil.format(activeTask.getRequired()));
         }
         return colorProvider.colorize(Placeholders.safePlaceholderAPI(player, rendered));
     }
