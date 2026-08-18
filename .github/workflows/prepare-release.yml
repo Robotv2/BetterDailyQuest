@@ -1,0 +1,61 @@
+name: Prepare release pull request
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Next semantic version (for example, 0.0.12)
+        required: true
+        type: string
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Prepare release metadata
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          python scripts/test_delivery.py
+          python scripts/test_release.py
+          python scripts/check_delivery.py
+          python scripts/release.py prepare "${VERSION}"
+
+      - name: Create release pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          branch="release/v${VERSION}"
+          if git ls-remote --exit-code --heads origin "${branch}" >/dev/null 2>&1; then
+            echo "Remote branch ${branch} already exists." >&2
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch --create "${branch}"
+          git add CHANGELOG.md gradle.properties
+          git commit -m "release: prepare ${VERSION}"
+          git push --set-upstream origin "${branch}"
+          gh pr create \
+            --base master \
+            --head "${branch}" \
+            --title "release: prepare ${VERSION}" \
+            --body "Automated release pull request for BetterDailyQuest ${VERSION}. Merging it publishes the validated JAR as a GitHub pre-release."
+
+          # Pull requests opened with GITHUB_TOKEN do not emit a pull_request
+          # workflow run. Explicit workflow_dispatch runs attach the required
+          # checks to the release branch's exact commit.
+          gh workflow run ci.yml --ref "${branch}"
+          gh workflow run docs.yml --ref "${branch}"

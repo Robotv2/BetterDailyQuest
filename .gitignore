@@ -1,8 +1,12 @@
 # Project exclude paths
+__pycache__/
+*.py[cod]
 /.gradle/
 /build/
 /build/classes/java/main/
 /.idea/
-/.agents/
+/.agents/*
+!/.agents/skills/
+!/.agents/skills/**
 /FUTURE_TASK_TYPES.md
 /FUTURE_CONDITIONS.md

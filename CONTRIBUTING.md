@@ -1,5 +1,11 @@
 # Contributing to BetterDailyQuest
 
+## Delivery workflow
+
+Keep each pull request focused on one user-visible outcome. Use a `feat/*`, `fix/*`, `docs/*`, `refactor/*`, `test/*`, `build/*`, or `chore/*` branch. Add tests for changed behavior and record user-visible changes under `Unreleased` in `CHANGELOG.md`.
+
+Completed pull requests are squash-merged into one meaningful commit, then their branches are deleted. Do not change `gradle.properties`, create tags, or publish releases from an implementation pull request. Releases use the automated release pull request described in `RELEASING.md`.
+
 ## Update the administrator guide
 
 Update the guide when a change affects:
@@ -30,9 +36,14 @@ A practical guide should explain the result, requirements, steps, complete examp
 
 A reference page should explain its scope, list exact values, show examples, and include important warnings.
 
-## Local documentation checks
+## Local checks
 
 ```powershell
+./gradlew clean test shadowJar
+python scripts/test_delivery.py
+python scripts/test_release.py
+python scripts/check_delivery.py
+python scripts/release.py validate
 python -m pip install -r requirements-docs.txt
 python scripts/validate_docs.py
 $env:NO_MKDOCS_2_WARNING = "true"

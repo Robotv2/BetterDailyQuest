@@ -2,25 +2,9 @@ name: Administrator documentation
 
 on:
   pull_request:
-    paths:
-      - "docs/**"
-      - "scripts/validate_docs.py"
-      - "mkdocs.yml"
-      - "requirements-docs.txt"
-      - "README.md"
-      - "CONTRIBUTING.md"
-      - ".github/workflows/docs.yml"
   push:
     branches:
       - master
-    paths:
-      - "docs/**"
-      - "scripts/validate_docs.py"
-      - "mkdocs.yml"
-      - "requirements-docs.txt"
-      - "README.md"
-      - "CONTRIBUTING.md"
-      - ".github/workflows/docs.yml"
   release:
     types:
       - published
