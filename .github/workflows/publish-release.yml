@@ -32,12 +32,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           version="$(python -c "import pathlib,re; print(re.search(r'^version=(.+)$', pathlib.Path('gradle.properties').read_text(), re.M).group(1))")"
+          previous="$(python -c "import sys; sys.path.insert(0, 'scripts'); import check_delivery; print(check_delivery.version_at('${GITHUB_SHA}^'))")"
+          if test "${previous}" = "${version}"; then
+            echo "Project version is unchanged; nothing to publish."
+            echo "publish=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
           python scripts/test_delivery.py
           python scripts/test_release.py
           python scripts/check_delivery.py
           python scripts/release.py validate
-          git show "${GITHUB_SHA}^:gradle.properties" > /tmp/previous-gradle.properties
-          previous="$(python -c "import pathlib,re; print(re.search(r'^version=(.+)$', pathlib.Path('/tmp/previous-gradle.properties').read_text(), re.M).group(1))")"
           python - "${previous}" "${version}" <<'PY'
           import sys
           old, new = (tuple(map(int, value.split('.'))) for value in sys.argv[1:])
@@ -54,8 +58,10 @@ jobs:
             exit 1
           fi
           echo "value=${version}" >> "${GITHUB_OUTPUT}"
+          echo "publish=true" >> "${GITHUB_OUTPUT}"
 
       - name: Set up Java
+        if: steps.version.outputs.publish == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -63,9 +69,11 @@ jobs:
           cache: gradle
 
       - name: Test and build exact release artifact
+        if: steps.version.outputs.publish == 'true'
         run: ./gradlew clean test shadowJar
 
       - name: Set up Python
+        if: steps.version.outputs.publish == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
@@ -73,15 +81,18 @@ jobs:
           cache-dependency-path: requirements-docs.txt
 
       - name: Validate administrator documentation
+        if: steps.version.outputs.publish == 'true'
         run: |
           python -m pip install --requirement requirements-docs.txt
           python scripts/validate_docs.py
           python -m mkdocs build --strict
 
       - name: Extract release notes
+        if: steps.version.outputs.publish == 'true'
         run: python scripts/release.py notes /tmp/release-notes.md
 
       - name: Publish GitHub pre-release
+        if: steps.version.outputs.publish == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.version.outputs.value }}
