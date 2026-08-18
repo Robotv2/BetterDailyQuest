@@ -24,12 +24,12 @@ jobs:
       NO_MKDOCS_2_WARNING: "true"
     steps:
       - name: Check out documentation source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.release.tag_name || github.sha }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.13"
           cache: pip
@@ -46,7 +46,7 @@ jobs:
 
       - name: Upload pull-request preview
         if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: administrator-guide-preview
           path: build/docs-site
@@ -54,7 +54,7 @@ jobs:
 
       - name: Upload GitHub Pages artifact
         if: github.event_name == 'release'
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: build/docs-site
 
@@ -80,4 +80,4 @@ jobs:
 
       - name: Deploy release-matched guide
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
