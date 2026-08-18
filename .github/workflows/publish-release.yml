@@ -1,0 +1,95 @@
+name: Publish release
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - gradle.properties
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: publish-release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      NO_MKDOCS_2_WARNING: "true"
+    steps:
+      - name: Check out exact release commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read and validate version
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="$(python -c "import pathlib,re; print(re.search(r'^version=(.+)$', pathlib.Path('gradle.properties').read_text(), re.M).group(1))")"
+          python scripts/test_delivery.py
+          python scripts/test_release.py
+          python scripts/check_delivery.py
+          python scripts/release.py validate
+          git show "${GITHUB_SHA}^:gradle.properties" > /tmp/previous-gradle.properties
+          previous="$(python -c "import pathlib,re; print(re.search(r'^version=(.+)$', pathlib.Path('/tmp/previous-gradle.properties').read_text(), re.M).group(1))")"
+          python - "${previous}" "${version}" <<'PY'
+          import sys
+          old, new = (tuple(map(int, value.split('.'))) for value in sys.argv[1:])
+          if new <= old:
+              raise SystemExit(f"Release version {sys.argv[2]} must be newer than {sys.argv[1]}")
+          PY
+          release_pr="$(gh api "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/pulls" --jq ".[] | select(.merged_at != null and .base.ref == \"master\" and .head.ref == \"release/v${version}\") | .number" | head -1)"
+          test -n "${release_pr}" || {
+            echo "The version must arrive through the release/v${version} pull request." >&2
+            exit 1
+          }
+          if git ls-remote --exit-code --tags origin "refs/tags/v${version}" >/dev/null 2>&1; then
+            echo "Tag v${version} already exists." >&2
+            exit 1
+          fi
+          echo "value=${version}" >> "${GITHUB_OUTPUT}"
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: Test and build exact release artifact
+        run: ./gradlew clean test shadowJar
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements-docs.txt
+
+      - name: Validate administrator documentation
+        run: |
+          python -m pip install --requirement requirements-docs.txt
+          python scripts/validate_docs.py
+          python -m mkdocs build --strict
+
+      - name: Extract release notes
+        run: python scripts/release.py notes /tmp/release-notes.md
+
+      - name: Publish GitHub pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          jar="build/libs/BetterDailyQuest-${VERSION}.jar"
+          test -f "${jar}"
+          gh release create "v${VERSION}" "${jar}" \
+            --target "${GITHUB_SHA}" \
+            --title "BetterDailyQuest ${VERSION} Beta" \
+            --notes-file /tmp/release-notes.md \
+            --prerelease
