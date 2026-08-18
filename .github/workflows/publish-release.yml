@@ -22,7 +22,7 @@ jobs:
       NO_MKDOCS_2_WARNING: "true"
     steps:
       - name: Check out exact release commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -62,7 +62,7 @@ jobs:
 
       - name: Set up Java
         if: steps.version.outputs.publish == 'true'
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "21"
@@ -74,7 +74,7 @@ jobs:
 
       - name: Set up Python
         if: steps.version.outputs.publish == 'true'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.13"
           cache: pip
