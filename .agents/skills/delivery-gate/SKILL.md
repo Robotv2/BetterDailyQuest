@@ -44,7 +44,8 @@ If a check cannot run, report exactly which check and why. Never describe unchec
 - Make focused commits with concise imperative subjects; conventional-commit syntax is optional.
 - Squash-merge completed PRs into one meaningful commit and delete the branch.
 - Exclude generated files, secrets, local IDE state, and unrelated changes.
-- In the PR summary, state the user-visible outcome, documentation impact, and exact verification performed.
+- Keep PR bodies focused on the outcome and relevant context.
+- Do not add generic Verification or Test plan sections to PR bodies, release notes, or commit messages. Run the checks silently; mention only failures, reviewer-required manual steps, or details the user requests.
 - Do not bypass failed checks or branch protection.
 
 ## Releases

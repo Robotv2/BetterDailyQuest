@@ -9,6 +9,7 @@ The delivery gate is mandatory. In particular:
 - never change `gradle.properties` outside the automated release pull request;
 - keep `CHANGELOG.md`, administrator documentation, tests, and implementation consistent;
 - run the checks required by the skill before presenting work as complete;
+- do not add boilerplate Verification or Test plan sections to PRs, releases, or commits;
 - do not commit, push, merge, or release unless the user explicitly asks for that action.
 
 Release details are in `RELEASING.md`.
