@@ -7,7 +7,7 @@ description: Install BetterDailyQuest, create quests, and manage player progress
 BetterDailyQuest lets server owners create repeatable quest content with YAML files. It assigns quests to players, tracks their progress, saves their data, and runs rewards when they finish.
 
 [Create your first quest](getting-started/first-quest.md){ .md-button .md-button--primary }
-[Download 0.0.10 Beta](https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.10){ .md-button }
+[Download the current beta](https://github.com/Robotv2/BetterDailyQuest/releases){ .md-button }
 
 !!! warning "Use the guide for your release"
     The public site is built from a release tag. Pages in the repository can describe work that is not released yet.
@@ -58,8 +58,8 @@ Players can open their own built-in Quest Board with `bdq quests`. It lists wait
 
 Fresh installations include eleven daily, eleven weekly, and ten monthly examples. Players receive five daily, three weekly, and one monthly assignment by default.
 
-## Current compatibility evidence
+## Compatibility evidence
 
-Version 0.0.10 Beta adds jump, boat, and minecart tasks and keeps the previous runtime active when `bdq reload` rejects invalid content. Compatibility evidence is recorded in the [compatibility reference](reference/compatibility.md).
+The compatibility reference records startup, reload, and gameplay evidence separately for each tested release. Check it before you deploy BDQ on a production server.
 
 [Read the compatibility reference](reference/compatibility.md)

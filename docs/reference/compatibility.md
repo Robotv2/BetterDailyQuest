@@ -6,6 +6,17 @@ description: Review release-specific BetterDailyQuest server, Java, startup, and
 
 Compatibility claims are based on repeatable tests. A startup test and a gameplay test do not prove the same thing.
 
+## Version 0.0.12 pre-release evidence
+
+| Server | Java used | Date | Startup and reload | Player gameplay |
+| --- | --- | --- | --- | --- |
+| Paper 1.8.8 build 445 | Java 17 | 2026-08-27 | Plugin enabled, all thirty-five fresh-install quests loaded, context-condition content loaded during reload, invalid reload rejected, valid reload accepted, clean shutdown | Not run |
+| Paper 26.2 build 119 | Java 25 | 2026-08-27 | Plugin enabled, all thirty-five fresh-install quests loaded, context-condition content loaded during reload, invalid reload rejected, valid reload accepted, clean shutdown | Not run |
+
+Version 0.0.12 adds `game_modes`, `biomes`, and `height` progress conditions. Unit tests cover matching and blocked contexts, inclusive height boundaries, case handling, callbacks, and invalid configuration. The server smoke test loads one quest with all three conditions on both listed server versions.
+
+Cross-version player gameplay has not been recorded. Startup and console reload checks do not prove condition behavior during player actions, completion, rewards, reconnect behavior, or persistence.
+
 ## Version 0.0.10 pre-release evidence
 
 | Server | Java used | Date | Startup and reload | Player gameplay |

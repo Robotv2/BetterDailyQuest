@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Replaced stale 0.0.10 administrator-guide download links and compatibility summary with current release guidance and 0.0.12 evidence.
+
 ## [0.0.12] - 2026-08-27
 
 ### Added

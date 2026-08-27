@@ -15,6 +15,9 @@ MKDOCS = ROOT / "mkdocs.yml"
 
 MARKDOWN_LINK = re.compile(r"!?\[[^\]]*]\(([^)]+)\)")
 MARKDOWN_IMAGE = re.compile(r"!\[([^\]]*)]\(([^)]+)\)")
+VERSIONED_RELEASE_LINK = re.compile(
+    r"https://github\.com/Robotv2/BetterDailyQuest/releases/tag/v\d+\.\d+\.\d+"
+)
 HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
 FRONT_MATTER = re.compile(r"\A---\s*\n(.*?)\n---\s*\n", re.DOTALL)
 
@@ -111,6 +114,10 @@ def validate_links() -> list[str]:
     docs_root = DOCS.resolve()
     for source in sorted(DOCS.rglob("*.md")):
         text = source.read_text(encoding="utf-8")
+        if VERSIONED_RELEASE_LINK.search(text):
+            errors.append(
+                f"{source.relative_to(ROOT)}: use the releases page instead of a version-specific release link"
+            )
         for match in MARKDOWN_LINK.finditer(text):
             target = match.group(1).split(maxsplit=1)[0]
             if target.startswith(("http://", "https://", "mailto:")):
