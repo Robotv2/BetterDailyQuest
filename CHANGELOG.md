@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.0.13] - 2026-08-27
+
 ### Fixed
 
 - Replaced stale 0.0.10 administrator-guide download links and compatibility summary with current release guidance and 0.0.12 evidence.
@@ -167,7 +169,8 @@ First public beta of BetterDailyQuest.
 - Numerical placeholder comparator guidance is limited to exact string matching.
 - Paper 26.1.2 may log a cron4j classloader warning during shutdown.
 
-[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.12...HEAD
+[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.13...HEAD
+[0.0.13]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.13
 [0.0.12]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.12
 [0.0.11]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.11
 [0.0.10]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.10
