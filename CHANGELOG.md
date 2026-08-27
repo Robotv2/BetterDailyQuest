@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.0.12] - 2026-08-27
+
 ### Added
 
 - Added `game_modes`, `biomes`, and `height` progress conditions for restricting quest progress by player context.
@@ -161,7 +163,8 @@ First public beta of BetterDailyQuest.
 - Numerical placeholder comparator guidance is limited to exact string matching.
 - Paper 26.1.2 may log a cron4j classloader warning during shutdown.
 
-[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.11...HEAD
+[Unreleased]: https://github.com/Robotv2/BetterDailyQuest/compare/v0.0.12...HEAD
+[0.0.12]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.12
 [0.0.11]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.11
 [0.0.10]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.10
 [0.0.9]: https://github.com/Robotv2/BetterDailyQuest/releases/tag/v0.0.9
