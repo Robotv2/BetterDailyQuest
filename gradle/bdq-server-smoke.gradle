@@ -259,14 +259,40 @@ def runServerSmokeTest = { Map target, String label ->
             }
 
             if (failures.isEmpty()) {
+                def dailyQuests = new File(runDirectory, 'plugins/BetterDailyQuest/quests/daily-quests.yml')
+                def questContent = dailyQuests.getText(StandardCharsets.UTF_8.name())
+                def conditionedQuestContent = questContent.replaceFirst(
+                        '    tasks:',
+                        '''    conditions:
+      game_modes:
+        required:
+          - SURVIVAL
+      biomes:
+        required:
+          - PLAINS
+      height:
+        minimum: 0
+        maximum: 256
+    tasks:'''
+                )
+                if (conditionedQuestContent == questContent) {
+                    failures.add('Could not add player context conditions to the reload smoke test.')
+                } else {
+                    dailyQuests.setText(conditionedQuestContent, StandardCharsets.UTF_8.name())
+                }
+            }
+
+            if (failures.isEmpty()) {
                 def validOffset
                 synchronized (output) {
                     validOffset = output.length()
                 }
                 sendCommand('bdq reload')
+                def conditionedQuestLoaded = waitForOutput(
+                        'daily-stonebreaker has been loaded successfully.', validOffset)
                 reloadVerified = waitForOutput('The plugin has been reloaded successfully.', validOffset)
-                if (!reloadVerified) {
-                    failures.add('Valid content did not complete bdq reload after a rejected reload.')
+                if (!conditionedQuestLoaded || !reloadVerified) {
+                    failures.add('Valid player context condition content did not complete bdq reload.')
                 }
             }
         }

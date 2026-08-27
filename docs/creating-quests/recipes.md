@@ -78,6 +78,24 @@ Quest file:
 
 Change the world and coordinates before loading the quest. The world must already be loaded when BDQ reads the file.
 
+## Underground miner
+
+**Shows:** `BREAK`, a game-mode condition, and an inclusive maximum height.
+
+Group file:
+
+```yaml
+--8<-- "docs/examples/underground-miner/groups/mining.yml"
+```
+
+Quest file:
+
+```yaml
+--8<-- "docs/examples/underground-miner/quests/underground-miner.yml"
+```
+
+The player must be in Survival mode at Y 32 or below when each block breaks.
+
 ## Test a recipe
 
 1. Put the group and quest files in their matching folders.

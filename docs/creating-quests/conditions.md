@@ -1,5 +1,5 @@
 ---
-description: Restrict BetterDailyQuest progress by permission, world, enchantment, entity data, or placeholder value.
+description: Restrict BetterDailyQuest progress by player context, permission, world, item, entity data, or placeholder value.
 ---
 
 # Add progress conditions
@@ -11,7 +11,47 @@ Conditions stop an otherwise matching action from adding progress.
 - A quest condition applies to every task in the quest.
 - A task condition applies only to that task.
 
-Place a condition as close as possible to the task that needs it.
+Place a condition as close as possible to the task that needs it. Every configured condition must pass before progress increases.
+
+## Player context conditions
+
+Use `game_modes` to stop progress in modes such as Creative or Spectator:
+
+```yaml
+conditions:
+  game_modes:
+    required:
+      - SURVIVAL
+      - ADVENTURE
+    error-message: "&cUse Survival or Adventure mode."
+```
+
+Use `biomes` to restrict progress to biomes supported by the running server:
+
+```yaml
+conditions:
+  biomes:
+    required:
+      - PLAINS
+      - FOREST
+    error-message: "&cGo to a plains or forest biome."
+```
+
+Game mode and biome names ignore case. The lists cannot be empty. A biome from a newer Minecraft version can be invalid on an older server.
+
+Use `height` to set an inclusive block Y range:
+
+```yaml
+conditions:
+  height:
+    minimum: -64
+    maximum: 32
+    error-message: "&cMine at Y 32 or below."
+```
+
+You can omit either boundary, but you must set at least one. The minimum cannot be greater than the maximum.
+
+For a complete Survival mining quest, see [Underground miner](recipes.md#underground-miner).
 
 ## Permission condition
 

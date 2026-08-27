@@ -1,0 +1,24 @@
+quests:
+  underground-miner:
+    name: "&e&lUnderground Miner"
+    description:
+      - "&7Mine stone underground in Survival mode."
+    group: "mining"
+    rewards:
+      - "[message] &6Underground Miner complete!"
+    conditions:
+      game_modes:
+        required:
+          - SURVIVAL
+        error-message: "&cSwitch to Survival mode."
+      height:
+        maximum: 32
+        error-message: "&cMine at Y 32 or below."
+    tasks:
+      1:
+        task_type: "BREAK"
+        task_description: "&7Stone mined: &e%task_progress%&8/&e%task_required%"
+        required_amount: 64
+        required_targets:
+          - STONE
+          - COBBLESTONE
