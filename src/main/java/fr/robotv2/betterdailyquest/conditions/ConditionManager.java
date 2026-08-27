@@ -1,12 +1,15 @@
 package fr.robotv2.betterdailyquest.conditions;
 
 import fr.robotv2.betterdailyquest.BetterDailyQuest;
+import fr.robotv2.betterdailyquest.conditions.impl.entity.SheepColorCondition;
 import fr.robotv2.betterdailyquest.conditions.impl.entity.VillagerCondition;
 import fr.robotv2.betterdailyquest.conditions.impl.item.EnchantCondition;
+import fr.robotv2.betterdailyquest.conditions.impl.player.BiomeCondition;
+import fr.robotv2.betterdailyquest.conditions.impl.player.GameModeCondition;
+import fr.robotv2.betterdailyquest.conditions.impl.player.HeightCondition;
 import fr.robotv2.betterdailyquest.conditions.impl.player.PlaceholderCondition;
 import fr.robotv2.betterdailyquest.conditions.impl.player.PermissionCondition;
 import fr.robotv2.betterdailyquest.conditions.impl.player.WorldCondition;
-import fr.robotv2.betterdailyquest.conditions.impl.entity.SheepColorCondition;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.lang.reflect.Constructor;
@@ -73,6 +76,9 @@ public class ConditionManager {
         registerCondition("placeholders", PlaceholderCondition.class);
         registerCondition("permissions", PermissionCondition.class);
         registerCondition("worlds", WorldCondition.class);
+        registerCondition("game_modes", GameModeCondition.class);
+        registerCondition("biomes", BiomeCondition.class);
+        registerCondition("height", HeightCondition.class);
 
         registerCondition("required_enchants", EnchantCondition.class);
 

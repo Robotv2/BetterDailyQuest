@@ -1,5 +1,5 @@
 ---
-description: Reference every supported BetterDailyQuest progress condition and its YAML shape.
+description: Reference every BetterDailyQuest progress condition for player context, permissions, items, entities, and placeholders.
 ---
 
 # Progress condition reference
@@ -25,6 +25,60 @@ conditions:
 | `error-message` | No message | Text sent when the condition blocks progress |
 
 Mode names are case-insensitive. Invalid modes and empty permission lists prevent the quest from loading.
+
+## `game_modes`
+
+```yaml
+conditions:
+  game_modes:
+    required:
+      - SURVIVAL
+      - ADVENTURE
+    error-message: "&cUse Survival or Adventure mode."
+```
+
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `required` | Required | Non-empty list of Bukkit game modes |
+| `error-message` | No message | Text sent when the condition blocks progress |
+
+Names ignore case. Blank and unknown game modes prevent the quest from loading. The condition checks the player's current game mode when the progress event occurs.
+
+## `biomes`
+
+```yaml
+conditions:
+  biomes:
+    required:
+      - PLAINS
+      - FOREST
+    error-message: "&cGo to a plains or forest biome."
+```
+
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `required` | Required | Non-empty list of biome names supported by the running server |
+| `error-message` | No message | Text sent when the condition blocks progress |
+
+Names ignore case. BDQ checks the biome at the player's current block. Blank, unknown, and unsupported biome names prevent the quest from loading. Available names depend on the Minecraft server version.
+
+## `height`
+
+```yaml
+conditions:
+  height:
+    minimum: -64
+    maximum: 32
+    error-message: "&cMine at Y 32 or below."
+```
+
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `minimum` | No minimum | Inclusive minimum block Y coordinate |
+| `maximum` | No maximum | Inclusive maximum block Y coordinate |
+| `error-message` | No message | Text sent when the condition blocks progress |
+
+Set at least one boundary. Both values must be integers. The minimum cannot be greater than the maximum.
 
 ## `worlds`
 

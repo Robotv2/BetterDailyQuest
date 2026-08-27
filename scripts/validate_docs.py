@@ -313,6 +313,7 @@ def validate_required_files() -> list[str]:
         "ranch-hand": ("ranch.yml", "ranch-hand.yml"),
         "workshop-order": ("workshop.yml", "workshop-order.yml"),
         "wayfinder": ("exploration.yml", "wayfinder.yml"),
+        "underground-miner": ("mining.yml", "underground-miner.yml"),
     }
     for recipe, (group_file, quest_file) in recipes.items():
         required.append(DOCS / "examples" / recipe / "groups" / group_file)
