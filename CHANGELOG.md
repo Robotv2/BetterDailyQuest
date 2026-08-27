@@ -6,6 +6,10 @@
 
 - Added `game_modes`, `biomes`, and `height` progress conditions for restricting quest progress by player context.
 
+### Fixed
+
+- Replaced stale version-specific README links with links to the current public releases.
+
 ## [0.0.11] - 2026-08-11
 
 MySQL quest progress display fix.
