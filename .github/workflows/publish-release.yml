@@ -8,6 +8,7 @@ on:
       - gradle.properties
 
 permissions:
+  actions: write
   contents: write
   pull-requests: read
 
@@ -104,3 +105,10 @@ jobs:
             --title "BetterDailyQuest ${VERSION} Beta" \
             --notes-file /tmp/release-notes.md \
             --prerelease
+
+      - name: Deploy release-matched documentation
+        if: steps.version.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.value }}
+        run: gh workflow run docs.yml --ref master -f release_tag="v${VERSION}"

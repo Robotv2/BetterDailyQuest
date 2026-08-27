@@ -44,6 +44,7 @@ Merging the release pull request starts `.github/workflows/publish-release.yml`.
 2. runs tests and builds the exact merge commit;
 3. validates and builds the administrator guide;
 4. creates `v<version>` on that exact commit;
-5. publishes a GitHub pre-release with the versioned JAR and changelog notes.
+5. publishes a GitHub pre-release with the versioned JAR and changelog notes;
+6. dispatches the documentation workflow with the published tag.
 
-The release event then deploys documentation from the published tag. A failed publish must be fixed in automation; do not repair it with a hand-created tag or release.
+The documentation workflow verifies that the release has a JAR, then deploys the guide from the published tag. A failed publish or documentation deployment must be fixed in automation. Do not repair it with a hand-created tag or release.

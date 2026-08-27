@@ -9,13 +9,18 @@ on:
     types:
       - published
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Published release tag to deploy (for example, v0.0.12)
+        required: false
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: docs-${{ github.event_name == 'release' && 'production' || github.ref }}
-  cancel-in-progress: ${{ github.event_name != 'release' }}
+  group: docs-${{ (github.event_name == 'release' || inputs.release_tag != '') && 'production' || github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'release' && inputs.release_tag == '' }}
 
 jobs:
   build:
@@ -26,7 +31,7 @@ jobs:
       - name: Check out documentation source
         uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.release.tag_name || github.sha }}
+          ref: ${{ github.event.release.tag_name || inputs.release_tag || github.sha }}
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -53,13 +58,13 @@ jobs:
           if-no-files-found: error
 
       - name: Upload GitHub Pages artifact
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' || inputs.release_tag != ''
         uses: actions/upload-pages-artifact@v5
         with:
           path: build/docs-site
 
   deploy:
-    if: github.event_name == 'release'
+    if: github.event_name == 'release' || inputs.release_tag != ''
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -73,7 +78,7 @@ jobs:
       - name: Require a JAR release asset
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
         run: |
           jar_count="$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}" --jq '[.assets[].name | select(endswith(".jar"))] | length')"
           test "${jar_count}" -gt 0
