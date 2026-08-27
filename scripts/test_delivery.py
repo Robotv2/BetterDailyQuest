@@ -1,6 +1,10 @@
 import unittest
+from pathlib import Path
 
 import check_delivery
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class DeliveryPolicyTest(unittest.TestCase):
@@ -45,6 +49,26 @@ class DeliveryPolicyTest(unittest.TestCase):
             ".env",
         ]
         self.assertEqual(paths[1:], check_delivery.prohibited_files(paths))
+
+    def test_release_dispatches_tagged_documentation_deployment(self) -> None:
+        publish = (ROOT / ".github/workflows/publish-release.yml").read_text(
+            encoding="utf-8"
+        )
+        docs = (ROOT / ".github/workflows/docs.yml").read_text(encoding="utf-8")
+
+        self.assertIn("actions: write", publish)
+        self.assertIn(
+            'gh workflow run docs.yml --ref master -f release_tag="v${VERSION}"',
+            publish,
+        )
+        self.assertIn("release_tag:", docs)
+        self.assertIn(
+            "ref: ${{ github.event.release.tag_name || inputs.release_tag || github.sha }}",
+            docs,
+        )
+        self.assertIn(
+            "if: github.event_name == 'release' || inputs.release_tag != ''", docs
+        )
 
 
 if __name__ == "__main__":
